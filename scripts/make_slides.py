@@ -42,6 +42,7 @@ SUBTITLE = "Unsloth LoRA·TorchAO INT4 QAT부터 vLLM 서빙까지"
 EVENT = "PyTorch Day Korea 2026 · Serve Track"
 SPEAKER = "전현상 (Hyeonsang Jeon)"
 AFFILIATION = ["Sr. Solution Engineer · Global Black Belt", "Microsoft · Cloud & AI Apps"]
+REPO_URL = "github.com/hyeonsangjeon/tune-shrink-serve"  # shown on the last slide
 
 # Light-theme values of the chart palette (docs/talk/figures), reused for the slides.
 INK, INK2, MUTE, GRID, PANEL = "0B0B0B", "52514E", "898781", "E1E0D9", "F3F2EE"
@@ -661,21 +662,23 @@ def build_slides() -> List[Slide]:
     s.append(Slide(
         kicker="직접 해 보기", title="GPU 없이 1분이면 이 레포가 제대로 도는지 확인",
         seconds=30, sources=["README.md"],
-        blocks=[Code((0.8, 1.95, 7.4, 2.3), [
+        blocks=[Text((0.8, 1.8, 11.9, 0.7), [f"**{REPO_URL}**"], size=26, bullets=False),
+                Code((0.8, 2.7, 7.4, 2.1), [
             "pip install -r requirements/cpu.txt",
             "python -m pytest -q",
             "python scripts/build_evidence_index.py --check",
             "python scripts/make_figures.py --check",
         ], size=15),
-                Text((0.8, 4.45, 7.4, 1.2), ["테스트, 문서 숫자와 결과 JSON 대조, 차트 다시 그리기 확인"],
+                Text((0.8, 4.95, 7.4, 0.9), ["테스트, 문서 숫자와 결과 JSON 대조, 차트 다시 그리기 확인"],
                      size=15, color=INK2, bullets=False),
-                Text((8.6, 1.95, 4.1, 0.5), ["Hugging Face 공개 모델"], size=15, color=MUTE, bullets=False),
-                Text((8.6, 2.45, 4.1, 2.4), ["`HyeonSang/Midm-2.0-KorMedMCQA`",
-                                             "`HyeonSang/Midm-2.0-KorMedMCQA-QAT-bf16`"], size=14, space=10),
-                Text((8.6, 4.45, 4.1, 1.4), ["비상업 용도로만 사용 가능", "의료 조언용 모델 아님"],
+                Text((8.6, 2.7, 4.1, 0.5), ["Hugging Face 공개 모델"], size=15, color=MUTE, bullets=False),
+                Text((8.6, 3.2, 4.1, 1.6), ["`HyeonSang/Midm-2.0-KorMedMCQA`",
+                                            "`HyeonSang/Midm-2.0-KorMedMCQA-QAT-bf16`"], size=14, space=10),
+                Text((8.6, 4.95, 4.1, 1.0), ["비상업 용도로만 사용 가능", "의료 조언용 모델 아님"],
                      size=13, color=INK2, bullets=False, space=4),
-                Text((0.8, 5.9, 11.7, 0.9), ["질문"], size=30, bullets=False)],
-        notes=("GPU 없이 이 레포가 제대로 도는지는 1분이면 확인할 수 있습니다. 테스트, 문서 숫자와 결과 JSON 대조, "
+                Text((0.8, 6.0, 11.7, 0.9), ["질문"], size=30, bullets=False)],
+        notes=("코드와 결과 JSON, 따라 하는 방법은 GitHub에 모두 공개했습니다. "
+               "GPU 없이 이 레포가 제대로 도는지는 1분이면 확인할 수 있습니다. 테스트, 문서 숫자와 결과 JSON 대조, "
                "차트 다시 그리기를 확인합니다. 학습된 모델은 Hugging Face에 공개했고 비상업 용도로만 쓸 수 있습니다. "
                "의료 조언에 쓰는 모델이 아닙니다. 질문 받겠습니다. 감사합니다.")))
     return s

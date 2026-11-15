@@ -32,6 +32,13 @@ def test_card_results_table_from_eval_rows():
     assert "`backend=unsloth`" in card and "`global_step=426`" in card
 
 
+def test_card_links_the_code_repo_as_its_own_paragraph():
+    card = P.render_model_card("A_bf16", "x/y", code_url=P.CODE_URL)
+    assert f"[hyeonsangjeon/tune-shrink-serve]({P.CODE_URL})" in card
+    assert "실험 산출물입니다.\n\n코드와 결과 JSON" in card
+    assert "코드와 결과 JSON" not in P.render_model_card("A_bf16", "x/y")   # no link unless asked
+
+
 def test_card_without_results_says_pending():
     assert "평가가 끝나면" in P.render_model_card("C_bf16adapt", "x/y")
 

@@ -30,6 +30,7 @@ from typing import Any, Dict, List, Optional
 BASE_MODEL = "K-intelligence/Midm-2.0-Base-Instruct"
 DATASET = "sean0042/KorMedMCQA"
 DATASET_PAPER = "https://arxiv.org/abs/2403.01469"
+CODE_URL = "https://github.com/hyeonsangjeon/tune-shrink-serve"  # code, result JSONs, step guide
 
 MIDM_MIT = """MIT License
 
@@ -110,7 +111,10 @@ def render_model_card(kind: str, repo_id: str, *, eval_rows: Optional[List[Dict[
                + _results_table(eval_rows) + "\n") if eval_rows else \
         "\n## 결과\n\n평가가 끝나면 이 카드에 추가합니다.\n"
 
-    code = f"\n코드: {code_url}\n" if code_url else ""
+    code = ""
+    if code_url:
+        label = code_url.split("github.com/", 1)[-1].rstrip("/")
+        code = f"\n\n코드와 결과 JSON, 따라 하는 방법은 GitHub [{label}]({code_url})에 있습니다."
     body = f"""# {k['title']}
 
 {k['what']}
@@ -179,7 +183,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--private", action="store_true")
     ap.add_argument("--train-json", default=None)
     ap.add_argument("--eval-json", action="append", default=[], help="eval_vllm JSON (repeatable)")
-    ap.add_argument("--code-url", default=None)
+    ap.add_argument("--code-url", default=CODE_URL, help="link to the code repo in the card (default: %(default)s)")
     ap.add_argument("--card-only", action="store_true", help="upload README.md/LICENSE only")
     ap.add_argument("--dry-run", action="store_true", help="write the card locally, upload nothing")
     args = ap.parse_args(argv)
