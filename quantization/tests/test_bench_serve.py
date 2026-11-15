@@ -66,9 +66,17 @@ class _FakeOpenAIHandler(BaseHTTPRequestHandler):
         self.wfile.flush()
 
 
+class _FakeServer(ThreadingHTTPServer):
+    # Tests open up to 8 connections at once. The default listen backlog (5) can
+    # drop one on a busy CI runner; the client then retries ~1 s later and the
+    # wall-time test fails for a reason that has nothing to do with the bench.
+    request_queue_size = 64
+    daemon_threads = True
+
+
 @pytest.fixture(scope="module")
 def fake_server():
-    srv = ThreadingHTTPServer(("127.0.0.1", 0), _FakeOpenAIHandler)
+    srv = _FakeServer(("127.0.0.1", 0), _FakeOpenAIHandler)
     t = threading.Thread(target=srv.serve_forever, daemon=True)
     t.start()
     host, port = srv.server_address
