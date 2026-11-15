@@ -1,0 +1,9 @@
+# S3 — lr 1e-4 on top of the better of S1/S2 (change `extends` to s1_ep4.yaml if S1 wins on 2021).
+extends: s2_perm4.yaml
+train:
+  learning_rate: 1.0e-4
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/sweep/s3_lr1e-4"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s3_lr1e-4/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s3_lr1e-4/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s3_lr1e-4/C_int4_qat"

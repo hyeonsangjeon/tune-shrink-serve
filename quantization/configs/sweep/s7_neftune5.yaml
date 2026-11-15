@@ -1,0 +1,9 @@
+# S7 (optional) — NEFTune noise alpha 5 (transformers TrainingArguments.neftune_noise_alpha).
+extends: s2_perm4.yaml
+train:
+  neftune_noise_alpha: 5.0
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/sweep/s7_neftune5"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s7_neftune5/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s7_neftune5/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s7_neftune5/C_int4_qat"

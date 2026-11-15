@@ -1,0 +1,619 @@
+{
+  "split": "final_holdout",
+  "note": "a = self-hosted Mi:dm, b = managed deployment; only_a_correct / only_b_correct are the discordant counts for McNemar",
+  "rows": [
+    {
+      "name": "midm_bf16_lora",
+      "kind": "self_hosted",
+      "source": "eval_vllm_A_bf16_seed42_h100.json",
+      "accuracy": 72.316,
+      "server_c1_cacheoff": {
+        "source": "online_A_bf16_mcqa_cacheoff_seed42_h100.json",
+        "basis": "concurrency 1, prefix caching off, 256 questions from 2021",
+        "request_throughput_rps": 14.1227,
+        "usd_per_1k_questions": 0.1373
+      },
+      "accuracy_ci95": [
+        70.69,
+        73.886
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.0111,
+      "cost_basis": "H100 NVL ondemand list price x measured batch time (3,009 at once)",
+      "prompt_tokens_mean": 654.4,
+      "gen_tokens_mean": 2,
+      "n_errors": 0
+    },
+    {
+      "name": "midm_int4_ptq",
+      "kind": "self_hosted",
+      "source": "eval_vllm_B_int4_ptq_seed42_h100.json",
+      "accuracy": 69.458,
+      "server_c1_cacheoff": null,
+      "accuracy_ci95": [
+        67.789,
+        71.078
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.1715,
+      "cost_basis": "H100 NVL ondemand list price x measured batch time (3,009 at once)",
+      "prompt_tokens_mean": 654.4,
+      "gen_tokens_mean": 2,
+      "n_errors": 0
+    },
+    {
+      "name": "deepseek-v4-1-flash",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_deepseek-v4-1-flash.json",
+      "models_reported": [
+        "deepseek-v4-1-flash"
+      ],
+      "accuracy": 85.045,
+      "accuracy_ci95": [
+        83.726,
+        86.274
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.0685,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 220.27,
+      "gen_tokens_mean": 2.0,
+      "reasoning_tokens_mean": 0.0,
+      "n_errors": 7,
+      "n_unparsed": 10,
+      "latency_p50_s": 1.76,
+      "concurrency": 24,
+      "measured_at_utc": "2026-11-12T10:40:32+00:00"
+    },
+    {
+      "name": "gpt-5.4-mini",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_gpt-5.4-mini.json",
+      "models_reported": [
+        "gpt-5.4-mini-2026-03-17"
+      ],
+      "accuracy": 84.413,
+      "accuracy_ci95": [
+        83.074,
+        85.666
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.1718,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 204.55,
+      "gen_tokens_mean": 4.08,
+      "reasoning_tokens_mean": 0.0,
+      "n_errors": 8,
+      "n_unparsed": 11,
+      "latency_p50_s": 1.551,
+      "concurrency": 32,
+      "measured_at_utc": "2026-11-12T10:40:32+00:00"
+    },
+    {
+      "name": "gpt-5.4-nano",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_gpt-5.4-nano.json",
+      "models_reported": [
+        "gpt-5.4-nano-2026-03-17"
+      ],
+      "accuracy": 64.905,
+      "accuracy_ci95": [
+        63.182,
+        66.591
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.0459,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 204.55,
+      "gen_tokens_mean": 3.99,
+      "reasoning_tokens_mean": 0.0,
+      "n_errors": 8,
+      "n_unparsed": 10,
+      "latency_p50_s": 1.609,
+      "concurrency": 32,
+      "measured_at_utc": "2026-11-12T10:40:32+00:00"
+    },
+    {
+      "name": "gpt-5.4",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_gpt-5.4.json",
+      "models_reported": [
+        "gpt-5.4-2026-03-05"
+      ],
+      "accuracy": 92.024,
+      "accuracy_ci95": [
+        91.001,
+        92.939
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.5712,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 204.55,
+      "gen_tokens_mean": 3.99,
+      "reasoning_tokens_mean": 0.0,
+      "n_errors": 8,
+      "n_unparsed": 8,
+      "latency_p50_s": 1.585,
+      "concurrency": 32,
+      "measured_at_utc": "2026-11-12T10:40:32+00:00"
+    },
+    {
+      "name": "gpt-5.6-sol",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_gpt-5.6-sol.json",
+      "models_reported": [
+        "gpt-5.6-sol-2026-07-09"
+      ],
+      "accuracy": 97.474,
+      "accuracy_ci95": [
+        96.85,
+        97.977
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 1.6257,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 204.55,
+      "gen_tokens_mean": 40.38,
+      "reasoning_tokens_mean": 34.84,
+      "n_errors": 8,
+      "n_unparsed": 10,
+      "latency_p50_s": 3.086,
+      "concurrency": 24,
+      "measured_at_utc": "2026-11-12T10:40:32+00:00"
+    },
+    {
+      "name": "gpt-6-astra",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_gpt-6-astra.json",
+      "models_reported": [
+        "gpt-6-astra-2026-09-03"
+      ],
+      "accuracy": 98.372,
+      "accuracy_ci95": [
+        97.854,
+        98.766
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 3.0851,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 204.55,
+      "gen_tokens_mean": 20.79,
+      "reasoning_tokens_mean": 14.73,
+      "n_errors": 8,
+      "n_unparsed": 8,
+      "latency_p50_s": 2.459,
+      "concurrency": 12,
+      "measured_at_utc": "2026-11-12T10:40:32+00:00"
+    },
+    {
+      "name": "gpt-6-luna",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_gpt-6-luna.json",
+      "models_reported": [
+        "gpt-6-luna-2026-09-22"
+      ],
+      "accuracy": 95.945,
+      "accuracy_ci95": [
+        95.18,
+        96.594
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.0836,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 204.55,
+      "gen_tokens_mean": 126.34,
+      "reasoning_tokens_mean": 116.04,
+      "n_errors": 8,
+      "n_unparsed": 21,
+      "latency_p50_s": 3.405,
+      "concurrency": 12,
+      "measured_at_utc": "2026-11-12T10:40:32+00:00"
+    },
+    {
+      "name": "gpt-6.1-sol",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_gpt-6.1-sol.json",
+      "models_reported": [
+        "gpt-6.1-sol-2026-09-29"
+      ],
+      "accuracy": 98.305,
+      "accuracy_ci95": [
+        97.778,
+        98.709
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.6622,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 204.55,
+      "gen_tokens_mean": 25.31,
+      "reasoning_tokens_mean": 18.65,
+      "n_errors": 8,
+      "n_unparsed": 8,
+      "latency_p50_s": 2.896,
+      "concurrency": 12,
+      "measured_at_utc": "2026-11-12T10:40:32+00:00"
+    },
+    {
+      "name": "gpt-oss-120b",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_gpt-oss-120b.json",
+      "models_reported": [
+        "gpt-oss-120b"
+      ],
+      "accuracy": 84.247,
+      "accuracy_ci95": [
+        82.902,
+        85.505
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.218,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 268.21,
+      "gen_tokens_mean": 296.32,
+      "reasoning_tokens_mean": 0.0,
+      "n_errors": 10,
+      "n_unparsed": 23,
+      "latency_p50_s": 1.67,
+      "concurrency": 32,
+      "measured_at_utc": "2026-11-12T10:36:11+00:00"
+    },
+    {
+      "name": "llama-4-maverick",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_llama-4-maverick.json",
+      "models_reported": [
+        "llama-4-maverick"
+      ],
+      "accuracy": 81.489,
+      "accuracy_ci95": [
+        80.061,
+        82.836
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.0509,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 192.57,
+      "gen_tokens_mean": 2.71,
+      "reasoning_tokens_mean": 0.0,
+      "n_errors": 7,
+      "n_unparsed": 7,
+      "latency_p50_s": 1.197,
+      "concurrency": 24,
+      "measured_at_utc": "2026-11-12T10:36:11+00:00"
+    },
+    {
+      "name": "mistral-medium-3-5",
+      "kind": "managed_api",
+      "source": "managed/eval_managed_mistral-medium-3-5.json",
+      "models_reported": [
+        "mistral-medium-3-5"
+      ],
+      "accuracy": 75.972,
+      "accuracy_ci95": [
+        74.413,
+        77.465
+      ],
+      "n_eval": 3009,
+      "usd_per_1k_questions": 0.3276,
+      "cost_basis": "reported usage tokens x list price per 1M tokens",
+      "prompt_tokens_mean": 208.4,
+      "gen_tokens_mean": 2.0,
+      "reasoning_tokens_mean": 0.0,
+      "n_errors": 7,
+      "n_unparsed": 13,
+      "latency_p50_s": 1.141,
+      "concurrency": 24,
+      "measured_at_utc": "2026-11-12T10:36:11+00:00"
+    }
+  ],
+  "pairs": [
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 85.045,
+      "both_correct": 2016,
+      "only_a_correct": 160,
+      "only_b_correct": 543,
+      "both_wrong": 290,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "deepseek-v4-1-flash"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 85.045,
+      "both_correct": 1937,
+      "only_a_correct": 153,
+      "only_b_correct": 622,
+      "both_wrong": 297,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "deepseek-v4-1-flash"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 84.413,
+      "both_correct": 2014,
+      "only_a_correct": 162,
+      "only_b_correct": 526,
+      "both_wrong": 307,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "gpt-5.4-mini"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 84.413,
+      "both_correct": 1935,
+      "only_a_correct": 155,
+      "only_b_correct": 605,
+      "both_wrong": 314,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "gpt-5.4-mini"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 64.905,
+      "both_correct": 1662,
+      "only_a_correct": 514,
+      "only_b_correct": 291,
+      "both_wrong": 542,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "gpt-5.4-nano"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 64.905,
+      "both_correct": 1604,
+      "only_a_correct": 486,
+      "only_b_correct": 349,
+      "both_wrong": 570,
+      "mcnemar_p": 2e-06,
+      "a": "midm_int4_ptq",
+      "b": "gpt-5.4-nano"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 92.024,
+      "both_correct": 2096,
+      "only_a_correct": 80,
+      "only_b_correct": 673,
+      "both_wrong": 160,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "gpt-5.4"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 92.024,
+      "both_correct": 2012,
+      "only_a_correct": 78,
+      "only_b_correct": 757,
+      "both_wrong": 162,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "gpt-5.4"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 97.474,
+      "both_correct": 2141,
+      "only_a_correct": 35,
+      "only_b_correct": 792,
+      "both_wrong": 41,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "gpt-5.6-sol"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 97.474,
+      "both_correct": 2064,
+      "only_a_correct": 26,
+      "only_b_correct": 869,
+      "both_wrong": 50,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "gpt-5.6-sol"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 98.372,
+      "both_correct": 2150,
+      "only_a_correct": 26,
+      "only_b_correct": 810,
+      "both_wrong": 23,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "gpt-6-astra"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 98.372,
+      "both_correct": 2070,
+      "only_a_correct": 20,
+      "only_b_correct": 890,
+      "both_wrong": 29,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "gpt-6-astra"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 95.945,
+      "both_correct": 2126,
+      "only_a_correct": 50,
+      "only_b_correct": 761,
+      "both_wrong": 72,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "gpt-6-luna"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 95.945,
+      "both_correct": 2044,
+      "only_a_correct": 46,
+      "only_b_correct": 843,
+      "both_wrong": 76,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "gpt-6-luna"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 98.305,
+      "both_correct": 2152,
+      "only_a_correct": 24,
+      "only_b_correct": 806,
+      "both_wrong": 27,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "gpt-6.1-sol"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 98.305,
+      "both_correct": 2071,
+      "only_a_correct": 19,
+      "only_b_correct": 887,
+      "both_wrong": 32,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "gpt-6.1-sol"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 84.247,
+      "both_correct": 1971,
+      "only_a_correct": 205,
+      "only_b_correct": 564,
+      "both_wrong": 269,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "gpt-oss-120b"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 84.247,
+      "both_correct": 1895,
+      "only_a_correct": 195,
+      "only_b_correct": 640,
+      "both_wrong": 279,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "gpt-oss-120b"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 81.489,
+      "both_correct": 1970,
+      "only_a_correct": 206,
+      "only_b_correct": 482,
+      "both_wrong": 351,
+      "mcnemar_p": 0.0,
+      "a": "midm_bf16_lora",
+      "b": "llama-4-maverick"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 81.489,
+      "both_correct": 1878,
+      "only_a_correct": 212,
+      "only_b_correct": 574,
+      "both_wrong": 345,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "llama-4-maverick"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 75.972,
+      "both_correct": 1893,
+      "only_a_correct": 283,
+      "only_b_correct": 393,
+      "both_wrong": 440,
+      "mcnemar_p": 2.7e-05,
+      "a": "midm_bf16_lora",
+      "b": "mistral-medium-3-5"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 75.972,
+      "both_correct": 1828,
+      "only_a_correct": 262,
+      "only_b_correct": 458,
+      "both_wrong": 461,
+      "mcnemar_p": 0.0,
+      "a": "midm_int4_ptq",
+      "b": "mistral-medium-3-5"
+    }
+  ]
+}

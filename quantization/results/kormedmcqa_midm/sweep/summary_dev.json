@@ -1,0 +1,491 @@
+{
+  "split": "selection_dev",
+  "reference": "unsloth_A/eval_vllm_A_bf16_seed42_selection_dev.json",
+  "reference_accuracy": 70.727,
+  "reference_lora_path": "unsloth_A/ckpt_dev/eval_vllm_lora_A_bf16_unsloth_seed42_run_checkpoint-426_selection_dev.json",
+  "reference_lora_accuracy": 70.444,
+  "rule": {
+    "tie_pt": 0.5,
+    "gate_pt": 2.0,
+    "gate_p": 0.05,
+    "p_values": "nominal"
+  },
+  "dev_scorings_looked_at": 31,
+  "skipped_not_full_2021": [],
+  "arms": {
+    "s0_seed43": {
+      "checkpoints": [
+        {
+          "file": "sweep/s0_seed43/ckpt_dev/eval_vllm_lora_A_bf16_seed43_run_checkpoint-213_selection_dev.json",
+          "step": 213,
+          "accuracy": 71.955
+        },
+        {
+          "file": "sweep/s0_seed43/ckpt_dev/eval_vllm_lora_A_bf16_seed43_run_checkpoint-426_selection_dev.json",
+          "step": 426,
+          "accuracy": 71.766
+        }
+      ],
+      "picked": {
+        "file": "sweep/s0_seed43/ckpt_dev/eval_vllm_lora_A_bf16_seed43_run_checkpoint-213_selection_dev.json",
+        "step": 213,
+        "accuracy": 71.955,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 71.955,
+          "only_a_correct": 59,
+          "only_b_correct": 72,
+          "mcnemar_p": 0.294406,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 71.955,
+          "only_a_correct": 58,
+          "only_b_correct": 74,
+          "mcnemar_p": 0.191499,
+          "passes_gate": false
+        }
+      },
+      "final_step": {
+        "file": "sweep/s0_seed43/ckpt_dev/eval_vllm_lora_A_bf16_seed43_run_checkpoint-426_selection_dev.json",
+        "step": 426,
+        "accuracy": 71.766,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 71.766,
+          "only_a_correct": 46,
+          "only_b_correct": 57,
+          "mcnemar_p": 0.324479,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 71.766,
+          "only_a_correct": 47,
+          "only_b_correct": 61,
+          "mcnemar_p": 0.210766,
+          "passes_gate": false
+        }
+      },
+      "merged": [
+        {
+          "file": "sweep/s0_seed43/eval_vllm_A_bf16_seed43_selection_dev.json",
+          "accuracy": 71.671,
+          "merged_from_step": "final (training end)",
+          "vs_reference": {
+            "acc_a": 70.727,
+            "acc_b": 71.671,
+            "only_a_correct": 48,
+            "only_b_correct": 58,
+            "mcnemar_p": 0.382126,
+            "passes_gate": false
+          }
+        }
+      ]
+    },
+    "s1_ep4": {
+      "checkpoints": [
+        {
+          "file": "sweep/s1_ep4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-213_selection_dev.json",
+          "step": 213,
+          "accuracy": 68.178
+        },
+        {
+          "file": "sweep/s1_ep4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-426_selection_dev.json",
+          "step": 426,
+          "accuracy": 70.633
+        },
+        {
+          "file": "sweep/s1_ep4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-639_selection_dev.json",
+          "step": 639,
+          "accuracy": 69.783
+        },
+        {
+          "file": "sweep/s1_ep4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-852_selection_dev.json",
+          "step": 852,
+          "accuracy": 70.633
+        }
+      ],
+      "picked": {
+        "file": "sweep/s1_ep4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-426_selection_dev.json",
+        "step": 426,
+        "accuracy": 70.633,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 70.633,
+          "only_a_correct": 64,
+          "only_b_correct": 63,
+          "mcnemar_p": 1.0,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 70.633,
+          "only_a_correct": 61,
+          "only_b_correct": 63,
+          "mcnemar_p": 0.928492,
+          "passes_gate": false
+        }
+      },
+      "final_step": {
+        "file": "sweep/s1_ep4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-852_selection_dev.json",
+        "step": 852,
+        "accuracy": 70.633,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 70.633,
+          "only_a_correct": 60,
+          "only_b_correct": 59,
+          "mcnemar_p": 1.0,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 70.633,
+          "only_a_correct": 59,
+          "only_b_correct": 61,
+          "mcnemar_p": 0.927315,
+          "passes_gate": false
+        }
+      },
+      "merged": []
+    },
+    "s2_perm4": {
+      "checkpoints": [
+        {
+          "file": "sweep/s2_perm4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-213_selection_dev.json",
+          "step": 213,
+          "accuracy": 71.577
+        },
+        {
+          "file": "sweep/s2_perm4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-426_selection_dev.json",
+          "step": 426,
+          "accuracy": 71.105
+        },
+        {
+          "file": "sweep/s2_perm4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-639_selection_dev.json",
+          "step": 639,
+          "accuracy": 71.105
+        },
+        {
+          "file": "sweep/s2_perm4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-851_selection_dev.json",
+          "step": 851,
+          "accuracy": 71.388
+        }
+      ],
+      "picked": {
+        "file": "sweep/s2_perm4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-213_selection_dev.json",
+        "step": 213,
+        "accuracy": 71.577,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 71.577,
+          "only_a_correct": 51,
+          "only_b_correct": 60,
+          "mcnemar_p": 0.447806,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 71.577,
+          "only_a_correct": 50,
+          "only_b_correct": 62,
+          "mcnemar_p": 0.298593,
+          "passes_gate": false
+        }
+      },
+      "final_step": {
+        "file": "sweep/s2_perm4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-851_selection_dev.json",
+        "step": 851,
+        "accuracy": 71.388,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 71.388,
+          "only_a_correct": 65,
+          "only_b_correct": 72,
+          "mcnemar_p": 0.608384,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 71.388,
+          "only_a_correct": 64,
+          "only_b_correct": 74,
+          "mcnemar_p": 0.443715,
+          "passes_gate": false
+        }
+      },
+      "merged": []
+    },
+    "s3_lr1e-4": {
+      "checkpoints": [
+        {
+          "file": "sweep/s3_lr1e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-213_selection_dev.json",
+          "step": 213,
+          "accuracy": 69.877
+        },
+        {
+          "file": "sweep/s3_lr1e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-426_selection_dev.json",
+          "step": 426,
+          "accuracy": 71.105
+        },
+        {
+          "file": "sweep/s3_lr1e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-639_selection_dev.json",
+          "step": 639,
+          "accuracy": 71.01
+        },
+        {
+          "file": "sweep/s3_lr1e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-851_selection_dev.json",
+          "step": 851,
+          "accuracy": 71.766
+        }
+      ],
+      "picked": {
+        "file": "sweep/s3_lr1e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-851_selection_dev.json",
+        "step": 851,
+        "accuracy": 71.766,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 71.766,
+          "only_a_correct": 47,
+          "only_b_correct": 58,
+          "mcnemar_p": 0.329137,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 71.766,
+          "only_a_correct": 47,
+          "only_b_correct": 61,
+          "mcnemar_p": 0.210766,
+          "passes_gate": false
+        }
+      },
+      "final_step": {
+        "file": "sweep/s3_lr1e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-851_selection_dev.json",
+        "step": 851,
+        "accuracy": 71.766,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 71.766,
+          "only_a_correct": 47,
+          "only_b_correct": 58,
+          "mcnemar_p": 0.329137,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 71.766,
+          "only_a_correct": 47,
+          "only_b_correct": 61,
+          "mcnemar_p": 0.210766,
+          "passes_gate": false
+        }
+      },
+      "merged": []
+    },
+    "s4_lr4e-4": {
+      "checkpoints": [
+        {
+          "file": "sweep/s4_lr4e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-213_selection_dev.json",
+          "step": 213,
+          "accuracy": 67.328
+        },
+        {
+          "file": "sweep/s4_lr4e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-426_selection_dev.json",
+          "step": 426,
+          "accuracy": 68.933
+        },
+        {
+          "file": "sweep/s4_lr4e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-639_selection_dev.json",
+          "step": 639,
+          "accuracy": 68.839
+        },
+        {
+          "file": "sweep/s4_lr4e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-851_selection_dev.json",
+          "step": 851,
+          "accuracy": 69.405
+        }
+      ],
+      "picked": {
+        "file": "sweep/s4_lr4e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-426_selection_dev.json",
+        "step": 426,
+        "accuracy": 68.933,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 68.933,
+          "only_a_correct": 99,
+          "only_b_correct": 80,
+          "mcnemar_p": 0.178339,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 68.933,
+          "only_a_correct": 99,
+          "only_b_correct": 83,
+          "mcnemar_p": 0.266142,
+          "passes_gate": false
+        }
+      },
+      "final_step": {
+        "file": "sweep/s4_lr4e-4/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-851_selection_dev.json",
+        "step": 851,
+        "accuracy": 69.405,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 69.405,
+          "only_a_correct": 85,
+          "only_b_correct": 71,
+          "mcnemar_p": 0.297934,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 69.405,
+          "only_a_correct": 83,
+          "only_b_correct": 72,
+          "mcnemar_p": 0.421939,
+          "passes_gate": false
+        }
+      },
+      "merged": []
+    },
+    "s5_roles_t2": {
+      "checkpoints": [
+        {
+          "file": "sweep/s5_roles_t2/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-216_selection_dev.json",
+          "step": 216,
+          "accuracy": 70.066
+        },
+        {
+          "file": "sweep/s5_roles_t2/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-432_selection_dev.json",
+          "step": 432,
+          "accuracy": 68.555
+        },
+        {
+          "file": "sweep/s5_roles_t2/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-648_selection_dev.json",
+          "step": 648,
+          "accuracy": 70.444
+        },
+        {
+          "file": "sweep/s5_roles_t2/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-864_selection_dev.json",
+          "step": 864,
+          "accuracy": 69.783
+        }
+      ],
+      "picked": {
+        "file": "sweep/s5_roles_t2/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-216_selection_dev.json",
+        "step": 216,
+        "accuracy": 70.066,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 70.066,
+          "only_a_correct": 62,
+          "only_b_correct": 55,
+          "mcnemar_p": 0.57929,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 70.066,
+          "only_a_correct": 61,
+          "only_b_correct": 57,
+          "mcnemar_p": 0.782556,
+          "passes_gate": false
+        }
+      },
+      "final_step": {
+        "file": "sweep/s5_roles_t2/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-864_selection_dev.json",
+        "step": 864,
+        "accuracy": 69.783,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 69.783,
+          "only_a_correct": 74,
+          "only_b_correct": 64,
+          "mcnemar_p": 0.443715,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 69.783,
+          "only_a_correct": 74,
+          "only_b_correct": 67,
+          "mcnemar_p": 0.613513,
+          "passes_gate": false
+        }
+      },
+      "merged": []
+    },
+    "s8_self_explain": {
+      "checkpoints": [
+        {
+          "file": "sweep/s8_self_explain/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-200_selection_dev.json",
+          "step": 200,
+          "accuracy": 68.178
+        },
+        {
+          "file": "sweep/s8_self_explain/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-400_selection_dev.json",
+          "step": 400,
+          "accuracy": 69.594
+        },
+        {
+          "file": "sweep/s8_self_explain/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-600_selection_dev.json",
+          "step": 600,
+          "accuracy": 70.916
+        },
+        {
+          "file": "sweep/s8_self_explain/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-729_selection_dev.json",
+          "step": 729,
+          "accuracy": 71.577
+        }
+      ],
+      "picked": {
+        "file": "sweep/s8_self_explain/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-729_selection_dev.json",
+        "step": 729,
+        "accuracy": 71.577,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 71.577,
+          "only_a_correct": 49,
+          "only_b_correct": 58,
+          "mcnemar_p": 0.43944,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 71.577,
+          "only_a_correct": 50,
+          "only_b_correct": 62,
+          "mcnemar_p": 0.298593,
+          "passes_gate": false
+        }
+      },
+      "final_step": {
+        "file": "sweep/s8_self_explain/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-729_selection_dev.json",
+        "step": 729,
+        "accuracy": 71.577,
+        "vs_reference": {
+          "acc_a": 70.727,
+          "acc_b": 71.577,
+          "only_a_correct": 49,
+          "only_b_correct": 58,
+          "mcnemar_p": 0.43944,
+          "passes_gate": false
+        },
+        "vs_reference_lora_path": {
+          "acc_a": 70.444,
+          "acc_b": 71.577,
+          "only_a_correct": 50,
+          "only_b_correct": 62,
+          "mcnemar_p": 0.298593,
+          "passes_gate": false
+        }
+      },
+      "merged": []
+    }
+  },
+  "note": "selection only; the 2022-2024 questions are measured once, after this, for one model"
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "artifact_sizes/v1",
+  "measured": true,
+  "unit": "GiB (1024^3 bytes)",
+  "method": "sum of *.safetensors sizes reported by the Hugging Face Hub API (?blobs=true); INT4 sizes are dir_size_gb from B_build_seed42.json / C_train_seed42.json (same unit)",
+  "models": {
+    "untuned_base": {
+      "repo": "K-intelligence/Midm-2.0-Base-Instruct",
+      "revision": "35479c5fc9a18a5db7cc6dbadcf1db68db7beab0",
+      "safetensors_files": 5,
+      "bytes": 23091406336,
+      "gib": 21.506
+    },
+    "bf16_lora_merged": {
+      "repo": "HyeonSang/Midm-2.0-KorMedMCQA",
+      "revision": "d9656042910b23692fedd617be4ebfc55b1367f7",
+      "safetensors_files": 5,
+      "bytes": 23091406336,
+      "gib": 21.506
+    },
+    "int4_qat_bf16_weights": {
+      "repo": "HyeonSang/Midm-2.0-KorMedMCQA-QAT-bf16",
+      "revision": "39fc6449d78597e6f63e5ca2fa771d4a9dc89fe3",
+      "safetensors_files": 5,
+      "bytes": 23091406336,
+      "gib": 21.506
+    },
+    "int4_ptq_tile_packed": {
+      "source": "B_build_seed42.json",
+      "gib": 7.1952
+    },
+    "int4_qat_tile_packed": {
+      "source": "C_train_seed42.json",
+      "gib": 7.1952
+    }
+  }
+}

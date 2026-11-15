@@ -1,0 +1,12 @@
+# NOT PART OF THE WEEKEND PLAN — the user has not chosen this; it removes the 2021 check.
+# OPTIONAL, user's call: after the sweep, refit the chosen recipe on train+dev (2012-2021, 4,460
+# items; dentist 297 -> 601). No dev check is possible for this model (load_slices refuses
+# selection_dev); measure final_holdout once.
+extends: s2_perm4.yaml           # the chosen arm
+data:
+  train_splits: [train, selection_dev]
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/sweep/refit_train_dev"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/sweep/refit_train_dev/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/sweep/refit_train_dev/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/sweep/refit_train_dev/C_int4_qat"

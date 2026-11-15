@@ -1,0 +1,10 @@
+{
+  "method": "B_int4_ptq",
+  "src_A": "quantization/artifacts/kormedmcqa_midm/A_bf16_seed42",
+  "int4_dir": "quantization/artifacts/kormedmcqa_midm/B_int4_ptq_seed42",
+  "group_size": 128,
+  "size_gb": 7.1952,
+  "torch": "2.11.0+cu130",
+  "torchao": "0.17.0",
+  "device": "NVIDIA H100 NVL"
+}

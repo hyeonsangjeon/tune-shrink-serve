@@ -1,0 +1,62 @@
+{
+  "gpu_tag": "h100",
+  "split": "final_holdout",
+  "pairs": [
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 63.277,
+      "acc_b": 72.316,
+      "both_correct": 1740,
+      "only_a_correct": 164,
+      "only_b_correct": 436,
+      "both_wrong": 669,
+      "mcnemar_p": 0.0,
+      "a": "base",
+      "b": "A_bf16"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 69.458,
+      "both_correct": 1978,
+      "only_a_correct": 198,
+      "only_b_correct": 112,
+      "both_wrong": 721,
+      "mcnemar_p": 1e-06,
+      "a": "A_bf16",
+      "b": "B_int4_ptq"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 72.316,
+      "acc_b": 69.691,
+      "both_correct": 1971,
+      "only_a_correct": 205,
+      "only_b_correct": 126,
+      "both_wrong": 707,
+      "mcnemar_p": 1.7e-05,
+      "a": "A_bf16",
+      "b": "C_int4_qat"
+    },
+    {
+      "n_paired": 3009,
+      "missing_in_a": 0,
+      "missing_in_b": 0,
+      "acc_a": 69.458,
+      "acc_b": 69.691,
+      "both_correct": 1993,
+      "only_a_correct": 97,
+      "only_b_correct": 104,
+      "both_wrong": 815,
+      "mcnemar_p": 0.67225,
+      "a": "B_int4_ptq",
+      "b": "C_int4_qat"
+    }
+  ]
+}

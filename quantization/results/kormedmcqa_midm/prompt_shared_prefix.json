@@ -1,0 +1,13 @@
+{
+  "benchmark": "shared_prompt_prefix",
+  "generated_at": "2026-11-14T08:31:00Z",
+  "prompt_source": "quantization/configs/kormedmcqa_midm.yaml:selection_dev",
+  "tokenizer": "quantization/artifacts/kormedmcqa_midm/A_bf16_seed42",
+  "n_prompts": 1059,
+  "prompt_tokens_mean": 653.3,
+  "shared_prefix_tokens": 530,
+  "system_turn_tokens": 524,
+  "note": "Every served prompt starts with the same shared_prefix_tokens (KT system block, date, task instruction, user header); with prefix caching on and fresh questions, this is what is reused.",
+  "command": "python -m quantization.serving.v2_bench_serve --shared-prefix-report --model quantization/artifacts/kormedmcqa_midm/A_bf16_seed42 --prompts-config quantization/configs/kormedmcqa_midm.yaml --prompts-split selection_dev --output quantization/results/kormedmcqa_midm/prompt_shared_prefix.json",
+  "recorded_from": "the same computation run interactively on the H100 VM (counts only, no prompt text)"
+}

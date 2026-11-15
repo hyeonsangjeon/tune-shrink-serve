@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.venv-*/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+.env
+.env.*
+
+# run outputs (regenerable); committed results live in quantization/results/
+runs/
+quantization/runs/
+build/

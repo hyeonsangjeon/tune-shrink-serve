@@ -1,0 +1,210 @@
+{
+  "method": "A_bf16",
+  "base_model": "K-intelligence/Midm-2.0-Base-Instruct",
+  "seed": 43,
+  "backend": "unsloth",
+  "unsloth_version": "2026.11.3",
+  "tokenizer_source": "external_pickle",
+  "peak_vram_gb": 24.54,
+  "task": "kormedmcqa",
+  "n_train": 3401,
+  "epochs": 2.0,
+  "augment": null,
+  "recipe": {
+    "learning_rate": 0.0002,
+    "epochs": 2.0,
+    "max_seq_len": 1024,
+    "lr_scheduler_type": "linear",
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "use_rslora": false,
+    "neftune_noise_alpha": null,
+    "loss_per_example": false,
+    "prompt_loss_weight": 0.0,
+    "option_label_smoothing": 0.0,
+    "save_steps": 213,
+    "save_total_limit": null
+  },
+  "final_checkpoint": "quantization/artifacts/kormedmcqa_midm/sweep/s0_seed43/A_bf16_seed43_run/checkpoint-426",
+  "global_step": 426,
+  "train_seconds": 950.7,
+  "train_loss": 1.8833541198515555,
+  "loss_curve": [
+    [
+      1,
+      17.3719
+    ],
+    [
+      10,
+      13.3052
+    ],
+    [
+      20,
+      2.6112
+    ],
+    [
+      30,
+      1.9201
+    ],
+    [
+      40,
+      1.7725
+    ],
+    [
+      50,
+      1.7319
+    ],
+    [
+      60,
+      1.7373
+    ],
+    [
+      70,
+      1.6807
+    ],
+    [
+      80,
+      1.6925
+    ],
+    [
+      90,
+      1.6869
+    ],
+    [
+      100,
+      1.7067
+    ],
+    [
+      110,
+      1.7034
+    ],
+    [
+      120,
+      1.71
+    ],
+    [
+      130,
+      1.6701
+    ],
+    [
+      140,
+      1.7358
+    ],
+    [
+      150,
+      1.7316
+    ],
+    [
+      160,
+      1.6488
+    ],
+    [
+      170,
+      1.6933
+    ],
+    [
+      180,
+      1.7054
+    ],
+    [
+      190,
+      1.7057
+    ],
+    [
+      200,
+      1.6288
+    ],
+    [
+      210,
+      1.6642
+    ],
+    [
+      220,
+      1.5467
+    ],
+    [
+      230,
+      1.4581
+    ],
+    [
+      240,
+      1.465
+    ],
+    [
+      250,
+      1.4487
+    ],
+    [
+      260,
+      1.4786
+    ],
+    [
+      270,
+      1.4958
+    ],
+    [
+      280,
+      1.4779
+    ],
+    [
+      290,
+      1.4389
+    ],
+    [
+      300,
+      1.3948
+    ],
+    [
+      310,
+      1.4794
+    ],
+    [
+      320,
+      1.4439
+    ],
+    [
+      330,
+      1.4299
+    ],
+    [
+      340,
+      1.4065
+    ],
+    [
+      350,
+      1.4701
+    ],
+    [
+      360,
+      1.4291
+    ],
+    [
+      370,
+      1.4374
+    ],
+    [
+      380,
+      1.4655
+    ],
+    [
+      390,
+      1.422
+    ],
+    [
+      400,
+      1.4477
+    ],
+    [
+      410,
+      1.4401
+    ],
+    [
+      420,
+      1.4549
+    ]
+  ],
+  "merged_dir": "quantization/artifacts/kormedmcqa_midm/sweep/s0_seed43/A_bf16_seed43",
+  "vocab_size_expected": 131384,
+  "vocab_size_merged": 131384,
+  "vocab_ok": true
+}

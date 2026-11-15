@@ -1,0 +1,12 @@
+# S0 — today's recipe (Unsloth LoRA, 2 epochs) with SEED=43: the seed-to-seed spread on 2021,
+# measured before any recipe is compared. Keeps the epoch-1 adapter too; merges the final model.
+#   SEED=43 CONFIG=quantization/configs/sweep/s0_seed43.yaml bash scripts/gpu/stage.sh sweep_a
+extends: ../kormedmcqa_midm_unsloth.yaml
+train:
+  save_steps: 213            # 3,401 items / (8 x 2) = 213 optimizer steps per epoch
+  save_total_limit: null     # keep every epoch adapter
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/sweep/s0_seed43"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s0_seed43/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s0_seed43/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s0_seed43/C_int4_qat"

@@ -1,0 +1,13 @@
+# S1 — more epochs only (no augmentation): 4 epochs = 852 steps; one adapter per epoch,
+# all kept and scored on 2021; the 2021-selected adapter is merged afterwards (v2_run merge).
+extends: ../kormedmcqa_midm_unsloth.yaml
+train:
+  epochs: 4
+  save_steps: 213
+  save_total_limit: null
+  save_merged: false
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/sweep/s1_ep4"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s1_ep4/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s1_ep4/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s1_ep4/C_int4_qat"

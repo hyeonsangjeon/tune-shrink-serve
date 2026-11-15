@@ -1,0 +1,5 @@
+# Talk slide deck build only (scripts/make_slides.py -> build/slides/). Not needed for tests or CI.
+# CPU only. No system libraries needed: resvg-py ships its own SVG renderer.
+python-pptx==1.0.2
+resvg-py==0.5.0     # SVG chart -> PNG (2x); make_slides.py inlines the light-theme CSS first
+Pillow==12.1.1      # checks the rendered PNG colors; Pillow 12 still supports Python 3.10

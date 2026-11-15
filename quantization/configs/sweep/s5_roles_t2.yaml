@@ -1,0 +1,14 @@
+# S5 — role weights by temperature T=2 (share ∝ sqrt(n_role)): dentist 8.7% -> ~15% of the views,
+# doctor 55.6% -> ~41%; about the same step count. With shuffling, every repeat is a new option order.
+# Built on S2 (the better of S1/S2 on 2021). The queue runs S3-S5 back to back, so S3/S4 results
+# could not feed into S5; on 2026-11-13 it ran on top of S2.
+extends: s2_perm4.yaml
+train:
+  save_steps: 216   # 13,819 views / 16 / 4 epochs
+data:
+  role_weights: {doctor: 0.71, nurse: 1.28, pharm: 1.23, dentist: 1.80}
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/sweep/s5_roles_t2"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s5_roles_t2/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s5_roles_t2/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s5_roles_t2/C_int4_qat"

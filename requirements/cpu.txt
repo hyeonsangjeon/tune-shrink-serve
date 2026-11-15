@@ -1,0 +1,6 @@
+# CPU-only checks (CI and local): tests, evidence index, derived-table check,
+# asset ledger, secret scan. No GPU, no model download, no cloud account.
+# GPU dependencies: requirements/gpu.txt and requirements/unsloth.txt (see requirements/README.md).
+pytest>=7
+pyyaml>=6
+httpx>=0.25      # quantization/serving client + online bench (tests use a local fake server)

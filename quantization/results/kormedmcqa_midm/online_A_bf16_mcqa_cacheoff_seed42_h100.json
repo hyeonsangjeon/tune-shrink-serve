@@ -1,0 +1,218 @@
+{
+  "benchmark": "v2_online_serving",
+  "transport": "openai_chat_completions_streaming",
+  "generated_at": "2026-11-14T08:10:33Z",
+  "status": "live",
+  "engine": {
+    "base_url": "http://127.0.0.1:8000",
+    "model": "quantization/artifacts/kormedmcqa_midm/A_bf16_seed42",
+    "vllm_version": "0.23.0",
+    "artifact_sha256": "not_recorded"
+  },
+  "config": {
+    "concurrency_levels": [
+      1,
+      8,
+      32,
+      64
+    ],
+    "max_tokens": 16,
+    "sla_ttft_s": 1.0,
+    "sla_e2e_s": 2.0,
+    "prompt_source": "quantization/configs/kormedmcqa_midm.yaml:selection_dev",
+    "extra_body": {
+      "chat_template_kwargs": {
+        "date_string": "21 Nov 2026"
+      },
+      "stop_token_ids": [
+        131301,
+        2
+      ]
+    },
+    "fresh_per_level": true,
+    "prompt_shuffle_seed": 0
+  },
+  "note": "Online HTTP-streaming latencies. Distinct from offline v2_bench.py (LLM.generate batch throughput; its max_tokens=1 row is a TTFT proxy, not an online TTFT).",
+  "results": [
+    {
+      "requests": 256,
+      "completed": 256,
+      "failed": 0,
+      "failure_rate": 0.0,
+      "wall_s": 18.1269,
+      "request_throughput_rps": 14.1227,
+      "output_token_throughput_tps": 28.2453,
+      "output_tokens_total": 512,
+      "prompt_tokens_mean": 654.9,
+      "ttft_s": {
+        "p50": 0.0618,
+        "p95": 0.068,
+        "p99": 0.0727,
+        "mean": 0.062133
+      },
+      "tpot_s": {
+        "p50": null,
+        "p95": null,
+        "p99": null,
+        "mean": null
+      },
+      "itl_s": {
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "e2e_s": {
+        "p50": 0.0703,
+        "p95": 0.0765,
+        "p99": 0.0812,
+        "mean": 0.070749
+      },
+      "goodput": {
+        "sla_ttft_s": 1.0,
+        "sla_e2e_s": 2.0,
+        "met": 256,
+        "rate": 1.0
+      },
+      "concurrency": 1,
+      "prompt_slice": [
+        0,
+        256
+      ]
+    },
+    {
+      "requests": 256,
+      "completed": 256,
+      "failed": 0,
+      "failure_rate": 0.0,
+      "wall_s": 9.7501,
+      "request_throughput_rps": 26.2562,
+      "output_token_throughput_tps": 52.5125,
+      "output_tokens_total": 512,
+      "prompt_tokens_mean": 651.8,
+      "ttft_s": {
+        "p50": 0.2698,
+        "p95": 0.4121,
+        "p99": 0.4689,
+        "mean": 0.278234
+      },
+      "tpot_s": {
+        "p50": null,
+        "p95": null,
+        "p99": null,
+        "mean": null
+      },
+      "itl_s": {
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "e2e_s": {
+        "p50": 0.2875,
+        "p95": 0.4284,
+        "p99": 0.485,
+        "mean": 0.302391
+      },
+      "goodput": {
+        "sla_ttft_s": 1.0,
+        "sla_e2e_s": 2.0,
+        "met": 256,
+        "rate": 1.0
+      },
+      "concurrency": 8,
+      "prompt_slice": [
+        256,
+        512
+      ]
+    },
+    {
+      "requests": 256,
+      "completed": 256,
+      "failed": 0,
+      "failure_rate": 0.0,
+      "wall_s": 9.7429,
+      "request_throughput_rps": 26.2754,
+      "output_token_throughput_tps": 52.5509,
+      "output_tokens_total": 512,
+      "prompt_tokens_mean": 655.9,
+      "ttft_s": {
+        "p50": 1.0397,
+        "p95": 1.7969,
+        "p99": 1.8137,
+        "mean": 1.051733
+      },
+      "tpot_s": {
+        "p50": null,
+        "p95": null,
+        "p99": null,
+        "mean": null
+      },
+      "itl_s": {
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "e2e_s": {
+        "p50": 1.1174,
+        "p95": 1.8167,
+        "p99": 2.0557,
+        "mean": 1.184316
+      },
+      "goodput": {
+        "sla_ttft_s": 1.0,
+        "sla_e2e_s": 2.0,
+        "met": 120,
+        "rate": 0.4688
+      },
+      "concurrency": 32,
+      "prompt_slice": [
+        512,
+        768
+      ]
+    },
+    {
+      "requests": 256,
+      "completed": 256,
+      "failed": 0,
+      "failure_rate": 0.0,
+      "wall_s": 9.8901,
+      "request_throughput_rps": 25.8845,
+      "output_token_throughput_tps": 51.7691,
+      "output_tokens_total": 512,
+      "prompt_tokens_mean": 652.3,
+      "ttft_s": {
+        "p50": 2.0704,
+        "p95": 3.2885,
+        "p99": 3.5781,
+        "mean": 2.064694
+      },
+      "tpot_s": {
+        "p50": null,
+        "p95": null,
+        "p99": null,
+        "mean": null
+      },
+      "itl_s": {
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "e2e_s": {
+        "p50": 2.2406,
+        "p95": 3.5959,
+        "p99": 3.7224,
+        "mean": 2.282335
+      },
+      "goodput": {
+        "sla_ttft_s": 1.0,
+        "sla_e2e_s": 2.0,
+        "met": 1,
+        "rate": 0.0039
+      },
+      "concurrency": 64,
+      "prompt_slice": [
+        768,
+        1024
+      ]
+    }
+  ]
+}

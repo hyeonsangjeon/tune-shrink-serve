@@ -1,0 +1,29 @@
+{
+  "schema": "observed_gpu_memory/v1",
+  "measured": true,
+  "method": "nvidia-smi --query-gpu=memory.used (MiB), read by hand while the LoRA training ran; not sampled continuously",
+  "gpu": "NVIDIA H100 NVL 94GB (Standard_NC40ads_H100_v5), one GPU",
+  "note": "These are point readings, not peaks. nvidia-smi counts everything the process holds, including the PyTorch caching allocator's reserve, so it is not the same unit as torch.cuda.max_memory_allocated (peak_vram_gb in unsloth_A/A_train_seed42.json, 24.5 GiB). Compare the two engines only within the same unit.",
+  "runs": [
+    {
+      "engine": "transformers 4.57.6 + peft 0.20.0 (Trainer, gradient checkpointing)",
+      "train_json": "quantization/results/kormedmcqa_midm/A_train_seed42.json",
+      "readings": [{"step_approx": 85, "memory_used_mib": 84267}]
+    },
+    {
+      "engine": "unsloth 2026.11.3 (FastLanguageModel, use_gradient_checkpointing='unsloth')",
+      "train_json": "quantization/results/kormedmcqa_midm/unsloth_A/A_train_seed42.json",
+      "readings": [
+        {"step_approx": 1, "memory_used_mib": 25685},
+        {"step_approx": 27, "memory_used_mib": 26071},
+        {"step_approx": 27, "memory_used_mib": 26071},
+        {"step_approx": 27, "memory_used_mib": 26071}
+      ]
+    },
+    {
+      "engine": "INT4 QAT (torchao QATConfig fake quant, full-parameter, transformers Trainer, adamw_8bit, batch 4 x accum 4)",
+      "train_json": "quantization/results/kormedmcqa_midm/C_train_seed42.json",
+      "readings": [{"step_approx": 85, "memory_used_mib": 75085}]
+    }
+  ]
+}

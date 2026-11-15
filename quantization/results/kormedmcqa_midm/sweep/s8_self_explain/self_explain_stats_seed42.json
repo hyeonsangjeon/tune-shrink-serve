@@ -1,0 +1,32 @@
+{
+  "model_dir": "K-intelligence/Midm-2.0-Base-Instruct",
+  "revision": "35479c5fc9a18a5db7cc6dbadcf1db68db7beab0",
+  "seed": 42,
+  "k": 4,
+  "min_correct": 2,
+  "temperature": 0.7,
+  "top_p": 0.95,
+  "max_tokens": 400,
+  "n_train": 3401,
+  "n_kept": 2428,
+  "kept_by_role": {
+    "dentist": 162,
+    "doctor": 1295,
+    "nurse": 473,
+    "pharm": 498
+  },
+  "n_correct_histogram": {
+    "0": 554,
+    "1": 419,
+    "2": 393,
+    "3": 465,
+    "4": 1570
+  },
+  "samples_truncated": 0,
+  "samples_without_final_line": 1,
+  "explanation_chars_mean": 282.0,
+  "gen_tokens_mean": 134.7,
+  "wall_seconds": 247.0,
+  "jsonl": "quantization/artifacts/kormedmcqa_midm/self_explain/train_explanations_seed42.jsonl",
+  "note": "explanation text is kept out of git (CC BY-NC exam content); counts only here"
+}

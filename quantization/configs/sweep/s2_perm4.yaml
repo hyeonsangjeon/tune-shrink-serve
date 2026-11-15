@@ -1,0 +1,15 @@
+# S2 — S1 + answer-option shuffling: each item is seen once per epoch, in a different option
+# order each epoch (original + 3 cyclic shifts of a random order; gold remapped). Views are laid
+# out in epoch blocks and read in order, so the 213-step adapters are epoch boundaries as in S1.
+extends: s1_ep4.yaml
+data:
+  augment:
+    option_permutations: 4
+    keep_identity: true
+    skip_numeric_sorted: true   # 65 train items with sorted numeric options keep their order
+    seed: 42
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/sweep/s2_perm4"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s2_perm4/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s2_perm4/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s2_perm4/C_int4_qat"

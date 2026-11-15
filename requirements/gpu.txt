@@ -1,0 +1,26 @@
+# GPU stack for the KorMedMCQA × Mi:dm run (B/C/eval/bench venv).
+#
+# Pinned to the versions actually observed on the recorded Qwen3-8B A100 run
+# (results/env_*.json, manifests/historical_environment_a100.json), because the INT4
+# tile-packed PTQ/QAT path and qat_scheme_selftest were validated on exactly this stack.
+# NOTE: archive/qwen3_korquad/requirements.txt (earlier track) lists newer pins that do NOT match
+# env_*.json; use this file for new GPU runs. Python 3.10, CUDA 13.0 wheels (cu130).
+#
+#   pip install --index-url https://download.pytorch.org/whl/cu130 torch==2.11.0
+#   pip install -r requirements/gpu.txt
+#
+# Unsloth (Method A, train.backend=unsloth) goes in a SEPARATE venv: it patches
+# transformers/peft and may pull newer versions. A's output is a plain merged BF16
+# HF checkpoint that this venv then loads for B/C/eval. If the unsloth smoke fails,
+# run A here with `--backend hf`.
+transformers==4.57.6
+peft==0.20.0
+trl==0.24.0
+torchao==0.17.0
+bitsandbytes==0.50.0
+accelerate
+datasets==4.3.0
+vllm==0.23.0
+pyyaml
+httpx
+sentencepiece

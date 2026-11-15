@@ -1,0 +1,14 @@
+{
+  "n_paired": 1059,
+  "missing_in_a": 0,
+  "missing_in_b": 0,
+  "acc_a": 70.444,
+  "acc_b": 70.727,
+  "both_correct": 710,
+  "only_a_correct": 36,
+  "only_b_correct": 39,
+  "both_wrong": 274,
+  "mcnemar_p": 0.817554,
+  "a": "quantization/results/kormedmcqa_midm/eval_vllm_A_bf16_seed42_selection_dev.json",
+  "b": "quantization/results/kormedmcqa_midm/unsloth_A/eval_vllm_A_bf16_seed42_selection_dev.json"
+}

@@ -1,0 +1,25 @@
+{
+  "method": "A_bf16",
+  "base_model": "K-intelligence/Midm-2.0-Base-Instruct",
+  "seed": 42,
+  "backend": "unsloth",
+  "unsloth_version": "2026.11.3",
+  "tokenizer_source": "external_pickle",
+  "peak_vram_gb": 24.28,
+  "task": "kormedmcqa",
+  "n_train": 3401,
+  "epochs": 2.0,
+  "global_step": 5,
+  "train_seconds": 25.4,
+  "train_loss": 14.026588439941406,
+  "loss_curve": [
+    [
+      1,
+      17.3405
+    ]
+  ],
+  "merged_dir": "quantization/artifacts/kormedmcqa_midm/A_bf16_unsloth_seed42",
+  "vocab_size_expected": 131384,
+  "vocab_size_merged": 131384,
+  "vocab_ok": true
+}

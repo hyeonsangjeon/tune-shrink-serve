@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="r" width="760" height="230" viewBox="0 0 760 230" role="img" aria-labelledby="t d">
+<title id="t">같은 LoRA 학습, 엔진만 바꿨을 때 (H100 NVL, 426 step)</title><desc id="d">transformers+PEFT와 Unsloth의 학습 시간과 학습 중 GPU 메모리</desc>
+<style>
+.r{--bg:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--mute:#898781;--grid:#e1e0d9;--base:#c3c2b7;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--n:#a9a79f}
+@media (prefers-color-scheme:dark){.r{--bg:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--mute:#898781;
+--grid:#2c2c2a;--base:#383835;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--n:#6d6b66}}
+.bg{fill:var(--bg)}.t{fill:var(--ink);font:600 15px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.l{fill:var(--ink2);font:13px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.v{fill:var(--ink);font:600 13px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.m{fill:var(--mute);font:12px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.g{stroke:var(--grid);stroke-width:1}.b{stroke:var(--base);stroke-width:1}
+.s1{fill:var(--s1)}.s2{fill:var(--s2)}.s3{fill:var(--s3)}.n{fill:var(--n)}
+.k1{stroke:var(--s1)}.k2{stroke:var(--s2)}.ki{stroke:var(--ink2)}
+</style>
+<rect class="bg" width="760" height="230" rx="8"/>
+<text class="t" x="20" y="30">같은 LoRA 학습, 엔진만 바꿨을 때 (H100 NVL, 426 step)</text>
+<text class="v" x="20.0" y="58.0" text-anchor="start">학습 시간 (분)</text>
+<text class="l" x="160.0" y="97.0" text-anchor="end">transformers+PEFT</text>
+<path class="s1" d="M170.0,80.0 H305.1 Q309.1,80.0 309.1,84.0 V100.0 Q309.1,104.0 305.1,104.0 H170.0 Z"/>
+<text class="v" x="317.1" y="97.0" text-anchor="start">24.3 분</text>
+<text class="l" x="160.0" y="143.0" text-anchor="end">Unsloth</text>
+<path class="s3" d="M170.0,126.0 H256.1 Q260.1,126.0 260.1,130.0 V146.0 Q260.1,150.0 256.1,150.0 H170.0 Z"/>
+<text class="v" x="268.1" y="143.0" text-anchor="start">15.7 분</text>
+<line class="b" x1="170.0" y1="74.0" x2="170.0" y2="158.0" />
+<text class="v" x="380.0" y="58.0" text-anchor="start">학습 중 GPU 메모리 (GiB, nvidia-smi)</text>
+<text class="l" x="520.0" y="97.0" text-anchor="end">transformers+PEFT</text>
+<path class="s1" d="M530.0,80.0 H665.1 Q669.1,80.0 669.1,84.0 V100.0 Q669.1,104.0 665.1,104.0 H530.0 Z"/>
+<text class="v" x="677.1" y="97.0" text-anchor="start">82.3 GiB</text>
+<text class="l" x="520.0" y="143.0" text-anchor="end">Unsloth</text>
+<path class="s3" d="M530.0,126.0 H569.0 Q573.0,126.0 573.0,130.0 V146.0 Q573.0,150.0 569.0,150.0 H530.0 Z"/>
+<text class="v" x="581.0" y="143.0" text-anchor="start">25.5 GiB</text>
+<line class="b" x1="530.0" y1="74.0" x2="530.0" y2="158.0" />
+<text class="m" x="20.0" y="214.0" text-anchor="start">메모리는 학습 중 nvidia-smi로 읽은 값(최댓값 아님). Unsloth의 torch 최대 할당은 24.5 GiB.</text>
+</svg>

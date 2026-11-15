@@ -1,0 +1,47 @@
+name: tests & evidence gate
+
+# CPU-only trust gate: every push / PR must keep tests green, every README
+# number tied to its raw JSON, derived tables reproducible, assets covered by
+# the license ledger, and no secrets/PII committed. No GPU or network model calls.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: pytest + gates (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install (CPU-only dev deps)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/cpu.txt
+      - name: Run test suite
+        run: python -m pytest -q
+      - name: Secret / PII scan
+        run: python scripts/scan_secrets.py quantization scripts docs archive requirements README.md
+      - name: Evidence index — README numbers vs raw JSON
+        run: python scripts/build_evidence_index.py --check
+      - name: Talk charts redraw identically from raw JSON
+        run: python scripts/make_figures.py --check
+      - name: Managed-API comparison rebuilds identically from raw JSON
+        run: python -m quantization.managed_compare --check
+      - name: Benchmark tables reproduce from raw JSON
+        run: python -m quantization.v2_report --check-historical
+      - name: Asset license ledger — every committed asset is covered
+        run: python scripts/check_asset_ledger.py --check

@@ -1,0 +1,22 @@
+# Unsloth arm of Method A (talk agenda ①): same data, prompts, LoRA and schedule as
+# kormedmcqa_midm.yaml; only the training engine and the output folders differ, so the
+# hf-backend A/B/C artifacts and results are never overwritten.
+#
+#   python -m quantization.v2_run a --config quantization/configs/kormedmcqa_midm_unsloth.yaml --seed 42
+#   python -m quantization.eval_vllm --config quantization/configs/kormedmcqa_midm_unsloth.yaml --method A_bf16 --split selection_dev
+#
+# unsloth_external_tokenizer: Unsloth 2026.11.3's GPU-init patches break loading the Mi:dm
+# tokenizer ("'tokenizers.AddedToken' object has no attribute 'keys'", 2026-11-11, H100). With
+# this flag the tokenizer is loaded by plain transformers in a subprocess, handed over as a
+# pickle, and Unsloth's own tokenizer loader is bypassed; the model load and training are Unsloth's.
+extends: kormedmcqa_midm.yaml
+
+train:
+  backend: unsloth
+  unsloth_external_tokenizer: true
+
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/unsloth_A"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/A_bf16_unsloth"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/B_int4_ptq_unsloth"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/C_int4_qat_unsloth"

@@ -1,0 +1,173 @@
+{
+ "benchmark": "vllm_v2_throughput_sweep_and_latency",
+ "purpose": "Apples-to-apples serving benchmark for the 3-way comparison on REAL artifacts (W3/W4 fix). Single vLLM engine + identical knobs; batch-size sweep (1..256) to locate the int4<->bf16 crossover; single-stream TTFT + e2e p50/p99; clean serving-only weight VRAM (W5).",
+ "weight_independence_note": "Throughput depends only on architecture + numeric precision + serving format, NOT on trained weight VALUES. A(bf16) uses the real merged seed42 artifact; the int4 row uses the real B_int4_ptq seed42 artifact and represents BOTH B (PTQ) and C (QAT), which serialize to the identical torchao int4 tile-packed format (identical throughput by construction).",
+ "engine": {
+  "name": "vllm",
+  "version": "0.23.0",
+  "torch": "2.11.0+cu130",
+  "torchao": "0.17.0",
+  "transformers": "4.57.6",
+  "gpu": "NVIDIA A100 80GB (Standard_NC24ads_A100_v4)",
+  "region": "japaneast",
+  "priority": "Spot"
+ },
+ "matched_knobs": {
+  "dtype": "bfloat16",
+  "max_model_len": 4096,
+  "gpu_memory_utilization": 0.85,
+  "enforce_eager": false,
+  "cuda_graphs": true,
+  "temperature": 0.0,
+  "max_tokens": 128,
+  "ignore_eos": true,
+  "sampler": "native (VLLM_USE_FLASHINFER_SAMPLER=0)",
+  "batches": [
+   1,
+   4,
+   16,
+   32,
+   64,
+   128,
+   256
+  ],
+  "latency_reps": 24,
+  "note": "ignore_eos + max_tokens=128 forces exactly 128 decode tokens/request (identical decode work). CUDA graphs on. Native sampler (FlashInfer JIT needs nvcc, absent). Latency = client-observed single-stream (batch=1): TTFT via max_tokens=1, e2e via max_tokens=128."
+ },
+ "results": {
+  "A_bf16": {
+   "represents": "Method A (BF16 LoRA) architecture + precision (real merged seed42 artifact)",
+   "model": "Qwen/Qwen3-8B (LoRA-merged)",
+   "quant": "none",
+   "precision": "bf16",
+   "weight_vram_gib": 15.27,
+   "sweep": [
+    {
+     "batch": 1,
+     "throughput_tok_s": 87.6,
+     "elapsed_s": 1.461,
+     "gen_tokens": 128
+    },
+    {
+     "batch": 4,
+     "throughput_tok_s": 342.7,
+     "elapsed_s": 1.494,
+     "gen_tokens": 512
+    },
+    {
+     "batch": 16,
+     "throughput_tok_s": 1031.5,
+     "elapsed_s": 1.986,
+     "gen_tokens": 2048
+    },
+    {
+     "batch": 32,
+     "throughput_tok_s": 1822.9,
+     "elapsed_s": 2.247,
+     "gen_tokens": 4096
+    },
+    {
+     "batch": 64,
+     "throughput_tok_s": 2764.1,
+     "elapsed_s": 2.964,
+     "gen_tokens": 8192
+    },
+    {
+     "batch": 128,
+     "throughput_tok_s": 3737.7,
+     "elapsed_s": 4.383,
+     "gen_tokens": 16384
+    },
+    {
+     "batch": 256,
+     "throughput_tok_s": 3959.0,
+     "elapsed_s": 8.277,
+     "gen_tokens": 32768
+    }
+   ],
+   "latency_single_stream": {
+    "n": 24,
+    "concurrency": 1,
+    "out_tokens": 128,
+    "ttft_p50_s": 0.0322,
+    "ttft_p99_s": 0.082,
+    "ttft_mean_s": 0.0353,
+    "e2e_p50_s": 1.4691,
+    "e2e_p99_s": 1.4816,
+    "e2e_mean_s": 1.4686
+   }
+  },
+  "BC_int4": {
+   "represents": "Method B (INT4 PTQ) AND Method C (INT4 QAT) — identical torchao int4 tile-packed serving format (throughput identical by construction)",
+   "model": "Qwen3-8B -> torchao Int4WeightOnlyConfig(group_size=128, TILE_PACKED_TO_4D)",
+   "quant": "torchao",
+   "precision": "int4",
+   "weight_vram_gib": 6.05,
+   "sweep": [
+    {
+     "batch": 1,
+     "throughput_tok_s": 124.4,
+     "elapsed_s": 1.029,
+     "gen_tokens": 128
+    },
+    {
+     "batch": 4,
+     "throughput_tok_s": 508.0,
+     "elapsed_s": 1.008,
+     "gen_tokens": 512
+    },
+    {
+     "batch": 16,
+     "throughput_tok_s": 327.3,
+     "elapsed_s": 6.257,
+     "gen_tokens": 2048
+    },
+    {
+     "batch": 32,
+     "throughput_tok_s": 475.1,
+     "elapsed_s": 8.622,
+     "gen_tokens": 4096
+    },
+    {
+     "batch": 64,
+     "throughput_tok_s": 488.9,
+     "elapsed_s": 16.756,
+     "gen_tokens": 8192
+    },
+    {
+     "batch": 128,
+     "throughput_tok_s": 514.5,
+     "elapsed_s": 31.843,
+     "gen_tokens": 16384
+    },
+    {
+     "batch": 256,
+     "throughput_tok_s": 509.7,
+     "elapsed_s": 64.293,
+     "gen_tokens": 32768
+    }
+   ],
+   "latency_single_stream": {
+    "n": 24,
+    "concurrency": 1,
+    "out_tokens": 128,
+    "ttft_p50_s": 0.2964,
+    "ttft_p99_s": 0.7213,
+    "ttft_mean_s": 0.2788,
+    "e2e_p50_s": 0.775,
+    "e2e_p99_s": 0.7849,
+    "e2e_mean_s": 0.7733
+   }
+  }
+ },
+ "derived": {
+  "single_stream_throughput_int4_vs_bf16": 1.42,
+  "single_stream_e2e_int4_faster_x": 1.896,
+  "single_stream_ttft_bf16_faster_x": 9.205,
+  "single_stream_winner": "split: int4 wins throughput + full-response e2e (memory-bandwidth-bound decode at batch=1); bf16 wins TTFT (faster prefill — int4 prefill pays a dequant tax)",
+  "batched_bf16_vs_int4_at_max_batch": 7.767,
+  "batched_winner": "bf16 (compute-bound; bf16 tensor-core GEMM outruns int4 dequant+gemm)",
+  "crossover_batch_bf16_overtakes": 16,
+  "takeaway": "int4 wins single-stream throughput + full-response e2e (1.9x faster: 0.775s vs 1.4691s) and memory (2.5x smaller weights: 6.05 vs 15.27 GiB), but bf16 has ~9.2x lower TTFT (0.0322s vs 0.2964s — int4 prefill pays a dequant tax). bf16 wins batched throughput (crossover ~batch 16; 7.8x at batch 256). Pick int4 for memory-bound / throughput-oriented single-stream serving, bf16 for low-TTFT interactive or max batched throughput."
+ }
+}

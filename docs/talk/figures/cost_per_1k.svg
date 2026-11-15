@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="r" width="760" height="272" viewBox="0 0 760 272" role="img" aria-labelledby="t d">
+<title id="t">시험 3,009문항을 한 번에 넣어 풀 때 1,000문항당 GPU 비용 (H100 NVL 정가)</title><desc id="d">BF16과 INT4 모델의 1,000문항당 비용, 온디맨드와 Spot 시간당 정가 기준</desc>
+<style>
+.r{--bg:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--mute:#898781;--grid:#e1e0d9;--base:#c3c2b7;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--n:#a9a79f}
+@media (prefers-color-scheme:dark){.r{--bg:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--mute:#898781;
+--grid:#2c2c2a;--base:#383835;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--n:#6d6b66}}
+.bg{fill:var(--bg)}.t{fill:var(--ink);font:600 15px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.l{fill:var(--ink2);font:13px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.v{fill:var(--ink);font:600 13px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.m{fill:var(--mute);font:12px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.g{stroke:var(--grid);stroke-width:1}.b{stroke:var(--base);stroke-width:1}
+.s1{fill:var(--s1)}.s2{fill:var(--s2)}.s3{fill:var(--s3)}.n{fill:var(--n)}
+.k1{stroke:var(--s1)}.k2{stroke:var(--s2)}.ki{stroke:var(--ink2)}
+</style>
+<rect class="bg" width="760" height="272" rx="8"/>
+<text class="t" x="20" y="30">시험 3,009문항을 한 번에 넣어 풀 때 1,000문항당 GPU 비용 (H100 NVL 정가)</text>
+<line class="g" x1="230.0" y1="54.0" x2="230.0" y2="212.0" />
+<text class="m" x="230.0" y="230.0" text-anchor="middle">0.00</text>
+<line class="g" x1="340.0" y1="54.0" x2="340.0" y2="212.0" />
+<text class="m" x="340.0" y="230.0" text-anchor="middle">0.05</text>
+<line class="g" x1="450.0" y1="54.0" x2="450.0" y2="212.0" />
+<text class="m" x="450.0" y="230.0" text-anchor="middle">0.10</text>
+<line class="g" x1="560.0" y1="54.0" x2="560.0" y2="212.0" />
+<text class="m" x="560.0" y="230.0" text-anchor="middle">0.15</text>
+<line class="g" x1="670.0" y1="54.0" x2="670.0" y2="212.0" />
+<text class="m" x="670.0" y="230.0" text-anchor="middle">0.20</text>
+<text class="l" x="220.0" y="82.0" text-anchor="end">BF16 · 온디맨드 $6.98/h</text>
+<path class="s1" d="M230.0,66.0 H250.4 Q254.4,66.0 254.4,70.0 V84.0 Q254.4,88.0 250.4,88.0 H230.0 Z"/>
+<text class="v" x="262.4" y="82.0" text-anchor="start">$0.0111</text>
+<text class="l" x="220.0" y="120.0" text-anchor="end">BF16 · Spot $3.54/h</text>
+<path class="s1" d="M230.0,104.0 H238.3 Q242.3,104.0 242.3,108.0 V122.0 Q242.3,126.0 238.3,126.0 H230.0 Z"/>
+<text class="v" x="250.3" y="120.0" text-anchor="start">$0.0056</text>
+<text class="l" x="220.0" y="158.0" text-anchor="end">INT4 · 온디맨드 $6.98/h</text>
+<path class="s2" d="M230.0,142.0 H603.3 Q607.3,142.0 607.3,146.0 V160.0 Q607.3,164.0 603.3,164.0 H230.0 Z"/>
+<text class="v" x="615.3" y="158.0" text-anchor="start">$0.1715</text>
+<text class="l" x="220.0" y="196.0" text-anchor="end">INT4 · Spot $3.54/h</text>
+<path class="s2" d="M230.0,180.0 H417.2 Q421.2,180.0 421.2,184.0 V198.0 Q421.2,202.0 417.2,202.0 H230.0 Z"/>
+<text class="v" x="429.2" y="196.0" text-anchor="start">$0.0869</text>
+<line class="b" x1="230.0" y1="54.0" x2="230.0" y2="212.0" />
+<text class="m" x="450.0" y="256.0" text-anchor="middle">1,000문항당 달러</text>
+</svg>

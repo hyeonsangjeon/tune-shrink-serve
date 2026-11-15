@@ -1,0 +1,151 @@
+# archive/qwen3_korquad/config.yaml
+# Shared config for the 3-way quantization comparison (A: BF16 LoRA, B: INT4 PTQ,
+# C: INT4 QAT). Part 1 implements Method A; B/C (Part 2) reuse the SAME base model,
+# data slice and eval defined here, so the base is fixed once for all methods.
+
+base_model:
+  # v2 (A100-scale, 8B class). Base used by A/B/C (identical). Confirmed by
+  # notebooks/00_base_select.ipynb on the GPU VM (KorQuAD held-out F1 over the 3
+  # candidates below, proper chat-template harness). Default = Qwen3-8B.
+  selected: "Qwen/Qwen3-8B"
+  candidates:
+    - id: "Qwen/Qwen3-8B"                       # Apache-2.0, strong Korean, single-A100 trainable
+      family: qwen3
+      gated: false
+    - id: "Qwen/Qwen2.5-7B-Instruct"           # Apache-2.0, different generation, strong Korean
+      family: qwen2.5
+      gated: false
+    - id: "meta-llama/Llama-3.1-8B-Instruct"    # family diversity; needs HF token
+      family: llama
+      gated: true                               # -> ungated fallback below when no token
+      fallback: "01-ai/Yi-1.5-9B-Chat"          # Apache-2.0, ungated
+  # Tiny ungated model used ONLY for the CPU smoke test when no GPU is available.
+  smoke: "Qwen/Qwen2.5-0.5B-Instruct"
+
+data:
+  dataset: "KorQuAD/squad_kor_v1"   # runtime download; NOT committed to the repo
+  seed: 42                          # eval held-out slice seed (FIXED across train seeds)
+  eval_size: 1000                   # final_holdout size (see data.splits). identical for A/B/C
+                                    # (W5). int4 eval is eager-slow (~15min/1k). set null for full.
+  # P1-1: frozen selection_dev vs final_holdout separation over the ONE seed-shuffled
+  # validation ordering (shuffle(data.seed)). DISJOINT index ranges, so a selection
+  # decision cannot leak into the headline holdout numbers.
+  #   selection_dev = [0:800]     -> base-model / prompt / hyperparameter tuning ONLY
+  #   final_holdout = [800:1800]  -> frozen policy holdout; eval command + release gate ONLY
+  # KorQuAD labels are public, so this is a code-path allowlist (`frozen policy holdout`),
+  # NOT a `sealed`/`unseen` test nor a security boundary. Manifest + guard: quantization/splits.py
+  # (results/split_manifest.json records each split's slice bounds, count and ID-list SHA-256).
+  splits:
+    selection_dev: {start: 0,   size: 800}
+    final_holdout: {start: 800, size: 1000}
+  train_subset: 6000                # W2 fix = train to CONVERGENCE, not raw epoch count. LoRA on
+                                    # KorQuAD converges near-instantly (a 200-ex/12-step smoke
+                                    # already hit held-out F1 95.3), so 2 epochs over a 6k slice is
+                                    # fully converged. v1's flaw was a broken harness + 0.26 epoch,
+                                    # not slice size. (set null for the full 60.4k if desired.)
+  max_seq_len: 1024
+  # v2 uses the base model's CHAT TEMPLATE (system + user -> assistant answer) for BOTH
+  # training and eval (train/eval must match). Fixes W1 (raw-template zero-shot artifact)
+  # and, with completion-only loss, W2 (v1 full-sequence loss put <5% of signal on answers).
+  chat:
+    system: |
+      당신은 한국어 독해 질의응답 어시스턴트입니다. 주어진 문맥에서 질문의 정답을 찾아 정답에 해당하는 어구만 간결하게 출력하세요. 부연 설명이나 문장 없이 정답만 쓰세요.
+    enable_thinking: false          # Qwen3: disable <think> mode for short extractive answers
+  # Legacy raw-text template (v1). Retained for the CPU smoke path / reference only.
+  prompt_template: |
+    아래 문맥을 읽고 질문에 답하세요.
+
+    [문맥]
+    {context}
+
+    [질문] {question}
+    [답]
+
+# Multi-seed training (W5 variance). A + C are trained once per seed; B is deterministic
+# (PTQ of each A seed). Eval aggregates mean +/- std across seeds. The eval held-out slice
+# stays fixed (data.seed) so variance reflects the MODEL, not the eval set.
+seeds: [42, 43, 44]
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  # v2 backend: hf = transformers + peft + trl. Chosen over unsloth for full control of
+  # COMPLETION-ONLY loss (mask the prompt; loss only on the answer tokens) and to avoid
+  # unsloth's global attention monkey-patch complicating INT4/QAT reloads. 8B LoRA fits
+  # easily on 1x A100 80GB. (unsloth remains installed and usable via backend: unsloth.)
+  backend: hf
+  precision: bf16          # Method A is the BF16 baseline (load_in_4bit=false)
+  load_in_4bit: false
+  epochs: 2               # W2 fix: 2 epochs to CONVERGENCE over the 6k slice (v1 was ~0.26 epoch
+                          # AND a broken harness); loss plateaus well inside 2 epochs here.
+  max_steps: null          # null = full epochs; small int for smoke
+  per_device_batch_size: 8
+  grad_accum: 2            # effective batch 16
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  weight_decay: 0.01
+  logging_steps: 20
+  save_steps: 150          # frequent checkpoint cadence (Spot-eviction resume; ~12min at 0.21 step/s)
+  max_grad_norm: 1.0
+  gradient_checkpointing: true   # required: 8B fwd activations at bs8/seq1024 exceed 80GB otherwise
+  save_merged: true        # merge LoRA -> BF16 model (input to Part 2 PTQ/QAT)
+
+eval:
+  max_new_tokens: 48       # adequate budget for extractive answers (v1's 32 clipped some)
+  batch_size: 48           # A100 80GB
+  ppl_samples: 200         # held-out contexts for perplexity
+
+# Part 2 — INT4 quantization of the Method A merge (B: PTQ, C: QAT). Both target the
+# SAME TorchAO int4_weight_only format (group_size below) so B vs C isolates "train-aware".
+ptq:
+  group_size: 128          # TorchAO Int4WeightOnlyConfig group size (weight-only INT4)
+
+qat:                       # C = quantization-aware training (full-param STE) over the A merge
+  group_size: 128          # int4 fake-quant is inferred from Int4WeightOnlyConfig(g128); it is
+                           # the SAME asymmetric group-128 int4 FAMILY as the tile-packed serving
+                           # quant (torchao 0.17 exposes no tile-packed fake-quant, so it is not
+                           # bit-identical, but qat_scheme_selftest confirms same-family ratio).
+  max_steps: 600           # W2 fix: 1.5x the v1 400 -> real int4 recovery from the A merge.
+                           # (full-param STE QAT is eager-slow ~0.12 step/s; 2000 would add ~3h
+                           # /seed for marginal extra recovery once the loss plateaus.)
+  learning_rate: 1.0e-5    # conservative LR for full-param STE: adapts the quantized linear
+                           # weights to their own int4 scheme while embeddings/lm_head stay
+                           # frozen, so held-out ppl does not drift (the earlier failure was a
+                           # fake-quant scheme MISMATCH, not full-param itself).
+  per_device_batch_size: 4
+  grad_accum: 4            # effective batch 16
+  save_steps: 150         # frequent checkpoint cadence for QAT resume on Spot eviction
+  optim: "adamw_8bit"      # 8-bit Adam (bitsandbytes) so full-param 8B QAT fits 1x A100 80GB
+  gradient_checkpointing: true
+
+# compute.mode = gpu  -> production run (A100/H100, unsloth, BF16), uses top-level values.
+# compute.mode = cpu  -> smoke run (tiny model, hf backend, tiny subset) to exercise every
+#                        notebook block end-to-end and produce real (non-empty) outputs when
+#                        no GPU quota is available. Overrides below are applied by load_config.
+compute:
+  mode: gpu
+  smoke:
+    use_smoke_model: true
+    backend: hf
+    precision: fp32
+    train_subset: 200
+    eval_size: 20
+    max_steps: 12
+    max_seq_len: 384
+    per_device_batch_size: 1
+    grad_accum: 1
+    ppl_samples: 20
+
+paths:
+  artifacts_dir: "quantization/artifacts"
+  results_dir: "archive/qwen3_korquad/results"
+  method_a_dir: "quantization/artifacts/A_bf16"
+  method_b_dir: "quantization/artifacts/B_int4_ptq"    # TorchAO INT4 PTQ of the A merge
+  method_c_dir: "quantization/artifacts/C_int4_qat"    # TorchAO INT4 QAT from the A merge
+
+# Pinned versions are recorded at runtime into results/env_<method>.json by the
+# notebooks (reproducibility is the presentation's thesis). See notebooks/README.md.

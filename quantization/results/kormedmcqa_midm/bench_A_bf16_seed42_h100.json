@@ -1,0 +1,91 @@
+{
+  "method": "A_bf16",
+  "precision": "bf16",
+  "model_dir": "quantization/artifacts/kormedmcqa_midm/A_bf16_seed42",
+  "out_tokens": 128,
+  "graph_mode": true,
+  "sweep": [
+    {
+      "batch": 1,
+      "elapsed_s": 1.107,
+      "gen_tokens": 128,
+      "throughput_tok_s": 115.6,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 4,
+      "elapsed_s": 1.134,
+      "gen_tokens": 512,
+      "throughput_tok_s": 451.3,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 16,
+      "elapsed_s": 1.24,
+      "gen_tokens": 2048,
+      "throughput_tok_s": 1652.1,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 32,
+      "elapsed_s": 1.416,
+      "gen_tokens": 4096,
+      "throughput_tok_s": 2891.7,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 64,
+      "elapsed_s": 1.742,
+      "gen_tokens": 8192,
+      "throughput_tok_s": 4703.0,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 128,
+      "elapsed_s": 2.751,
+      "gen_tokens": 16384,
+      "throughput_tok_s": 5954.8,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 256,
+      "elapsed_s": 4.285,
+      "gen_tokens": 32768,
+      "throughput_tok_s": 7647.1,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    }
+  ],
+  "latency_single_stream": {
+    "n": 24,
+    "concurrency": 1,
+    "out_tokens": 128,
+    "ttft_p50_s": 0.014,
+    "ttft_p99_s": 0.0143,
+    "ttft_mean_s": 0.0139,
+    "e2e_p50_s": 1.1047,
+    "e2e_p99_s": 1.1063,
+    "e2e_mean_s": 1.1046
+  },
+  "config": "quantization/configs/kormedmcqa_midm.yaml"
+}

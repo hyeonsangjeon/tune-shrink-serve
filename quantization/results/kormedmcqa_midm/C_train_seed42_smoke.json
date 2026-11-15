@@ -1,0 +1,19 @@
+{
+  "method": "C_int4_qat",
+  "src_A": "quantization/artifacts/kormedmcqa_midm/A_bf16_seed42",
+  "int4_dir": "quantization/artifacts/kormedmcqa_midm/C_int4_qat_seed42",
+  "bf16_dir": "quantization/artifacts/kormedmcqa_midm/C_int4_qat_seed42_bf16adapt",
+  "seed": 42,
+  "group_size": 128,
+  "max_steps": 5,
+  "trainable_millions": 10469.0,
+  "train_seconds": 87.9,
+  "train_loss": 1.4894516468048096,
+  "loss_curve": [
+    [
+      1,
+      1.3766
+    ]
+  ],
+  "size_gb": 7.1952
+}

@@ -1,0 +1,107 @@
+# KorMedMCQA × Mi:dm 2.0 Base — PyTorch Day Korea 2026 talk run.
+#
+# Same A/B/C recipe as config.yaml (BF16 LoRA -> INT4 PTQ -> INT4 QAT, TorchAO tile-packed
+# g128), new base model and task. Results/artifacts live in their own folders so the
+# historical Qwen3-8B/KorQuAD files under quantization/results/ are never touched.
+#
+#   python -m quantization.v2_run a    --config quantization/configs/kormedmcqa_midm.yaml --seed 42
+#   python -m quantization.v2_run b    --config quantization/configs/kormedmcqa_midm.yaml --seed 42
+#   python -m quantization.v2_run c    --config quantization/configs/kormedmcqa_midm.yaml --seed 42
+#   python -m quantization.eval_vllm   --config quantization/configs/kormedmcqa_midm.yaml --method A_bf16
+# See docs/guide/ (step-by-step guide) for the full order and the checks between steps.
+
+base_model:
+  selected: "K-intelligence/Midm-2.0-Base-Instruct"   # 11.55B dense, MIT, LlamaForCausalLM
+  revision: "35479c5fc9a18a5db7cc6dbadcf1db68db7beab0"  # HF main as of 2025-10-29 (checked 2026-11-11)
+  vocab_size: 131384       # config.json of the pinned revision; A's merged dir must keep it
+  smoke: "Qwen/Qwen2.5-0.5B-Instruct"                  # CPU code-path checks only
+
+data:
+  task: kormedmcqa
+  dataset: "sean0042/KorMedMCQA"   # HF card: CC BY-NC 2.0. Runtime download, never committed.
+  revision: "79efd6f91edfc8036330d7a4daa88b9f2deb9a82"  # HF main as of 2024-12-09 (checked 2026-11-11)
+  roles: [doctor, nurse, pharm, dentist]
+  seed: 42                 # eval subset seed (only used when eval_size is set)
+  eval_size: null          # null = full split: final_holdout(test)=3,009, selection_dev(dev)=1,059
+  train_subset: null       # null = full train split (3,401; exam years 2012-2020)
+  # The Mi:dm template ALWAYS prepends its KT system block (~1.3k chars) + date line, so
+  # prompts are longer than the question. tokenize_completion_only warns on truncation.
+  max_seq_len: 1024        # measured with the Mi:dm tokenizer: prompt+answer mean 672, max 980
+  chat:
+    system: |
+      당신은 한국 보건의료 국가시험 문제를 푸는 어시스턴트입니다. 보기 중 정답의 번호 하나만 숫자로 출력하세요. 설명은 쓰지 마세요.
+    enable_thinking: false
+    template_kwargs:
+      date_string: "21 Nov 2026"        # fixes the template's auto "Today Date" line
+    user_template: |-
+      다음은 {role_ko} 국가시험 문제입니다. 보기 중 정답의 번호 하나만 숫자로 답하세요.
+
+      {question}
+      {choices}
+    answer_end_token: "<|eot_id|>"      # Mi:dm closes assistant turns with eot, not eos
+    stop_tokens: ["<|end_of_text|>"]
+    pad_token: "<|finetune_right_pad_id|>"
+
+seeds: [42]                # one seed for the talk; compare A/B/C with paired McNemar
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  backend: unsloth         # agenda ①. Set "hf" (transformers+peft) if the unsloth smoke fails.
+  precision: bf16
+  load_in_4bit: false
+  epochs: 2                # 3,401 x 2 / 16 ≈ 426 optimizer steps
+  max_steps: null
+  per_device_batch_size: 8
+  grad_accum: 2            # effective batch 16
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  weight_decay: 0.01
+  logging_steps: 10
+  save_steps: 100
+  max_grad_norm: 1.0
+  gradient_checkpointing: true
+  save_merged: true
+
+eval:
+  max_new_tokens: 16       # tuned model answers "3"; headroom for the untuned base's "정답은 ③"
+  batch_size: 32           # HF generate path only
+  ppl_samples: 0           # no passage in MCQA
+
+ptq:
+  group_size: 128
+
+qat:
+  group_size: 128
+  max_steps: 600           # same as the Qwen3-8B recipe (≈2.8 epochs over train at batch 16)
+  learning_rate: 1.0e-5
+  per_device_batch_size: 4 # H100 NVL 94GB. On an 80GB card use 2 with grad_accum 8.
+  grad_accum: 4            # effective batch 16
+  save_steps: 150
+  optim: "adamw_8bit"
+  gradient_checkpointing: true
+
+compute:
+  mode: gpu
+  smoke:
+    use_smoke_model: true
+    backend: hf
+    precision: fp32
+    train_subset: 16
+    eval_size: 10
+    max_steps: 2
+    max_seq_len: 1024
+    per_device_batch_size: 1
+    grad_accum: 1
+    ppl_samples: 0
+
+paths:
+  artifacts_dir: "quantization/artifacts/kormedmcqa_midm"
+  results_dir: "quantization/results/kormedmcqa_midm"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/C_int4_qat"

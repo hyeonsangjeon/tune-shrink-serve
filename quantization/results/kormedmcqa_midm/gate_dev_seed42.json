@@ -1,0 +1,8 @@
+{
+  "base_dev": 62.417,
+  "A_dev": 70.444,
+  "delta_pt": 8.027,
+  "threshold_pt": 2.0,
+  "pass": true,
+  "gpu_label": "NVIDIA H100 NVL (Standard_NC40ads_H100_v5)"
+}

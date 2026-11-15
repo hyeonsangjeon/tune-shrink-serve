@@ -1,0 +1,91 @@
+{
+  "method": "B_int4_ptq",
+  "precision": "int4",
+  "model_dir": "quantization/artifacts/kormedmcqa_midm/B_int4_ptq_seed42",
+  "out_tokens": 128,
+  "graph_mode": true,
+  "sweep": [
+    {
+      "batch": 1,
+      "elapsed_s": 0.923,
+      "gen_tokens": 128,
+      "throughput_tok_s": 138.7,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 4,
+      "elapsed_s": 0.93,
+      "gen_tokens": 512,
+      "throughput_tok_s": 550.7,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 16,
+      "elapsed_s": 3.065,
+      "gen_tokens": 2048,
+      "throughput_tok_s": 668.2,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 32,
+      "elapsed_s": 5.394,
+      "gen_tokens": 4096,
+      "throughput_tok_s": 759.4,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 64,
+      "elapsed_s": 9.819,
+      "gen_tokens": 8192,
+      "throughput_tok_s": 834.3,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 128,
+      "elapsed_s": 22.482,
+      "gen_tokens": 16384,
+      "throughput_tok_s": 728.7,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    },
+    {
+      "batch": 256,
+      "elapsed_s": 38.802,
+      "gen_tokens": 32768,
+      "throughput_tok_s": 844.5,
+      "ttft_p50_s": null,
+      "ttft_p99_s": null,
+      "e2e_p50_s": null,
+      "e2e_p99_s": null
+    }
+  ],
+  "latency_single_stream": {
+    "n": 24,
+    "concurrency": 1,
+    "out_tokens": 128,
+    "ttft_p50_s": 0.0152,
+    "ttft_p99_s": 0.0212,
+    "ttft_mean_s": 0.0155,
+    "e2e_p50_s": 0.6985,
+    "e2e_p99_s": 0.7049,
+    "e2e_mean_s": 0.6988
+  },
+  "config": "quantization/configs/kormedmcqa_midm.yaml"
+}

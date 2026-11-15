@@ -1,0 +1,20 @@
+# S8 — method 3: Mi:dm's OWN explanations (quantization.self_explain; no other model's output) as
+# extra training targets, once per epoch next to the answer-only examples. Serving still answers
+# with the number only; `eval_vllm --mode explain` also scores explain-then-answer on 2021.
+#   CONFIG=quantization/configs/sweep/s8_self_explain.yaml bash scripts/gpu/stage.sh self_explain
+#   CONFIG=quantization/configs/sweep/s8_self_explain.yaml bash scripts/gpu/stage.sh sweep_a
+extends: ../kormedmcqa_midm_unsloth.yaml
+data:
+  max_seq_len: 1536          # prompt (<= 980 tokens) + explanation (<= ~450) + answer
+  self_explain:
+    path: "quantization/artifacts/kormedmcqa_midm/self_explain/train_explanations_seed42.jsonl"
+train:
+  loss_per_example: true   # each example weighs the same (else 200-token explanations drown the 2-token answers)
+  save_steps: 200
+  save_total_limit: null
+  save_merged: false
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/sweep/s8_self_explain"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s8_self_explain/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s8_self_explain/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s8_self_explain/C_int4_qat"

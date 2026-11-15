@@ -1,0 +1,10 @@
+# S6 (optional, time permitting) — loss on the user turn (question + options) at weight 0.1;
+# the KT system block and date line stay masked. Needs logits (UNSLOTH_RETURN_LOGITS=1, set by code).
+extends: s2_perm4.yaml
+train:
+  prompt_loss_weight: 0.1
+paths:
+  results_dir: "quantization/results/kormedmcqa_midm/sweep/s6_plw01"
+  method_a_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s6_plw01/A_bf16"
+  method_b_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s6_plw01/B_int4_ptq"
+  method_c_dir: "quantization/artifacts/kormedmcqa_midm/sweep/s6_plw01/C_int4_qat"

@@ -1,0 +1,637 @@
+# Claim ledger (P0-11) — every strong quantitative/support claim in the READMEs,
+# linked to the exact command + raw artifact that proves it. `build_evidence_index.py
+# --check` fails CI if a number here diverges from its source JSON, if the value is
+# missing from the referenced README, or if a `planned` feature carries a measured
+# number. `--emit` regenerates docs/EVIDENCE.md from this file.
+#
+# status ∈ {ci_verified, recorded_hardware_run, recorded_api_run, historical_not_reproduced, planned}
+# Paths are relative to the repository root.
+# `expected` is written exactly as it appears in the README; the checker parses it as
+# a float for the JSON comparison (rounded to the README's decimal places) AND asserts
+# the literal string is present in `readme`. String `expected` uses substring matching.
+
+meta:
+  repo: tune-shrink-serve
+  note: >-
+    Numbers below are auto-verified against committed raw JSON. The talk run
+    (Mi:dm 2.0 Base x KorMedMCQA) is under quantization/results/kormedmcqa_midm/:
+    one H100 NVL, seed 42, plus one managed-API run per model on Azure AI Foundry.
+    The earlier Qwen3-8B x KorQuAD run (A100, Spot) is under archive/qwen3_korquad/results/.
+    Each run was recorded once and is reproducible from its config; GPU runs are not
+    re-executed in CI.
+
+claims:
+  # ---- Derived tables (credential-free, CI-verified) -----------------------
+  - id: bench_tables_reproduce
+    capability: "Derived benchmark tables reproduce from raw JSON (no hand-edited numbers)"
+    status: ci_verified
+    command: "python -m quantization.v2_report --check-historical"
+    source: archive/qwen3_korquad/results/vllm_throughput.json
+    note: >-
+      three_way_table.json (EM/F1/ppl mean±std) and vllm_throughput.json (sweep +
+      crossover/ratios + clean VRAM) are regenerated from the read-only raw
+      results/*.json and hash-compared to the committed files. CI fails on any
+      mismatch, so a human can never hand-edit a derived number (spec P1-2).
+
+  # ---- Frozen dev/holdout separation (P1-1) --------------------------------
+  - id: split_disjoint
+    capability: "selection_dev vs final_holdout are disjoint (no selection leakage)"
+    status: ci_verified
+    command: "python -m quantization.splits --check"
+    source: archive/qwen3_korquad/results/split_manifest.json
+    pointer: /intersection_size
+    expected: "0"
+    readme: archive/qwen3_korquad/README.md
+
+  # ---- KorQuAD 3-seed A/B/C (recorded A100 run) ----------------------------
+  - id: a_bf16_f1
+    capability: "A (BF16 LoRA) held-out F1, 3-seed mean"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_run agg"
+    source: archive/qwen3_korquad/results/three_way_table.json
+    pointer: /aggregate/A_bf16/f1/mean
+    expected: "94.83"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: a_bf16_em
+    capability: "A (BF16 LoRA) held-out EM, 3-seed mean"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_run agg"
+    source: archive/qwen3_korquad/results/three_way_table.json
+    pointer: /aggregate/A_bf16/exact_match/mean
+    expected: "87.80"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: a_bf16_ppl
+    capability: "A (BF16 LoRA) perplexity, 3-seed mean"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_run agg"
+    source: archive/qwen3_korquad/results/three_way_table.json
+    pointer: /aggregate/A_bf16/perplexity/mean
+    expected: "9.05"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: a_bf16_size_gb
+    capability: "A (BF16 merged) on-disk size (GB)"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_run eval --method A_bf16 --seed 42"
+    source: archive/qwen3_korquad/results/three_way_table.json
+    pointer: /aggregate/A_bf16/size_gb
+    expected: "15.27"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: b_int4_ptq_f1
+    capability: "B (INT4 PTQ) held-out F1, 3-seed mean"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_run agg"
+    source: archive/qwen3_korquad/results/three_way_table.json
+    pointer: /aggregate/B_int4_ptq/f1/mean
+    expected: "94.19"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: b_int4_ptq_size_gb
+    capability: "B/C (INT4 tile-packed) on-disk size (GB)"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_run b --seed 42"
+    source: archive/qwen3_korquad/results/three_way_table.json
+    pointer: /aggregate/B_int4_ptq/size_gb
+    expected: "5.77"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: c_int4_qat_f1
+    capability: "C (INT4 QAT) held-out F1, 3-seed mean"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_run agg"
+    source: archive/qwen3_korquad/results/three_way_table.json
+    pointer: /aggregate/C_int4_qat/f1/mean
+    expected: "94.82"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: c_int4_qat_em
+    capability: "C (INT4 QAT) held-out EM, 3-seed mean"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_run agg"
+    source: archive/qwen3_korquad/results/three_way_table.json
+    pointer: /aggregate/C_int4_qat/exact_match/mean
+    expected: "87.57"
+    readme: archive/qwen3_korquad/README.md
+
+  # ---- vLLM serving benchmark (recorded A100 run) --------------------------
+  - id: vram_bf16
+    capability: "Serving-only clean weight VRAM — bf16 (GiB)"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_bench --mode sweep"
+    source: archive/qwen3_korquad/results/vllm_throughput.json
+    pointer: /results/A_bf16/weight_vram_gib
+    expected: "15.27"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: vram_int4
+    capability: "Serving-only clean weight VRAM — int4 B≡C (GiB)"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_bench --mode sweep"
+    source: archive/qwen3_korquad/results/vllm_throughput.json
+    pointer: /results/BC_int4/weight_vram_gib
+    expected: "6.05"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: throughput_bf16_batch256
+    capability: "bf16 peak throughput @ batch 256 (tok/s)"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_bench --mode sweep"
+    source: archive/qwen3_korquad/results/vllm_throughput.json
+    pointer: /results/A_bf16/sweep/6/throughput_tok_s
+    expected: "3959.0"
+    readme: archive/qwen3_korquad/README.md
+
+  - id: throughput_int4_batch1
+    capability: "int4 single-stream throughput @ batch 1 (tok/s)"
+    status: recorded_hardware_run
+    command: "python -m quantization.v2_bench --mode sweep"
+    source: archive/qwen3_korquad/results/vllm_throughput.json
+    pointer: /results/BC_int4/sweep/0/throughput_tok_s
+    expected: "124.4"
+    readme: archive/qwen3_korquad/README.md
+
+  # ---- Base selection (historical; reproducible, not re-run in CI) ---------
+  - id: base_select_winner
+    capability: "Base-model selection winner (≤9B, zero-shot F1)"
+    status: historical_not_reproduced
+    command: "python -m quantization.bench_baseselect --check-historical"
+    source: archive/qwen3_korquad/results/base_select.json
+    pointer: /0/candidate
+    expected: "Qwen3-8B"
+    readme: archive/qwen3_korquad/README.md
+
+  # ---- KorMedMCQA x Mi:dm 2.0 Base (recorded H100 NVL run, seed 42) ---------
+  # One H100 NVL 94GB, 2026-11-10..11. Test = 2022-2024 exams (3,009 items), measured once per model.
+  - id: km_base_test_acc
+    capability: "Untuned Mi:dm 2.0 Base accuracy, 2022-2024 test"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh final_<model>"
+    source: quantization/results/kormedmcqa_midm/eval_vllm_base_seed42_h100.json
+    pointer: /accuracy
+    expected: "63.3"
+    readme: README.md
+  - id: km_bf16_lora_test_acc
+    capability: "BF16 LoRA (transformers+PEFT) accuracy, 2022-2024 test"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh final_<model>"
+    source: quantization/results/kormedmcqa_midm/eval_vllm_A_bf16_seed42_h100.json
+    pointer: /accuracy
+    expected: "72.3"
+    readme: README.md
+  - id: km_unsloth_lora_test_acc
+    capability: "BF16 LoRA (Unsloth) accuracy, 2022-2024 test"
+    status: recorded_hardware_run
+    command: "CONFIG=quantization/configs/kormedmcqa_midm_unsloth.yaml bash scripts/gpu/stage.sh final_A"
+    source: quantization/results/kormedmcqa_midm/unsloth_A/eval_vllm_A_bf16_seed42_h100.json
+    pointer: /accuracy
+    expected: "72.2"
+    readme: docs/talk/01_finetune_unsloth.md
+  - id: km_int4_ptq_test_acc
+    capability: "INT4 PTQ (TorchAO) accuracy, 2022-2024 test"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh final_<model>"
+    source: quantization/results/kormedmcqa_midm/eval_vllm_B_int4_ptq_seed42_h100.json
+    pointer: /accuracy
+    expected: "69.5"
+    readme: docs/talk/02_int4_quantization.md
+  - id: km_int4_qat_test_acc
+    capability: "INT4 QAT (TorchAO) accuracy, 2022-2024 test"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh final_<model>"
+    source: quantization/results/kormedmcqa_midm/eval_vllm_C_int4_qat_seed42_h100.json
+    pointer: /accuracy
+    expected: "69.7"
+    readme: docs/talk/02_int4_quantization.md
+  - id: km_hf_vs_unsloth_p
+    capability: "Paired McNemar p, transformers+PEFT vs Unsloth LoRA, 2022-2024 test"
+    status: recorded_hardware_run
+    command: "python -m quantization.kormedmcqa compare <a> <b>"
+    source: quantization/results/kormedmcqa_midm/unsloth_A/compare_final_hfA_vs_unslothA_seed42_h100.json
+    pointer: /mcnemar_p
+    expected: "0.89"
+    readme: README.md
+  - id: km_ptq_vs_qat_p
+    capability: "Paired McNemar p, INT4 PTQ vs INT4 QAT, 2022-2024 test"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh compare"
+    source: quantization/results/kormedmcqa_midm/compare_final_seed42_h100.json
+    pointer: /pairs/3/mcnemar_p
+    expected: "0.67"
+    readme: README.md
+  - id: km_bf16_size_gib
+    capability: "BF16 LoRA merged model size (GiB, HF Hub safetensors)"
+    status: recorded_hardware_run
+    command: "Hugging Face Hub API (?blobs=true)"
+    source: quantization/results/kormedmcqa_midm/artifact_sizes.json
+    pointer: /models/bf16_lora_merged/gib
+    expected: "21.51"
+    readme: README.md
+  - id: km_int4_size_gib
+    capability: "INT4 tile-packed model size (GiB)"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh b"
+    source: quantization/results/kormedmcqa_midm/B_build_seed42.json
+    pointer: /size_gb
+    expected: "7.20"
+    readme: README.md
+  - id: km_hf_train_min
+    capability: "LoRA training time, transformers+PEFT (minutes, 426 steps)"
+    status: recorded_hardware_run
+    command: "BACKEND=hf bash scripts/gpu/stage.sh a"
+    source: quantization/results/kormedmcqa_midm/A_train_seed42.json
+    pointer: /train_seconds
+    scale: 0.016666666666666666
+    expected: "24.3"
+    readme: README.md
+  - id: km_unsloth_train_min
+    capability: "LoRA training time, Unsloth (minutes, 426 steps)"
+    status: recorded_hardware_run
+    command: "CONFIG=quantization/configs/kormedmcqa_midm_unsloth.yaml bash scripts/gpu/stage.sh a"
+    source: quantization/results/kormedmcqa_midm/unsloth_A/A_train_seed42.json
+    pointer: /train_seconds
+    scale: 0.016666666666666666
+    expected: "15.7"
+    readme: README.md
+  - id: km_hf_train_mem_gib
+    capability: "GPU memory during LoRA training, transformers+PEFT (GiB, one nvidia-smi reading)"
+    status: recorded_hardware_run
+    command: "nvidia-smi --query-gpu=memory.used"
+    source: quantization/results/kormedmcqa_midm/train_gpu_memory_observed_h100.json
+    pointer: /runs/0/readings/0/memory_used_mib
+    scale: 0.0009765625
+    expected: "82.3"
+    readme: README.md
+  - id: km_unsloth_train_mem_gib
+    capability: "GPU memory during LoRA training, Unsloth (GiB, nvidia-smi reading)"
+    status: recorded_hardware_run
+    command: "nvidia-smi --query-gpu=memory.used"
+    source: quantization/results/kormedmcqa_midm/train_gpu_memory_observed_h100.json
+    pointer: /runs/1/readings/1/memory_used_mib
+    scale: 0.0009765625
+    expected: "25.5"
+    readme: README.md
+  - id: km_int4_ttft_cache_off_c1
+    capability: "INT4 online first-token p50 at concurrency 1, prefix caching off (ms)"
+    status: recorded_hardware_run
+    command: "FRESH=1 TAG=fresh bash scripts/gpu/stage.sh online_B"
+    source: quantization/results/kormedmcqa_midm/online_B_int4_ptq_mcqa_cacheoff_seed42_h100.json
+    pointer: /results/0/ttft_s/p50
+    scale: 1000
+    expected: "542"
+    readme: README.md
+  - id: km_int4_ttft_cache_on_c1
+    capability: "INT4 online first-token p50 at concurrency 1, prefix caching on, fresh questions (ms)"
+    status: recorded_hardware_run
+    command: "FRESH=1 TAG=fresh bash scripts/gpu/stage.sh online_B"
+    source: quantization/results/kormedmcqa_midm/online_B_int4_ptq_mcqa_cacheon_seed42_h100.json
+    pointer: /results/0/ttft_s/p50
+    scale: 1000
+    expected: "110"
+    readme: README.md
+  - id: km_bf16_online_rps_c64_cache_on
+    capability: "BF16 online requests/s at concurrency 64, prefix caching on, fresh questions at every level"
+    status: recorded_hardware_run
+    command: "FRESH=1 TAG=fresh bash scripts/gpu/stage.sh online_A"
+    source: quantization/results/kormedmcqa_midm/online_A_bf16_mcqa_cacheon_seed42_h100.json
+    pointer: /results/3/request_throughput_rps
+    expected: "32.8"
+    readme: docs/talk/03_vllm_serving.md
+  - id: km_int4_online_rps_c64_cache_on
+    capability: "INT4 online requests/s at concurrency 64, prefix caching on, fresh questions at every level"
+    status: recorded_hardware_run
+    command: "FRESH=1 TAG=fresh bash scripts/gpu/stage.sh online_B"
+    source: quantization/results/kormedmcqa_midm/online_B_int4_ptq_mcqa_cacheon_seed42_h100.json
+    pointer: /results/3/request_throughput_rps
+    expected: "11.1"
+    readme: docs/talk/03_vllm_serving.md
+  - id: km_shared_prompt_prefix_tokens
+    capability: "Tokens every served MCQA prompt shares (what prefix caching reuses with fresh questions)"
+    status: recorded_hardware_run
+    command: "python -m quantization.serving.v2_bench_serve --shared-prefix-report --model <A_bf16 dir> --prompts-config quantization/configs/kormedmcqa_midm.yaml --output quantization/results/kormedmcqa_midm/prompt_shared_prefix.json"
+    source: quantization/results/kormedmcqa_midm/prompt_shared_prefix.json
+    pointer: /shared_prefix_tokens
+    expected: "530"
+    readme: docs/talk/03_vllm_serving.md
+  - id: km_int4_offline_b256
+    capability: "INT4 offline output tokens/s at batch 256"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh bench_B"
+    source: quantization/results/kormedmcqa_midm/bench_B_int4_ptq_seed42_h100.json
+    pointer: /sweep/6/throughput_tok_s
+    expected: "844"
+    readme: docs/talk/03_vllm_serving.md
+  - id: km_bf16_cost_1k
+    capability: "BF16 LoRA GPU cost per 1,000 test items, H100 on-demand list price (USD)"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh final_<model>"
+    source: quantization/results/kormedmcqa_midm/eval_vllm_A_bf16_seed42_h100.json
+    pointer: /usd_per_1k_questions/ondemand
+    expected: "0.0111"
+    readme: docs/talk/04_cost.md
+  - id: km_int4_cost_1k
+    capability: "INT4 PTQ GPU cost per 1,000 test items, H100 on-demand list price (USD)"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh final_<model>"
+    source: quantization/results/kormedmcqa_midm/eval_vllm_B_int4_ptq_seed42_h100.json
+    pointer: /usd_per_1k_questions/ondemand
+    expected: "0.1715"
+    readme: docs/talk/04_cost.md
+
+  # ---- KorMedMCQA: managed API models on the same 2022-2024 test (recorded API run) ----
+  # Azure AI Foundry, Global Standard, eastus2, 2026-11-12, one pass per deployment. Cost = reported
+  # usage tokens x list price (Azure Retail Prices API, read 2026-11-12); computed, not an invoice.
+  - id: km_api_gpt_6_astra_test_acc
+    capability: "Managed API gpt-6-astra accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-6-astra --concurrency 12 --region eastus2 --price-in 10 --price-out 50 --price-cached-in 1 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-6-astra.json
+    pointer: /accuracy
+    expected: "98.4"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_6_astra_cost_1k
+    capability: "Managed API gpt-6-astra cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-6-astra --concurrency 12 --region eastus2 --price-in 10 --price-out 50 --price-cached-in 1 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-6-astra.json
+    pointer: /usd_per_1k_questions
+    expected: "3.0851"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_61_sol_test_acc
+    capability: "Managed API gpt-6.1-sol accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-6.1-sol --concurrency 12 --region eastus2 --price-in 2 --price-out 10 --price-cached-in 0.1 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-6.1-sol.json
+    pointer: /accuracy
+    expected: "98.3"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_61_sol_cost_1k
+    capability: "Managed API gpt-6.1-sol cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-6.1-sol --concurrency 12 --region eastus2 --price-in 2 --price-out 10 --price-cached-in 0.1 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-6.1-sol.json
+    pointer: /usd_per_1k_questions
+    expected: "0.6622"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_56_sol_test_acc
+    capability: "Managed API gpt-5.6-sol accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-5.6-sol --concurrency 24 --region eastus2 --price-in 4 --price-out 20 --price-cached-in 0.4 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-5.6-sol.json
+    pointer: /accuracy
+    expected: "97.5"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_56_sol_cost_1k
+    capability: "Managed API gpt-5.6-sol cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-5.6-sol --concurrency 24 --region eastus2 --price-in 4 --price-out 20 --price-cached-in 0.4 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-5.6-sol.json
+    pointer: /usd_per_1k_questions
+    expected: "1.6257"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_6_luna_test_acc
+    capability: "Managed API gpt-6-luna accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-6-luna --concurrency 12 --region eastus2 --price-in 0.1 --price-out 0.5 --price-cached-in 0.01 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-6-luna.json
+    pointer: /accuracy
+    expected: "95.9"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_6_luna_cost_1k
+    capability: "Managed API gpt-6-luna cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-6-luna --concurrency 12 --region eastus2 --price-in 0.1 --price-out 0.5 --price-cached-in 0.01 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-6-luna.json
+    pointer: /usd_per_1k_questions
+    expected: "0.0836"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_54_test_acc
+    capability: "Managed API gpt-5.4 accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-5.4 --concurrency 32 --region eastus2 --price-in 2.5 --price-out 15 --price-cached-in 0.25 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-5.4.json
+    pointer: /accuracy
+    expected: "92.0"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_54_cost_1k
+    capability: "Managed API gpt-5.4 cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-5.4 --concurrency 32 --region eastus2 --price-in 2.5 --price-out 15 --price-cached-in 0.25 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-5.4.json
+    pointer: /usd_per_1k_questions
+    expected: "0.5712"
+    readme: docs/talk/04_cost.md
+  - id: km_api_deepseek_v4_1_flash_test_acc
+    capability: "Managed API deepseek-v4-1-flash accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment deepseek-v4-1-flash --concurrency 24 --region eastus2 --price-in 0.3 --price-out 1.2 --price-cached-in 0.006 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_deepseek-v4-1-flash.json
+    pointer: /accuracy
+    expected: "85.0"
+    readme: docs/talk/04_cost.md
+  - id: km_api_deepseek_v4_1_flash_cost_1k
+    capability: "Managed API deepseek-v4-1-flash cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment deepseek-v4-1-flash --concurrency 24 --region eastus2 --price-in 0.3 --price-out 1.2 --price-cached-in 0.006 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_deepseek-v4-1-flash.json
+    pointer: /usd_per_1k_questions
+    expected: "0.0685"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_54_mini_test_acc
+    capability: "Managed API gpt-5.4-mini accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-5.4-mini --concurrency 32 --region eastus2 --price-in 0.75 --price-out 4.5 --price-cached-in 0.075 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-5.4-mini.json
+    pointer: /accuracy
+    expected: "84.4"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_54_mini_cost_1k
+    capability: "Managed API gpt-5.4-mini cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-5.4-mini --concurrency 32 --region eastus2 --price-in 0.75 --price-out 4.5 --price-cached-in 0.075 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-5.4-mini.json
+    pointer: /usd_per_1k_questions
+    expected: "0.1718"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_oss_120b_test_acc
+    capability: "Managed API gpt-oss-120b accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-oss-120b --concurrency 32 --region eastus2 --price-in 0.15 --price-out 0.6 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-oss-120b.json
+    pointer: /accuracy
+    expected: "84.2"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_oss_120b_cost_1k
+    capability: "Managed API gpt-oss-120b cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-oss-120b --concurrency 32 --region eastus2 --price-in 0.15 --price-out 0.6 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-oss-120b.json
+    pointer: /usd_per_1k_questions
+    expected: "0.2180"
+    readme: docs/talk/04_cost.md
+  - id: km_api_llama_4_maverick_test_acc
+    capability: "Managed API llama-4-maverick accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment llama-4-maverick --concurrency 24 --region eastus2 --price-in 0.25 --price-out 1 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_llama-4-maverick.json
+    pointer: /accuracy
+    expected: "81.5"
+    readme: docs/talk/04_cost.md
+  - id: km_api_llama_4_maverick_cost_1k
+    capability: "Managed API llama-4-maverick cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment llama-4-maverick --concurrency 24 --region eastus2 --price-in 0.25 --price-out 1 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_llama-4-maverick.json
+    pointer: /usd_per_1k_questions
+    expected: "0.0509"
+    readme: docs/talk/04_cost.md
+  - id: km_api_mistral_medium_3_5_test_acc
+    capability: "Managed API mistral-medium-3-5 accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment mistral-medium-3-5 --concurrency 24 --region eastus2 --price-in 1.5 --price-out 7.5 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_mistral-medium-3-5.json
+    pointer: /accuracy
+    expected: "76.0"
+    readme: docs/talk/04_cost.md
+  - id: km_api_mistral_medium_3_5_cost_1k
+    capability: "Managed API mistral-medium-3-5 cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment mistral-medium-3-5 --concurrency 24 --region eastus2 --price-in 1.5 --price-out 7.5 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_mistral-medium-3-5.json
+    pointer: /usd_per_1k_questions
+    expected: "0.3276"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_54_nano_test_acc
+    capability: "Managed API gpt-5.4-nano accuracy, 2022-2024 test"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-5.4-nano --concurrency 32 --region eastus2 --price-in 0.2 --price-out 1.25 --price-cached-in 0.02 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-5.4-nano.json
+    pointer: /accuracy
+    expected: "64.9"
+    readme: docs/talk/04_cost.md
+  - id: km_api_gpt_54_nano_cost_1k
+    capability: "Managed API gpt-5.4-nano cost per 1,000 test items, list price (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-5.4-nano --concurrency 32 --region eastus2 --price-in 0.2 --price-out 1.25 --price-cached-in 0.02 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-5.4-nano.json
+    pointer: /usd_per_1k_questions
+    expected: "0.0459"
+    readme: docs/talk/04_cost.md
+  - id: km_api_astra_readme_acc
+    capability: "Best managed API accuracy quoted in the README (gpt-6-astra)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-6-astra --concurrency 12 --region eastus2 --price-in 10 --price-out 50 --price-cached-in 1 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-6-astra.json
+    pointer: /accuracy
+    expected: "98.4"
+    readme: README.md
+  - id: km_api_luna_readme_cost
+    capability: "gpt-6-luna cost per 1,000 test items quoted in the README (USD, computed)"
+    status: recorded_api_run
+    command: "python -m quantization.eval_managed --config quantization/configs/kormedmcqa_midm.yaml --deployment gpt-6-luna --concurrency 12 --region eastus2 --price-in 0.1 --price-out 0.5 --price-cached-in 0.01 --price-source \"Azure Retail Prices API ..., read 2026-11-12\""
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-6-luna.json
+    pointer: /usd_per_1k_questions
+    expected: "0.0836"
+    readme: README.md
+  - id: km_api_luna_readme_acc
+    capability: "gpt-6-luna accuracy quoted in the README"
+    status: recorded_api_run
+    command: "python -m quantization.managed_compare"
+    source: quantization/results/kormedmcqa_midm/managed/eval_managed_gpt-6-luna.json
+    pointer: /accuracy
+    expected: "95.9"
+    readme: README.md
+  - id: km_bf16_cost_1k_readme
+    capability: "BF16 LoRA GPU cost per 1,000 test items quoted in the README (USD, on-demand list price)"
+    status: recorded_hardware_run
+    command: "bash scripts/gpu/stage.sh final_A"
+    source: quantization/results/kormedmcqa_midm/eval_vllm_A_bf16_seed42_h100.json
+    pointer: /usd_per_1k_questions/ondemand
+    expected: "0.0111"
+    readme: README.md
+  - id: km_bf16_server_c1_cost_readme
+    capability: "BF16 LoRA server cost per 1,000 items at concurrency 1, prefix caching off (USD, on-demand list price)"
+    status: recorded_hardware_run
+    command: "python -m quantization.managed_compare"
+    source: quantization/results/kormedmcqa_midm/managed/compare_final_managed.json
+    pointer: /rows/0/server_c1_cacheoff/usd_per_1k_questions
+    expected: "0.137"
+    readme: README.md
+  - id: km_api_nano_vs_bf16_only_midm
+    capability: "Paired test items only the BF16 LoRA got right vs gpt-5.4-nano (McNemar discordant count)"
+    status: recorded_api_run
+    command: "python -m quantization.managed_compare"
+    source: quantization/results/kormedmcqa_midm/managed/compare_final_managed.json
+    pointer: /pairs/4/only_a_correct
+    expected: "514"
+    readme: docs/talk/04_cost.md
+
+  # ---- KorMedMCQA: recipe sweep, selection on the 2021 questions (recorded H100 NVL run) ----
+  # One H100 NVL 94GB, 2026-11-13, one run per arm; no other model's output used anywhere.
+  # Adapters are scored on the untuned base through vLLM+LoRA. No arm passed the gate
+  # (+2.0 pt and McNemar p < 0.05), so no sweep model was measured on 2022-2024.
+  - id: km_sweep_reference_merged_dev_acc
+    capability: "Recipe sweep reference: Unsloth BF16 LoRA, merged model, 2021 accuracy"
+    status: recorded_hardware_run
+    command: "CONFIG=quantization/configs/kormedmcqa_midm_unsloth.yaml bash scripts/gpu/stage.sh a_dev"
+    source: quantization/results/kormedmcqa_midm/unsloth_A/eval_vllm_A_bf16_seed42_selection_dev.json
+    pointer: /accuracy
+    expected: "70.7"
+    readme: docs/talk/05_recipe_sweep.md
+  - id: km_sweep_reference_adapter_dev_acc
+    capability: "Recipe sweep reference: the same LoRA scored as an adapter on the base (vLLM+LoRA, same path as the arms), 2021 accuracy"
+    status: recorded_hardware_run
+    command: "CONFIG=quantization/configs/kormedmcqa_midm_unsloth.yaml TAG=reference MODE=answer bash scripts/gpu/stage.sh sweep_dev"
+    source: quantization/results/kormedmcqa_midm/unsloth_A/ckpt_dev/eval_vllm_lora_A_bf16_unsloth_seed42_run_checkpoint-426_selection_dev.json
+    pointer: /accuracy
+    expected: "70.4"
+    readme: docs/talk/05_recipe_sweep.md
+  - id: km_sweep_s0_merged_dev_acc
+    capability: "Recipe sweep S0 (same recipe, seed 43), merged model, 2021 accuracy"
+    status: recorded_hardware_run
+    command: "SEED=43 CONFIG=quantization/configs/sweep/s0_seed43.yaml TAG=s0_seed43 bash scripts/gpu/stage.sh a_dev"
+    source: quantization/results/kormedmcqa_midm/sweep/s0_seed43/eval_vllm_A_bf16_seed43_selection_dev.json
+    pointer: /accuracy
+    expected: "71.7"
+    readme: docs/talk/05_recipe_sweep.md
+  - id: km_sweep_s3_picked_dev_acc
+    capability: "Recipe sweep S3 (lr 1e-4), picked checkpoint, 2021 accuracy (highest recipe change)"
+    status: recorded_hardware_run
+    command: "python -m quantization.sweep_report --reference-lora quantization/results/kormedmcqa_midm/unsloth_A/ckpt_dev/eval_vllm_lora_A_bf16_unsloth_seed42_run_checkpoint-426_selection_dev.json"
+    source: quantization/results/kormedmcqa_midm/sweep/summary_dev.json
+    pointer: /arms/s3_lr1e-4/picked/accuracy
+    expected: "71.8"
+    readme: docs/talk/05_recipe_sweep.md
+  - id: km_sweep_s4_picked_dev_acc
+    capability: "Recipe sweep S4 (lr 4e-4), picked checkpoint, 2021 accuracy"
+    status: recorded_hardware_run
+    command: "python -m quantization.sweep_report --reference-lora quantization/results/kormedmcqa_midm/unsloth_A/ckpt_dev/eval_vllm_lora_A_bf16_unsloth_seed42_run_checkpoint-426_selection_dev.json"
+    source: quantization/results/kormedmcqa_midm/sweep/summary_dev.json
+    pointer: /arms/s4_lr4e-4/picked/accuracy
+    expected: "68.9"
+    readme: docs/talk/05_recipe_sweep.md
+  - id: km_sweep_dev_scorings_looked_at
+    capability: "2021 scorings looked at during the recipe sweep (selection optimism)"
+    status: recorded_hardware_run
+    command: "python -m quantization.sweep_report --reference-lora quantization/results/kormedmcqa_midm/unsloth_A/ckpt_dev/eval_vllm_lora_A_bf16_unsloth_seed42_run_checkpoint-426_selection_dev.json"
+    source: quantization/results/kormedmcqa_midm/sweep/summary_dev.json
+    pointer: /dev_scorings_looked_at
+    expected: "31"
+    readme: docs/talk/05_recipe_sweep.md
+  - id: km_sweep_s8_explain_dev_acc
+    capability: "Recipe sweep S8, explain-then-answer, last checkpoint, 2021 accuracy"
+    status: recorded_hardware_run
+    command: "CONFIG=quantization/configs/sweep/s8_self_explain.yaml SEED=42 TAG=s8_self_explain_explain MODE=explain bash scripts/gpu/stage.sh sweep_dev"
+    source: quantization/results/kormedmcqa_midm/sweep/s8_self_explain/ckpt_dev/eval_vllm_lora_A_bf16_seed42_run_checkpoint-729_selection_dev_explain.json
+    pointer: /accuracy
+    expected: "70.3"
+    readme: docs/talk/05_recipe_sweep.md
+
+  # ---- Planned (NOT yet executed — must never carry a measured number) -----
+  - id: final_holdout_rerun
+    capability: "Qwen3-8B/KorQuAD A/B/C re-evaluated on the disjoint final_holdout split"
+    status: planned
+    note: "Earlier KorQuAD track only: its numbers overlap the base-selection window; holdout re-run not executed yet."
+
