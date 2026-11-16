@@ -16,5 +16,6 @@
 - **비용:** GPU 단계는 걸린 시간 × GPU 시간당 가격입니다. 이번 실행은 Azure H100 NVL 1장, 온디맨드 정가 시간당 $6.98이었습니다. 모델 다운로드(약 23GB)와 설치 시간은 위 표에 넣지 않았습니다.
 - **설정은 한 파일입니다:** [`quantization/configs/kormedmcqa_midm.yaml`](../../quantization/configs/kormedmcqa_midm.yaml). 모델, 데이터 나누기, 프롬프트, 학습값, 결과 폴더가 모두 여기 있습니다.
 - **명령은 모두 레포 루트에서 실행합니다.**
+- **코드를 읽으며 한 단계씩 돌리려면 [`steps/`](../../steps/)를 씁니다.** 학습, INT4, 채점, 서빙이 단계마다 Python 파일 하나이고, 함수마다 설명이 있습니다.
 - **GPU 단계는 [`scripts/gpu/stage.sh`](../../scripts/gpu/stage.sh)로 돌립니다.** `bash scripts/gpu/stage.sh <단계>`가 한 단계를 돌리고 로그와 끝난 상태를 남깁니다. `stage.sh` 없이 Python 명령으로 직접 돌리는 방법은 각 결과 문서의 「다시 돌리려면」 절에 있습니다.
 - **이름 읽는 법:** 단계와 파일 이름에 남은 `a`·`b`·`c`와 `A_bf16`·`B_int4_ptq`·`C_int4_qat`은 차례로 BF16 LoRA 모델, INT4 PTQ, INT4 QAT입니다. `base`는 튜닝 전 모델입니다. 파일 이름의 `selection_dev`는 2021년 문제(고르기용), `final_holdout`과 `_h100`이 붙은 채점 파일은 2022~2024년 문제(마지막에 한 번)입니다.

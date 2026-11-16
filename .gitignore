@@ -11,5 +11,7 @@ venv/
 
 # run outputs (regenerable); committed results live in quantization/results/
 runs/
+# steps/ 1~5 write models and results here
+outputs/
 quantization/runs/
 build/

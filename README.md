@@ -32,6 +32,7 @@ KT의 공개 모델 **Mi:dm 2.0 Base(11.5B)** 에 의사·간호사·약사·치
 |---|---|
 | 결과와 근거를 자세히 본다 | [`docs/talk/`](docs/talk/) 00~05 |
 | GPU 없이 이 레포가 제대로 도는지 본다 | 바로 아래 「1분 확인」 |
+| 학습·INT4·서빙 코드를 읽고 한 단계씩 돌린다 | [`steps/`](steps/) 1~5 (단계마다 파일 하나, 함수마다 설명) |
 | GPU에서 처음부터 다시 돌린다 | [따라하기](docs/guide/) 1~8번 (단계마다 명령, 걸린 시간, 확인 기준, 안 될 때) |
 | 어느 폴더에 무엇이 있는지 본다 | 아래 「레포 구성」 |
 | 학습된 모델만 쓴다 | [`HyeonSang/Midm-2.0-KorMedMCQA`](https://huggingface.co/HyeonSang/Midm-2.0-KorMedMCQA), [`…-QAT-bf16`](https://huggingface.co/HyeonSang/Midm-2.0-KorMedMCQA-QAT-bf16) |
@@ -53,11 +54,24 @@ python -m quantization.managed_compare --check
 - 차트가 결과 JSON에서 똑같이 다시 그려지는지
 - 매니지드 API 비교표가 결과 JSON에서 똑같이 다시 만들어지는지
 
-**확인하지 않는 것:** 학습, 양자화, 서빙을 GPU에서 다시 하지는 않습니다. 매니지드 API도 호출하지 않습니다. 모델과 데이터도 내려받지 않습니다.
+**확인하지 않는 것:** 학습, 양자화, 서빙을 GPU에서 다시 하지는 않습니다. 매니지드 API도 호출하지 않습니다. 모델과 데이터도 내려받지 않습니다. 학습·양자화·서빙 코드는 [`steps/`](steps/)에 있고, GPU에서 돌리는 방법은 바로 아래에 있습니다.
 
 ## GPU로 다시 돌리기
 
-H100(또는 80GB급 GPU) 한 장이면 됩니다. 단계마다 명령, 확인 기준, 안 될 때 할 일은 [따라하기](docs/guide/)에 있습니다. 큰 흐름과 이번 실행에 걸린 시간은 이렇습니다.
+H100(또는 80GB급 GPU) 한 장이면 됩니다. 방법은 두 가지입니다.
+
+**코드를 읽으며 한 단계씩:** [`steps/`](steps/)는 학습, INT4, 채점, 서빙을 단계마다 Python 파일 하나로 정리한 것입니다. 파일 맨 위에 설정값이 있고, 함수마다 무엇을 왜 하는지 주석이 있습니다.
+
+```bash
+source ~/venv-q/bin/activate                  # 아래 bootstrap.sh가 만든 가상환경
+python steps/1_lora_train.py                  # LoRA 학습 (transformers+PEFT, --engine unsloth도 됨)
+python steps/2_int4_ptq.py                    # INT4 PTQ (TorchAO)
+python steps/3_int4_qat.py                    # INT4 QAT (TorchAO)
+python steps/4_evaluate.py outputs/2_int4_ptq # 2022~2024년 3,009문항 정답률 (vLLM)
+bash steps/5_serve.sh outputs/2_int4_ptq      # vLLM 서버. 다른 터미널에서 python steps/5_ask.py
+```
+
+**발표 숫자를 만든 순서 그대로:** 아래 `stage.sh` 단계들이 중간 점검, 끊긴 학습 이어 가기, 서빙 속도 측정, 결과 JSON 저장까지 합니다. 단계마다 명령, 확인 기준, 안 될 때 할 일은 [따라하기](docs/guide/)에 있습니다. 큰 흐름과 이번 실행에 걸린 시간은 이렇습니다.
 
 ```bash
 bash scripts/gpu/bootstrap.sh                 # 가상환경 2개 설치, 드라이버·GPU·테스트 확인 (약 6분)
@@ -79,6 +93,7 @@ FRESH=1 bash scripts/gpu/stage.sh online_A    # 온라인 서빙, prefix caching
 
 ```
 README.md                  여기. 결과 요약과 시작점
+steps/                     단계별 코드: LoRA 학습 → INT4 PTQ → INT4 QAT → 정답률 → vLLM 서빙. 파일 하나에 단계 하나
 docs/
   talk/                    결과 문서 00~05 (발표 순서)와 차트(figures/)
   guide/                   따라하기 1~8: GPU 없이 확인 → GPU VM → 학습 → INT4 → 서빙 → API 비교 → 점수 올리기 → 안 될 때

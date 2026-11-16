@@ -6,6 +6,8 @@
 |---|---|---|
 | [2번](02_gpu_setup.md)을 마친 VM | 학습: transformers+PEFT 24.3분, Unsloth 15.7분 | [1. 파인튜닝](../talk/01_finetune_unsloth.md) |
 
+학습 코드를 읽으려면 [`steps/1_lora_train.py`](../../steps/1_lora_train.py)를 보세요. PEFT와 Unsloth로 LoRA를 붙이고 학습해 합치는 과정이 함수마다 설명과 함께 있고, `python steps/1_lora_train.py`로 바로 돌릴 수도 있습니다.
+
 ## 순서
 
 ```bash

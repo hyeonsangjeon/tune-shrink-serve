@@ -34,7 +34,7 @@ jobs:
       - name: Run test suite
         run: python -m pytest -q
       - name: Secret / PII scan
-        run: python scripts/scan_secrets.py quantization scripts docs archive requirements README.md
+        run: python scripts/scan_secrets.py quantization scripts steps docs archive requirements README.md
       - name: Evidence index — README numbers vs raw JSON
         run: python scripts/build_evidence_index.py --check
       - name: Talk charts redraw identically from raw JSON

@@ -8,6 +8,8 @@ BF16 LoRA 모델과 INT4 모델을 vLLM으로 띄워 두 가지를 잽니다.
 |---|---|---|
 | [4번](04_int4.md)의 BF16 LoRA 모델과 INT4 모델 | 온라인 두 모델 약 30분(서버 띄우기 포함) | [3. vLLM 서빙](../talk/03_vllm_serving.md) |
 
+서버를 띄우고 질문 하나를 보내는 가장 짧은 코드는 [`steps/5_serve.sh`](../../steps/5_serve.sh)와 [`steps/5_ask.py`](../../steps/5_ask.py)에 있습니다. 아래 순서는 속도를 재는 방법입니다.
+
 ## 순서
 
 ```bash
