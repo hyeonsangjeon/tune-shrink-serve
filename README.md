@@ -71,6 +71,8 @@ python steps/4_evaluate.py outputs/2_int4_ptq # 2022~2024년 3,009문항 정답�
 bash steps/5_serve.sh outputs/2_int4_ptq      # vLLM 서버. 다른 터미널에서 python steps/5_ask.py
 ```
 
+2026-11-16에 H100 NVL에서 이 코드를 확인했습니다. 발표 때 학습한 모델을 이 코드로 다시 INT4로 바꾸고 채점하면, 튜닝 전·BF16 LoRA·INT4 QAT는 발표 정답률과 같고 INT4 PTQ는 2문항 적습니다. 1·3단계 학습은 5 step만 돌려 첫 loss가 발표 때와 같은 것까지 봤고, 처음부터 끝까지 다시 학습하지는 않았습니다. 자세한 것은 [`steps/README.md`](steps/README.md)에 있습니다.
+
 **발표 숫자를 만든 순서 그대로:** 아래 `stage.sh` 단계들이 중간 점검, 끊긴 학습 이어 가기, 서빙 속도 측정, 결과 JSON 저장까지 합니다. 단계마다 명령, 확인 기준, 안 될 때 할 일은 [따라하기](docs/guide/)에 있습니다. 큰 흐름과 이번 실행에 걸린 시간은 이렇습니다.
 
 ```bash

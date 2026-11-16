@@ -4,11 +4,17 @@
     python steps/3_int4_qat.py                  # outputs/1_lora → outputs/3_int4_qat. H100 NVL에서 1시간 42분
     python steps/3_int4_qat.py --max-steps 5    # 먼저 5 step만 돌려 보기
     python steps/3_int4_qat.py --batch-size 2 --grad-accum 8   # 80GB GPU (한 step 16문항은 같음)
+    python steps/3_int4_qat.py --resume         # 끊긴 학습을 마지막 체크포인트부터 이어 가기
 
 만드는 것
     outputs/3_int4_qat_bf16/   INT4를 흉내 내며 학습한 BF16 모델
     outputs/3_int4_qat/        위 모델을 2단계와 같은 방법으로 바꾼 INT4 모델
     outputs/3_int4_qat.json    걸린 시간, step 수, 마지막 loss
+
+디스크
+    학습하는 동안 outputs/3_int4_qat_run/에 체크포인트가 생깁니다. 하나가 약 42GB(가중치 22GB +
+    8비트 Adam 상태값)이고, 최근 두 개를 남기며 새것을 쓰는 동안 잠깐 세 개가 됩니다.
+    INT4 모델까지 저장하면 지웁니다. 이 단계를 시작할 때 150GB 이상 비어 있어야 합니다.
 
 PTQ(2단계)와 무엇이 다른가
     QAT는 학습하는 동안 forward에서 가중치를 INT4로 반올림했다가 BF16으로 되돌려 씁니다
@@ -24,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import time
 
 import common as C
@@ -38,7 +45,7 @@ BATCH_SIZE = 4
 GRAD_ACCUM = 4            # 4문항씩 네 번 모아(16문항) 한 번 고칩니다
 WARMUP_RATIO = 0.03
 OPTIM = "adamw_8bit"      # Adam의 상태값을 8비트로 저장해 메모리를 아낍니다(bitsandbytes)
-SAVE_STEPS = 150
+SAVE_STEPS = 150          # 150 step마다 체크포인트(끊기면 --resume으로 이어 갑니다)
 
 
 def is_target_linear(module, name: str) -> bool:
@@ -95,8 +102,12 @@ def remove_fake_quant(model) -> None:
 
 
 def train(model, tok, train_dataset, run_dir: str, batch_size: int, grad_accum: int,
-          max_steps: int):
-    """1단계와 같은 Trainer로 학습합니다. 다른 것은 학습률, step 수, 8비트 Adam입니다."""
+          max_steps: int, resume: bool = False):
+    """1단계와 같은 Trainer로 학습합니다. 다른 것은 학습률, step 수, 8비트 Adam입니다.
+
+    resume=True면 run_dir의 마지막 체크포인트부터 이어 갑니다. 가짜 양자화를 넣은 뒤에
+    읽으므로, 체크포인트의 층 이름과 모델의 층 이름이 맞습니다.
+    """
     from transformers import Trainer, TrainingArguments
 
     model.gradient_checkpointing_enable()   # 메모리를 아끼려고 중간 결과를 다시 계산합니다
@@ -123,7 +134,7 @@ def train(model, tok, train_dataset, run_dir: str, batch_size: int, grad_accum: 
     )
     trainer = Trainer(model=model, args=args, train_dataset=train_dataset,
                       data_collator=C.make_collator(tok))
-    trainer.train()
+    trainer.train(resume_from_checkpoint=True if resume else None)
     return trainer
 
 
@@ -134,6 +145,8 @@ def main(argv=None) -> int:
     ap.add_argument("--max-steps", type=int, default=MAX_STEPS, help="학습 step 수 (기본: 600)")
     ap.add_argument("--batch-size", type=int, default=BATCH_SIZE, help="80GB GPU면 2")
     ap.add_argument("--grad-accum", type=int, default=GRAD_ACCUM, help="80GB GPU면 8")
+    ap.add_argument("--resume", action="store_true",
+                    help="끊긴 학습을 outputs/3_int4_qat_run/의 마지막 체크포인트부터 이어 갑니다")
     args = ap.parse_args(argv)
 
     if not os.path.isfile(os.path.join(args.src, "config.json")):
@@ -154,12 +167,14 @@ def main(argv=None) -> int:
     # 2. 1단계와 같은 학습 문항으로 학습합니다.
     examples = C.load_questions("train")
     train_dataset = C.make_train_dataset(tok, examples, st)
+    run_dir = args.out + "_run"
     t0 = time.time()
-    trainer = train(model, tok, train_dataset, args.out + "_run",
-                    args.batch_size, args.grad_accum, args.max_steps)
+    trainer = train(model, tok, train_dataset, run_dir,
+                    args.batch_size, args.grad_accum, args.max_steps, args.resume)
     seconds = time.time() - t0
 
-    # 3. 가짜 양자화를 걷어내고 BF16으로 저장한 뒤, 2단계와 같은 방법으로 INT4로 바꿉니다.
+    # 3. 가짜 양자화를 걷어내고 BF16으로 저장합니다. 학습 결과는 이 BF16 모델에 다 들어 있으므로
+    #    이어 가기용 체크포인트(하나에 약 42GB)는 여기서 지웁니다.
     model = trainer.model
     remove_fake_quant(model)
     os.makedirs(bf16_dir, exist_ok=True)
@@ -169,7 +184,10 @@ def main(argv=None) -> int:
     steps = trainer.state.global_step
     del model, trainer
     torch.cuda.empty_cache()
+    shutil.rmtree(run_dir, ignore_errors=True)
 
+    # 4. 2단계와 같은 방법으로 INT4로 바꿉니다. 여기서 실패하면 학습을 다시 할 필요 없이
+    #    python steps/2_int4_ptq.py --src outputs/3_int4_qat_bf16 --out outputs/3_int4_qat 로 바꿉니다.
     C.save_as_int4(bf16_dir, args.out, GROUP_SIZE)
 
     C.write_json(args.out + ".json", {

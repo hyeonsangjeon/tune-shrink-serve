@@ -4,12 +4,14 @@
     python steps/1_lora_train.py                    # transformers + PEFT. H100 NVL에서 24분
     python steps/1_lora_train.py --max-steps 5      # 먼저 5 step만 돌려 보기
     python steps/1_lora_train.py --engine unsloth   # 같은 학습을 Unsloth로. 16분. ~/venv-unsloth에서
+    python steps/1_lora_train.py --resume           # 끊긴 학습을 마지막 체크포인트부터 이어 가기
 
 만드는 것
     outputs/1_lora/            LoRA를 합친 BF16 모델(약 22GB). 2~5단계가 이 폴더를 읽습니다
     outputs/1_lora_adapter/    LoRA 어댑터만(작음). 원래 모델에 얹어 쓸 수 있습니다
     outputs/1_lora_train.json  걸린 시간, step 수, 마지막 loss, GPU 메모리
     (--engine unsloth면 폴더 이름 끝에 _unsloth가 붙습니다)
+    학습하는 동안 outputs/1_lora_run/에 체크포인트가 생기고, 끝까지 저장하면 지웁니다.
 
 두 엔진은 데이터, 프롬프트, LoRA 설정, 학습률, 배치가 모두 같고 학습 엔진만 다릅니다.
 발표 ①의 비교(24.3분 대 15.7분, 정답률 차이 없음)가 이 두 경로입니다.
@@ -18,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import time
 
 import common as C
@@ -41,7 +44,7 @@ LEARNING_RATE = 2e-4
 WARMUP_RATIO = 0.03       # 처음 3%의 step 동안 학습률을 0에서 천천히 올립니다
 WEIGHT_DECAY = 0.01
 MAX_GRAD_NORM = 1.0       # 기울기가 너무 크면 이 크기로 잘라 학습이 튀지 않게 합니다
-SAVE_STEPS = 100          # 100 step마다 체크포인트를 남깁니다(끊기면 이어 갈 수 있게)
+SAVE_STEPS = 100          # 100 step마다 체크포인트를 남깁니다(끊기면 --resume으로 이어 갑니다)
 
 
 def load_with_peft(st: dict):
@@ -103,8 +106,13 @@ def load_with_unsloth(st: dict):
     return model, tok
 
 
-def train(model, tok, train_dataset, run_dir: str, engine: str, max_steps: int | None):
-    """Hugging Face Trainer로 학습합니다. 두 엔진 모두 같은 Trainer와 같은 설정을 씁니다."""
+def train(model, tok, train_dataset, run_dir: str, engine: str, max_steps: int | None,
+          resume: bool = False):
+    """Hugging Face Trainer로 학습합니다. 두 엔진 모두 같은 Trainer와 같은 설정을 씁니다.
+
+    resume=True면 run_dir의 마지막 체크포인트에서 가중치, optimizer, 학습률, step 수를 읽어
+    그 자리부터 이어 갑니다. 체크포인트가 없으면 Trainer가 에러를 냅니다.
+    """
     from transformers import Trainer, TrainingArguments
 
     args = TrainingArguments(
@@ -131,7 +139,7 @@ def train(model, tok, train_dataset, run_dir: str, engine: str, max_steps: int |
     )
     trainer = Trainer(model=model, args=args, train_dataset=train_dataset,
                       data_collator=C.make_collator(tok))
-    trainer.train()
+    trainer.train(resume_from_checkpoint=True if resume else None)
     return trainer
 
 
@@ -158,6 +166,8 @@ def main(argv=None) -> int:
     ap.add_argument("--max-steps", type=int, default=None,
                     help="이만큼만 학습합니다(시험용). 생략하면 2 epoch, 426 step")
     ap.add_argument("--out", default=None, help="저장할 폴더 (기본: outputs/1_lora)")
+    ap.add_argument("--resume", action="store_true",
+                    help="끊긴 학습을 outputs/1_lora_run/의 마지막 체크포인트부터 이어 갑니다")
     args = ap.parse_args(argv)
 
     suffix = "" if args.engine == "peft" else "_unsloth"
@@ -180,11 +190,12 @@ def main(argv=None) -> int:
 
     torch.cuda.reset_peak_memory_stats()
     t0 = time.time()
-    trainer = train(model, tok, train_dataset, run_dir, args.engine, args.max_steps)
+    trainer = train(model, tok, train_dataset, run_dir, args.engine, args.max_steps, args.resume)
     seconds = time.time() - t0
 
-    # 4. 어댑터와 합친 BF16 모델을 저장합니다.
+    # 4. 어댑터와 합친 BF16 모델을 저장합니다. 다 저장했으면 이어 가기용 체크포인트는 지웁니다.
     save(trainer, model, tok, out_dir, adapter_dir, args.engine)
+    shutil.rmtree(run_dir, ignore_errors=True)
 
     losses = [log["loss"] for log in trainer.state.log_history if "loss" in log]
     C.write_json(os.path.join(C.OUT, f"1_lora_train{suffix}.json"), {
