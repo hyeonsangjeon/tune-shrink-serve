@@ -1,0 +1,273 @@
+{
+  "run": "steps/ full run on one H100: training from scratch with the steps/ code, then the 2022-2024 test (3,009 questions)",
+  "run_utc": [
+    "2026-11-16T19:05:40Z",
+    "2026-11-17T00:48:22Z"
+  ],
+  "gpu": "NVIDIA H100 NVL",
+  "versions": {
+    "venv-q": {
+      "torch": "2.11.0+cu130",
+      "transformers": "4.57.6",
+      "peft": "0.20.0",
+      "torchao": "0.17.0",
+      "vllm": "0.23.0",
+      "accelerate": "1.15.0",
+      "bitsandbytes": "0.50.0"
+    },
+    "venv-unsloth": {
+      "unsloth": "2026.11.3",
+      "torch": "2.14.1",
+      "transformers": "4.57.6",
+      "peft": "0.20.0"
+    }
+  },
+  "steps_code_md5": {
+    "1_lora_train.py": "214b3f98fc80b077a440291490f9c3a0",
+    "2_int4_ptq.py": "04dce55ec74a96dd5bdfe0384ba5bce8",
+    "3_int4_qat.py": "0771db6c980c0b22564dc348eeda2f1a",
+    "4_evaluate.py": "b5441c3ffba286ae798709e867c5edf3",
+    "5_ask.py": "56727300bc66765904db47ffece54c27",
+    "5_serve.sh": "d08c5fba12fd0e339d91c18e0dc8dffe",
+    "common.py": "5d39c87bead5dd9d24399f9a78376023"
+  },
+  "vs_talk": {
+    "1_lora": {
+      "accuracy": 72.35,
+      "n_correct": 2177,
+      "ref_accuracy": 72.316,
+      "ref_n_correct": 2176,
+      "n": 3009,
+      "same_answer": 2686,
+      "n_unparsed": 0,
+      "accuracy_ci95": [
+        70.72,
+        73.92
+      ],
+      "ref": "eval_vllm_A_bf16_seed42_h100.json"
+    },
+    "1_lora_unsloth": {
+      "accuracy": 72.516,
+      "n_correct": 2182,
+      "ref_accuracy": 72.217,
+      "ref_n_correct": 2173,
+      "n": 3009,
+      "same_answer": 2732,
+      "n_unparsed": 0,
+      "accuracy_ci95": [
+        70.89,
+        74.08
+      ],
+      "ref": "unsloth_A/eval_vllm_A_bf16_seed42_h100.json"
+    },
+    "2_int4_ptq": {
+      "accuracy": 69.059,
+      "n_correct": 2078,
+      "ref_accuracy": 69.458,
+      "ref_n_correct": 2090,
+      "n": 3009,
+      "same_answer": 2596,
+      "n_unparsed": 0,
+      "accuracy_ci95": [
+        67.38,
+        70.69
+      ],
+      "ref": "eval_vllm_B_int4_ptq_seed42_h100.json"
+    },
+    "3_int4_qat": {
+      "accuracy": 70.09,
+      "n_correct": 2109,
+      "ref_accuracy": 69.691,
+      "ref_n_correct": 2097,
+      "n": 3009,
+      "same_answer": 2612,
+      "n_unparsed": 0,
+      "accuracy_ci95": [
+        68.43,
+        71.7
+      ],
+      "ref": "eval_vllm_C_int4_qat_seed42_h100.json"
+    }
+  },
+  "resume_vs_uninterrupted": {
+    "r1_lora": {
+      "accuracy": 72.615,
+      "n_correct": 2185,
+      "ref_accuracy": 72.35,
+      "ref_n_correct": 2177,
+      "n": 3009,
+      "same_answer": 2715,
+      "n_unparsed": 0,
+      "accuracy_ci95": [
+        70.99,
+        74.18
+      ],
+      "ref": "1_lora"
+    },
+    "r3_qat": {
+      "accuracy": 69.691,
+      "n_correct": 2097,
+      "ref_accuracy": 70.09,
+      "ref_n_correct": 2109,
+      "n": 3009,
+      "same_answer": 2907,
+      "n_unparsed": 0,
+      "accuracy_ci95": [
+        68.03,
+        71.31
+      ],
+      "ref": "3_int4_qat"
+    }
+  },
+  "cut": {
+    "r1_lora": {
+      "killed_after_seconds": 425,
+      "left": "checkpoint-100",
+      "signal": "SIGKILL"
+    },
+    "r3_qat": {
+      "killed_after_seconds": 1685,
+      "left": "checkpoint-150",
+      "signal": "SIGKILL"
+    }
+  },
+  "loss": {
+    "1_lora_vs_talk": {
+      "points": 43,
+      "max_abs_diff": 0.0492,
+      "first": [
+        1,
+        17.3403,
+        17.3403
+      ],
+      "last": [
+        420,
+        1.4348,
+        1.4436
+      ]
+    },
+    "1_lora_unsloth_vs_talk": {
+      "points": 43,
+      "max_abs_diff": 0.0355,
+      "first": [
+        1,
+        17.3405,
+        17.3405
+      ],
+      "last": [
+        420,
+        1.4374,
+        1.4448
+      ]
+    },
+    "3_int4_qat_vs_talk": {
+      "points": 31,
+      "max_abs_diff": 0.0342,
+      "first": [
+        1,
+        1.391,
+        1.3766
+      ],
+      "last": [
+        600,
+        1.3151,
+        1.2978
+      ]
+    },
+    "r1_before_kill_vs_1_lora": {
+      "points": 12,
+      "max_abs_diff": 0.0189,
+      "first": [
+        1,
+        17.3403,
+        17.3403
+      ],
+      "last": [
+        110,
+        1.6001,
+        1.6004
+      ]
+    },
+    "r1_after_resume_vs_1_lora": {
+      "points": 32,
+      "max_abs_diff": 0.0583,
+      "first": [
+        110,
+        1.6023,
+        1.6004
+      ],
+      "last": [
+        420,
+        1.4373,
+        1.4348
+      ]
+    },
+    "r3_before_kill_vs_3_int4_qat": {
+      "points": 9,
+      "max_abs_diff": 0.005,
+      "first": [
+        1,
+        1.391,
+        1.391
+      ],
+      "last": [
+        160,
+        1.3863,
+        1.3825
+      ]
+    },
+    "r3_after_resume_vs_3_int4_qat": {
+      "points": 23,
+      "max_abs_diff": 0.0173,
+      "first": [
+        160,
+        1.3998,
+        1.3825
+      ],
+      "last": [
+        600,
+        1.3145,
+        1.3151
+      ]
+    }
+  },
+  "learning_rate_after_resume": {
+    "r1_lora_after_resume": {
+      "points": 32,
+      "lr_equal": 32
+    },
+    "r3_qat_after_resume": {
+      "points": 23,
+      "lr_equal": 23
+    }
+  },
+  "weights_md5": {
+    "1_lora vs talk A_bf16": "differ",
+    "2_int4_ptq vs talk B": "differ",
+    "3_int4_qat_bf16 vs talk C bf16": "differ",
+    "3_int4_qat vs talk C": "differ",
+    "r1_lora vs 1_lora": "differ",
+    "r3_qat_bf16 vs 3_int4_qat_bf16": "differ",
+    "r3_qat vs 3_int4_qat": "differ"
+  },
+  "step3_checkpoint_disk": {
+    "run_dir_max_gib": 123,
+    "checkpoints_max": 3,
+    "one_checkpoint_gib": 42,
+    "nvme_used_max_gib": 224,
+    "samples": 183,
+    "interval_seconds": 30
+  },
+  "train_minutes": {
+    "1_lora": 24.7,
+    "1_lora_unsloth": 16.5,
+    "r1_lora_after_resume": 18.8,
+    "3_int4_qat": 102.9,
+    "r3_qat_after_resume": 77.3
+  },
+  "talk_train_minutes": {
+    "1_lora": 24.3,
+    "1_lora_unsloth": 15.7,
+    "3_int4_qat": 101.9
+  }
+}

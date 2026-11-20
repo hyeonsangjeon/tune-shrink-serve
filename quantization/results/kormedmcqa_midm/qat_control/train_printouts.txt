@@ -1,0 +1,268 @@
+# Copied from the QAT control run on the H100 VM (2026-11-17). Paths shortened to ~/. See docs/qat_control.md.
+# per training log: stage lines, loss every 20 steps (step 1 first), final trainer record
+== qc_q42
+[3단계] 가짜 양자화를 넣은 선형층 336개, 학습하는 가중치 10.47B개
+[3단계] 끝: 600 step, 101.1분 → outputs/qc_q42
+step 1 {'loss': 1.3766, 'grad_norm': 10.875, 'learning_rate': 0.0, 'epoch': 0.0}
+step 20 {'loss': 1.4866, 'grad_norm': 14.625, 'learning_rate': 9.982817869415808e-06, 'epoch': 0.09}
+step 40 {'loss': 1.4091, 'grad_norm': 39.75, 'learning_rate': 9.63917525773196e-06, 'epoch': 0.19}
+step 60 {'loss': 1.3659, 'grad_norm': 30.5, 'learning_rate': 9.295532646048111e-06, 'epoch': 0.28}
+step 80 {'loss': 1.3753, 'grad_norm': 10.9375, 'learning_rate': 8.951890034364263e-06, 'epoch': 0.38}
+step 100 {'loss': 1.3701, 'grad_norm': 148.0, 'learning_rate': 8.608247422680413e-06, 'epoch': 0.47}
+step 120 {'loss': 1.3093, 'grad_norm': 10.5, 'learning_rate': 8.264604810996564e-06, 'epoch': 0.56}
+step 140 {'loss': 1.3766, 'grad_norm': 76.0, 'learning_rate': 7.920962199312714e-06, 'epoch': 0.66}
+step 160 {'loss': 1.3888, 'grad_norm': 64.0, 'learning_rate': 7.577319587628866e-06, 'epoch': 0.75}
+step 180 {'loss': 1.4121, 'grad_norm': 27.625, 'learning_rate': 7.233676975945018e-06, 'epoch': 0.85}
+step 200 {'loss': 1.4211, 'grad_norm': 2.5625, 'learning_rate': 6.890034364261169e-06, 'epoch': 0.94}
+step 220 {'loss': 1.3635, 'grad_norm': 0.4453125, 'learning_rate': 6.54639175257732e-06, 'epoch': 1.03}
+step 240 {'loss': 1.2825, 'grad_norm': 0.10009765625, 'learning_rate': 6.202749140893471e-06, 'epoch': 1.13}
+step 260 {'loss': 1.3048, 'grad_norm': 5.65625, 'learning_rate': 5.859106529209623e-06, 'epoch': 1.22}
+step 280 {'loss': 1.284, 'grad_norm': 0.087890625, 'learning_rate': 5.515463917525774e-06, 'epoch': 1.31}
+step 300 {'loss': 1.3132, 'grad_norm': 0.037841796875, 'learning_rate': 5.171821305841925e-06, 'epoch': 1.41}
+step 320 {'loss': 1.2984, 'grad_norm': 60.5, 'learning_rate': 4.8281786941580765e-06, 'epoch': 1.5}
+step 340 {'loss': 1.3071, 'grad_norm': 5.9375, 'learning_rate': 4.484536082474228e-06, 'epoch': 1.6}
+step 360 {'loss': 1.3184, 'grad_norm': 26.625, 'learning_rate': 4.140893470790379e-06, 'epoch': 1.69}
+step 380 {'loss': 1.3205, 'grad_norm': 0.78515625, 'learning_rate': 3.7972508591065294e-06, 'epoch': 1.78}
+step 400 {'loss': 1.336, 'grad_norm': 8.0625, 'learning_rate': 3.4536082474226807e-06, 'epoch': 1.88}
+step 420 {'loss': 1.3487, 'grad_norm': 0.25, 'learning_rate': 3.109965635738832e-06, 'epoch': 1.97}
+step 440 {'loss': 1.3371, 'grad_norm': 0.043701171875, 'learning_rate': 2.766323024054983e-06, 'epoch': 2.07}
+step 460 {'loss': 1.2891, 'grad_norm': 0.040771484375, 'learning_rate': 2.422680412371134e-06, 'epoch': 2.16}
+step 480 {'loss': 1.3127, 'grad_norm': 0.12353515625, 'learning_rate': 2.0790378006872853e-06, 'epoch': 2.25}
+step 500 {'loss': 1.3153, 'grad_norm': 0.051025390625, 'learning_rate': 1.7353951890034366e-06, 'epoch': 2.35}
+step 520 {'loss': 1.2863, 'grad_norm': 0.02685546875, 'learning_rate': 1.3917525773195878e-06, 'epoch': 2.44}
+step 540 {'loss': 1.2804, 'grad_norm': 0.0751953125, 'learning_rate': 1.048109965635739e-06, 'epoch': 2.54}
+step 560 {'loss': 1.2827, 'grad_norm': 4.125, 'learning_rate': 7.044673539518901e-07, 'epoch': 2.63}
+step 580 {'loss': 1.3031, 'grad_norm': 0.0546875, 'learning_rate': 3.608247422680412e-07, 'epoch': 2.72}
+step 600 {'loss': 1.2988, 'grad_norm': 12.0625, 'learning_rate': 1.718213058419244e-08, 'epoch': 2.82}
+final {'train_runtime': 6064.2166, 'train_samples_per_second': 1.583, 'train_steps_per_second': 0.099, 'train_loss': 1.3364072986443838, 'epoch': 2.82}
+== qc_q43
+[3단계] 가짜 양자화를 넣은 선형층 336개, 학습하는 가중치 10.47B개
+[3단계] 끝: 600 step, 101.1분 → outputs/qc_q43
+step 1 {'loss': 1.3772, 'grad_norm': 9.875, 'learning_rate': 0.0, 'epoch': 0.0}
+step 20 {'loss': 1.3607, 'grad_norm': 10.1875, 'learning_rate': 9.982817869415808e-06, 'epoch': 0.09}
+step 40 {'loss': 1.4077, 'grad_norm': 58.0, 'learning_rate': 9.63917525773196e-06, 'epoch': 0.19}
+step 60 {'loss': 1.3557, 'grad_norm': 23.125, 'learning_rate': 9.295532646048111e-06, 'epoch': 0.28}
+step 80 {'loss': 1.336, 'grad_norm': 3.78125, 'learning_rate': 8.951890034364263e-06, 'epoch': 0.38}
+step 100 {'loss': 1.3975, 'grad_norm': 17.375, 'learning_rate': 8.608247422680413e-06, 'epoch': 0.47}
+step 120 {'loss': 1.3532, 'grad_norm': 20.875, 'learning_rate': 8.264604810996564e-06, 'epoch': 0.56}
+step 140 {'loss': 1.4, 'grad_norm': 119.0, 'learning_rate': 7.920962199312714e-06, 'epoch': 0.66}
+step 160 {'loss': 1.4123, 'grad_norm': 0.34375, 'learning_rate': 7.577319587628866e-06, 'epoch': 0.75}
+step 180 {'loss': 1.4348, 'grad_norm': 25.5, 'learning_rate': 7.233676975945018e-06, 'epoch': 0.85}
+step 200 {'loss': 1.4653, 'grad_norm': 25.875, 'learning_rate': 6.890034364261169e-06, 'epoch': 0.94}
+step 220 {'loss': 1.4165, 'grad_norm': 2.34375, 'learning_rate': 6.54639175257732e-06, 'epoch': 1.03}
+step 240 {'loss': 1.305, 'grad_norm': 0.1259765625, 'learning_rate': 6.202749140893471e-06, 'epoch': 1.13}
+step 260 {'loss': 1.3269, 'grad_norm': 0.671875, 'learning_rate': 5.859106529209623e-06, 'epoch': 1.22}
+step 280 {'loss': 1.347, 'grad_norm': 0.1318359375, 'learning_rate': 5.515463917525774e-06, 'epoch': 1.31}
+step 300 {'loss': 1.3385, 'grad_norm': 0.462890625, 'learning_rate': 5.171821305841925e-06, 'epoch': 1.41}
+step 320 {'loss': 1.2802, 'grad_norm': 2.140625, 'learning_rate': 4.8281786941580765e-06, 'epoch': 1.5}
+step 340 {'loss': 1.3097, 'grad_norm': 54.5, 'learning_rate': 4.484536082474228e-06, 'epoch': 1.6}
+step 360 {'loss': 1.3038, 'grad_norm': 0.96875, 'learning_rate': 4.140893470790379e-06, 'epoch': 1.69}
+step 380 {'loss': 1.3669, 'grad_norm': 0.1494140625, 'learning_rate': 3.7972508591065294e-06, 'epoch': 1.78}
+step 400 {'loss': 1.3269, 'grad_norm': 0.0888671875, 'learning_rate': 3.4536082474226807e-06, 'epoch': 1.88}
+step 420 {'loss': 1.3217, 'grad_norm': 15.5, 'learning_rate': 3.109965635738832e-06, 'epoch': 1.97}
+step 440 {'loss': 1.3035, 'grad_norm': 37.5, 'learning_rate': 2.766323024054983e-06, 'epoch': 2.07}
+step 460 {'loss': 1.2864, 'grad_norm': 6.8125, 'learning_rate': 2.422680412371134e-06, 'epoch': 2.16}
+step 480 {'loss': 1.2966, 'grad_norm': 32.75, 'learning_rate': 2.0790378006872853e-06, 'epoch': 2.25}
+step 500 {'loss': 1.303, 'grad_norm': 0.3671875, 'learning_rate': 1.7353951890034366e-06, 'epoch': 2.35}
+step 520 {'loss': 1.2998, 'grad_norm': 0.0791015625, 'learning_rate': 1.3917525773195878e-06, 'epoch': 2.44}
+step 540 {'loss': 1.3115, 'grad_norm': 21.875, 'learning_rate': 1.048109965635739e-06, 'epoch': 2.54}
+step 560 {'loss': 1.3091, 'grad_norm': 0.0869140625, 'learning_rate': 7.044673539518901e-07, 'epoch': 2.63}
+step 580 {'loss': 1.2973, 'grad_norm': 1.5, 'learning_rate': 3.608247422680412e-07, 'epoch': 2.72}
+step 600 {'loss': 1.3322, 'grad_norm': 13.1875, 'learning_rate': 1.718213058419244e-08, 'epoch': 2.82}
+final {'train_runtime': 6062.5884, 'train_samples_per_second': 1.583, 'train_steps_per_second': 0.099, 'train_loss': 1.3435532347361248, 'epoch': 2.82}
+== qc_q44
+[3단계] 가짜 양자화를 넣은 선형층 336개, 학습하는 가중치 10.47B개
+[3단계] 끝: 600 step, 101.1분 → outputs/qc_q44
+step 1 {'loss': 1.4002, 'grad_norm': 11.1875, 'learning_rate': 0.0, 'epoch': 0.0}
+step 20 {'loss': 1.3937, 'grad_norm': 21.125, 'learning_rate': 9.982817869415808e-06, 'epoch': 0.09}
+step 40 {'loss': 1.3793, 'grad_norm': 6.21875, 'learning_rate': 9.63917525773196e-06, 'epoch': 0.19}
+step 60 {'loss': 1.4186, 'grad_norm': 39.5, 'learning_rate': 9.295532646048111e-06, 'epoch': 0.28}
+step 80 {'loss': 1.3599, 'grad_norm': 15.125, 'learning_rate': 8.951890034364263e-06, 'epoch': 0.38}
+step 100 {'loss': 1.3898, 'grad_norm': 0.57421875, 'learning_rate': 8.608247422680413e-06, 'epoch': 0.47}
+step 120 {'loss': 1.3821, 'grad_norm': 105.0, 'learning_rate': 8.264604810996564e-06, 'epoch': 0.56}
+step 140 {'loss': 1.3878, 'grad_norm': 56.5, 'learning_rate': 7.920962199312714e-06, 'epoch': 0.66}
+step 160 {'loss': 1.439, 'grad_norm': 55.0, 'learning_rate': 7.577319587628866e-06, 'epoch': 0.75}
+step 180 {'loss': 1.3912, 'grad_norm': 5.125, 'learning_rate': 7.233676975945018e-06, 'epoch': 0.85}
+step 200 {'loss': 1.3689, 'grad_norm': 23.25, 'learning_rate': 6.890034364261169e-06, 'epoch': 0.94}
+step 220 {'loss': 1.3658, 'grad_norm': 14.1875, 'learning_rate': 6.54639175257732e-06, 'epoch': 1.03}
+step 240 {'loss': 1.3039, 'grad_norm': 0.31640625, 'learning_rate': 6.202749140893471e-06, 'epoch': 1.13}
+step 260 {'loss': 1.3155, 'grad_norm': 0.06591796875, 'learning_rate': 5.859106529209623e-06, 'epoch': 1.22}
+step 280 {'loss': 1.3203, 'grad_norm': 8.625, 'learning_rate': 5.515463917525774e-06, 'epoch': 1.31}
+step 300 {'loss': 1.3017, 'grad_norm': 0.04248046875, 'learning_rate': 5.171821305841925e-06, 'epoch': 1.41}
+step 320 {'loss': 1.2836, 'grad_norm': 0.1689453125, 'learning_rate': 4.8281786941580765e-06, 'epoch': 1.5}
+step 340 {'loss': 1.3333, 'grad_norm': 35.0, 'learning_rate': 4.484536082474228e-06, 'epoch': 1.6}
+step 360 {'loss': 1.3264, 'grad_norm': 1.296875, 'learning_rate': 4.140893470790379e-06, 'epoch': 1.69}
+step 380 {'loss': 1.3448, 'grad_norm': 16.5, 'learning_rate': 3.7972508591065294e-06, 'epoch': 1.78}
+step 400 {'loss': 1.3168, 'grad_norm': 1.546875, 'learning_rate': 3.4536082474226807e-06, 'epoch': 1.88}
+step 420 {'loss': 1.3397, 'grad_norm': 26.0, 'learning_rate': 3.109965635738832e-06, 'epoch': 1.97}
+step 440 {'loss': 1.2818, 'grad_norm': 0.140625, 'learning_rate': 2.766323024054983e-06, 'epoch': 2.07}
+step 460 {'loss': 1.3017, 'grad_norm': 0.031494140625, 'learning_rate': 2.422680412371134e-06, 'epoch': 2.16}
+step 480 {'loss': 1.3092, 'grad_norm': 0.0625, 'learning_rate': 2.0790378006872853e-06, 'epoch': 2.25}
+step 500 {'loss': 1.2894, 'grad_norm': 0.033203125, 'learning_rate': 1.7353951890034366e-06, 'epoch': 2.35}
+step 520 {'loss': 1.3006, 'grad_norm': 35.75, 'learning_rate': 1.3917525773195878e-06, 'epoch': 2.44}
+step 540 {'loss': 1.2939, 'grad_norm': 0.038818359375, 'learning_rate': 1.048109965635739e-06, 'epoch': 2.54}
+step 560 {'loss': 1.3025, 'grad_norm': 0.1611328125, 'learning_rate': 7.044673539518901e-07, 'epoch': 2.63}
+step 580 {'loss': 1.3061, 'grad_norm': 54.0, 'learning_rate': 3.608247422680412e-07, 'epoch': 2.72}
+step 600 {'loss': 1.2797, 'grad_norm': 0.054443359375, 'learning_rate': 1.718213058419244e-08, 'epoch': 2.82}
+final {'train_runtime': 6063.0517, 'train_samples_per_second': 1.583, 'train_steps_per_second': 0.099, 'train_loss': 1.3375771220525106, 'epoch': 2.82}
+== qc_q45
+[3단계] 가짜 양자화를 넣은 선형층 336개, 학습하는 가중치 10.47B개
+step 1 {'loss': 1.5316, 'grad_norm': 26.5, 'learning_rate': 0.0, 'epoch': 0.0}
+step 20 {'loss': 1.3861, 'grad_norm': 1.6484375, 'learning_rate': 9.982817869415808e-06, 'epoch': 0.09}
+step 40 {'loss': 1.3812, 'grad_norm': 15.1875, 'learning_rate': 9.63917525773196e-06, 'epoch': 0.19}
+step 60 {'loss': 1.4166, 'grad_norm': 35.5, 'learning_rate': 9.295532646048111e-06, 'epoch': 0.28}
+step 80 {'loss': 1.3831, 'grad_norm': 25.25, 'learning_rate': 8.951890034364263e-06, 'epoch': 0.38}
+step 100 {'loss': 1.3654, 'grad_norm': 29.875, 'learning_rate': 8.608247422680413e-06, 'epoch': 0.47}
+step 120 {'loss': 1.3832, 'grad_norm': 19.375, 'learning_rate': 8.264604810996564e-06, 'epoch': 0.56}
+step 140 {'loss': 1.4041, 'grad_norm': 17.875, 'learning_rate': 7.920962199312714e-06, 'epoch': 0.66}
+step 160 {'loss': 1.3948, 'grad_norm': 25.375, 'learning_rate': 7.577319587628866e-06, 'epoch': 0.75}
+step 180 {'loss': 1.3559, 'grad_norm': 16.25, 'learning_rate': 7.233676975945018e-06, 'epoch': 0.85}
+step 200 {'loss': 1.3763, 'grad_norm': 23.375, 'learning_rate': 6.890034364261169e-06, 'epoch': 0.94}
+step 220 {'loss': 1.3823, 'grad_norm': 1.3125, 'learning_rate': 6.54639175257732e-06, 'epoch': 1.03}
+step 240 {'loss': 1.3046, 'grad_norm': 0.1123046875, 'learning_rate': 6.202749140893471e-06, 'epoch': 1.13}
+step 260 {'loss': 1.3147, 'grad_norm': 0.26171875, 'learning_rate': 5.859106529209623e-06, 'epoch': 1.22}
+step 280 {'loss': 1.3056, 'grad_norm': 0.044189453125, 'learning_rate': 5.515463917525774e-06, 'epoch': 1.31}
+step 300 {'loss': 1.3092, 'grad_norm': 24.5, 'learning_rate': 5.171821305841925e-06, 'epoch': 1.41}
+step 320 {'loss': 1.3291, 'grad_norm': 0.0458984375, 'learning_rate': 4.8281786941580765e-06, 'epoch': 1.5}
+step 340 {'loss': 1.323, 'grad_norm': 40.25, 'learning_rate': 4.484536082474228e-06, 'epoch': 1.6}
+stopped at step 346/600 (log ends here)
+== qc_x42
+[3단계] 대조군: 가짜 양자화 없음, 학습하는 가중치 10.47B개
+[3단계] 끝: 600 step, 37.7분 → outputs/qc_x42
+step 1 {'loss': 1.3435, 'grad_norm': 10.4375, 'learning_rate': 0.0, 'epoch': 0.0}
+step 20 {'loss': 1.4075, 'grad_norm': 7.59375, 'learning_rate': 9.982817869415808e-06, 'epoch': 0.09}
+step 40 {'loss': 1.3747, 'grad_norm': 2.125, 'learning_rate': 9.63917525773196e-06, 'epoch': 0.19}
+step 60 {'loss': 1.3436, 'grad_norm': 14.5, 'learning_rate': 9.295532646048111e-06, 'epoch': 0.28}
+step 80 {'loss': 1.3398, 'grad_norm': 15.6875, 'learning_rate': 8.951890034364263e-06, 'epoch': 0.38}
+step 100 {'loss': 1.3237, 'grad_norm': 4.6875, 'learning_rate': 8.608247422680413e-06, 'epoch': 0.47}
+step 120 {'loss': 1.2949, 'grad_norm': 5.34375, 'learning_rate': 8.264604810996564e-06, 'epoch': 0.56}
+step 140 {'loss': 1.3531, 'grad_norm': 6.5, 'learning_rate': 7.920962199312714e-06, 'epoch': 0.66}
+step 160 {'loss': 1.3297, 'grad_norm': 0.03466796875, 'learning_rate': 7.577319587628866e-06, 'epoch': 0.75}
+step 180 {'loss': 1.3771, 'grad_norm': 19.75, 'learning_rate': 7.233676975945018e-06, 'epoch': 0.85}
+step 200 {'loss': 1.3498, 'grad_norm': 0.025390625, 'learning_rate': 6.890034364261169e-06, 'epoch': 0.94}
+step 220 {'loss': 1.3517, 'grad_norm': 0.0274658203125, 'learning_rate': 6.54639175257732e-06, 'epoch': 1.03}
+step 240 {'loss': 1.2777, 'grad_norm': 0.033935546875, 'learning_rate': 6.202749140893471e-06, 'epoch': 1.13}
+step 260 {'loss': 1.2974, 'grad_norm': 3.421875, 'learning_rate': 5.859106529209623e-06, 'epoch': 1.22}
+step 280 {'loss': 1.2813, 'grad_norm': 0.05615234375, 'learning_rate': 5.515463917525774e-06, 'epoch': 1.31}
+step 300 {'loss': 1.2952, 'grad_norm': 0.02001953125, 'learning_rate': 5.171821305841925e-06, 'epoch': 1.41}
+step 320 {'loss': 1.2957, 'grad_norm': 68.5, 'learning_rate': 4.8281786941580765e-06, 'epoch': 1.5}
+step 340 {'loss': 1.289, 'grad_norm': 0.76171875, 'learning_rate': 4.484536082474228e-06, 'epoch': 1.6}
+step 360 {'loss': 1.312, 'grad_norm': 2.515625, 'learning_rate': 4.140893470790379e-06, 'epoch': 1.69}
+step 380 {'loss': 1.3111, 'grad_norm': 0.09716796875, 'learning_rate': 3.7972508591065294e-06, 'epoch': 1.78}
+step 400 {'loss': 1.3317, 'grad_norm': 0.171875, 'learning_rate': 3.4536082474226807e-06, 'epoch': 1.88}
+step 420 {'loss': 1.3303, 'grad_norm': 0.035400390625, 'learning_rate': 3.109965635738832e-06, 'epoch': 1.97}
+step 440 {'loss': 1.3101, 'grad_norm': 0.02294921875, 'learning_rate': 2.766323024054983e-06, 'epoch': 2.07}
+step 460 {'loss': 1.2886, 'grad_norm': 0.0419921875, 'learning_rate': 2.422680412371134e-06, 'epoch': 2.16}
+step 480 {'loss': 1.2936, 'grad_norm': 0.02294921875, 'learning_rate': 2.0790378006872853e-06, 'epoch': 2.25}
+step 500 {'loss': 1.3086, 'grad_norm': 0.0294189453125, 'learning_rate': 1.7353951890034366e-06, 'epoch': 2.35}
+step 520 {'loss': 1.2788, 'grad_norm': 0.0234375, 'learning_rate': 1.3917525773195878e-06, 'epoch': 2.44}
+step 540 {'loss': 1.2776, 'grad_norm': 0.025146484375, 'learning_rate': 1.048109965635739e-06, 'epoch': 2.54}
+step 560 {'loss': 1.2865, 'grad_norm': 0.05517578125, 'learning_rate': 7.044673539518901e-07, 'epoch': 2.63}
+step 580 {'loss': 1.3056, 'grad_norm': 0.0281982421875, 'learning_rate': 3.608247422680412e-07, 'epoch': 2.72}
+step 600 {'loss': 1.2904, 'grad_norm': 0.44140625, 'learning_rate': 1.718213058419244e-08, 'epoch': 2.82}
+final {'train_runtime': 2258.1477, 'train_samples_per_second': 4.251, 'train_steps_per_second': 0.266, 'train_loss': 1.3167875130971274, 'epoch': 2.82}
+== qc_x43
+[3단계] 대조군: 가짜 양자화 없음, 학습하는 가중치 10.47B개
+[3단계] 끝: 600 step, 37.6분 → outputs/qc_x43
+step 1 {'loss': 1.3391, 'grad_norm': 6.1875, 'learning_rate': 0.0, 'epoch': 0.0}
+step 20 {'loss': 1.3199, 'grad_norm': 0.1474609375, 'learning_rate': 9.982817869415808e-06, 'epoch': 0.09}
+step 40 {'loss': 1.3482, 'grad_norm': 35.0, 'learning_rate': 9.63917525773196e-06, 'epoch': 0.19}
+step 60 {'loss': 1.3117, 'grad_norm': 27.75, 'learning_rate': 9.295532646048111e-06, 'epoch': 0.28}
+step 80 {'loss': 1.302, 'grad_norm': 0.02880859375, 'learning_rate': 8.951890034364263e-06, 'epoch': 0.38}
+step 100 {'loss': 1.346, 'grad_norm': 1.2265625, 'learning_rate': 8.608247422680413e-06, 'epoch': 0.47}
+step 120 {'loss': 1.3158, 'grad_norm': 5.34375, 'learning_rate': 8.264604810996564e-06, 'epoch': 0.56}
+step 140 {'loss': 1.3447, 'grad_norm': 44.0, 'learning_rate': 7.920962199312714e-06, 'epoch': 0.66}
+step 160 {'loss': 1.3756, 'grad_norm': 0.0306396484375, 'learning_rate': 7.577319587628866e-06, 'epoch': 0.75}
+step 180 {'loss': 1.3927, 'grad_norm': 5.65625, 'learning_rate': 7.233676975945018e-06, 'epoch': 0.85}
+step 200 {'loss': 1.4123, 'grad_norm': 57.75, 'learning_rate': 6.890034364261169e-06, 'epoch': 0.94}
+step 220 {'loss': 1.433, 'grad_norm': 0.984375, 'learning_rate': 6.54639175257732e-06, 'epoch': 1.03}
+step 240 {'loss': 1.3047, 'grad_norm': 0.07177734375, 'learning_rate': 6.202749140893471e-06, 'epoch': 1.13}
+step 260 {'loss': 1.3034, 'grad_norm': 0.052001953125, 'learning_rate': 5.859106529209623e-06, 'epoch': 1.22}
+step 280 {'loss': 1.3153, 'grad_norm': 0.21484375, 'learning_rate': 5.515463917525774e-06, 'epoch': 1.31}
+step 300 {'loss': 1.2971, 'grad_norm': 0.1943359375, 'learning_rate': 5.171821305841925e-06, 'epoch': 1.41}
+step 320 {'loss': 1.2775, 'grad_norm': 0.56640625, 'learning_rate': 4.8281786941580765e-06, 'epoch': 1.5}
+step 340 {'loss': 1.2977, 'grad_norm': 24.5, 'learning_rate': 4.484536082474228e-06, 'epoch': 1.6}
+step 360 {'loss': 1.3056, 'grad_norm': 1.3046875, 'learning_rate': 4.140893470790379e-06, 'epoch': 1.69}
+step 380 {'loss': 1.3435, 'grad_norm': 0.0299072265625, 'learning_rate': 3.7972508591065294e-06, 'epoch': 1.78}
+step 400 {'loss': 1.3082, 'grad_norm': 0.0269775390625, 'learning_rate': 3.4536082474226807e-06, 'epoch': 1.88}
+step 420 {'loss': 1.2992, 'grad_norm': 11.625, 'learning_rate': 3.109965635738832e-06, 'epoch': 1.97}
+step 440 {'loss': 1.2801, 'grad_norm': 0.06396484375, 'learning_rate': 2.766323024054983e-06, 'epoch': 2.07}
+step 460 {'loss': 1.2825, 'grad_norm': 0.11376953125, 'learning_rate': 2.422680412371134e-06, 'epoch': 2.16}
+step 480 {'loss': 1.2888, 'grad_norm': 11.3125, 'learning_rate': 2.0790378006872853e-06, 'epoch': 2.25}
+step 500 {'loss': 1.3029, 'grad_norm': 0.12060546875, 'learning_rate': 1.7353951890034366e-06, 'epoch': 2.35}
+step 520 {'loss': 1.3076, 'grad_norm': 0.037109375, 'learning_rate': 1.3917525773195878e-06, 'epoch': 2.44}
+step 540 {'loss': 1.2958, 'grad_norm': 20.875, 'learning_rate': 1.048109965635739e-06, 'epoch': 2.54}
+step 560 {'loss': 1.2785, 'grad_norm': 0.02685546875, 'learning_rate': 7.044673539518901e-07, 'epoch': 2.63}
+step 580 {'loss': 1.2991, 'grad_norm': 0.04150390625, 'learning_rate': 3.608247422680412e-07, 'epoch': 2.72}
+step 600 {'loss': 1.2946, 'grad_norm': 6.5625, 'learning_rate': 1.718213058419244e-08, 'epoch': 2.82}
+final {'train_runtime': 2256.6985, 'train_samples_per_second': 4.254, 'train_steps_per_second': 0.266, 'train_loss': 1.3195042033990225, 'epoch': 2.82}
+== qc_x44
+[3단계] 대조군: 가짜 양자화 없음, 학습하는 가중치 10.47B개
+[3단계] 끝: 600 step, 37.7분 → outputs/qc_x44
+step 1 {'loss': 1.3197, 'grad_norm': 4.03125, 'learning_rate': 0.0, 'epoch': 0.0}
+step 20 {'loss': 1.3369, 'grad_norm': 12.5625, 'learning_rate': 9.982817869415808e-06, 'epoch': 0.09}
+step 40 {'loss': 1.3305, 'grad_norm': 6.15625, 'learning_rate': 9.63917525773196e-06, 'epoch': 0.19}
+step 60 {'loss': 1.3737, 'grad_norm': 88.0, 'learning_rate': 9.295532646048111e-06, 'epoch': 0.28}
+step 80 {'loss': 1.3403, 'grad_norm': 38.75, 'learning_rate': 8.951890034364263e-06, 'epoch': 0.38}
+step 100 {'loss': 1.3329, 'grad_norm': 0.041748046875, 'learning_rate': 8.608247422680413e-06, 'epoch': 0.47}
+step 120 {'loss': 1.3377, 'grad_norm': 64.0, 'learning_rate': 8.264604810996564e-06, 'epoch': 0.56}
+step 140 {'loss': 1.3798, 'grad_norm': 44.75, 'learning_rate': 7.920962199312714e-06, 'epoch': 0.66}
+step 160 {'loss': 1.3916, 'grad_norm': 0.2001953125, 'learning_rate': 7.577319587628866e-06, 'epoch': 0.75}
+step 180 {'loss': 1.3505, 'grad_norm': 2.703125, 'learning_rate': 7.233676975945018e-06, 'epoch': 0.85}
+step 200 {'loss': 1.3419, 'grad_norm': 1.3359375, 'learning_rate': 6.890034364261169e-06, 'epoch': 0.94}
+step 220 {'loss': 1.346, 'grad_norm': 0.8125, 'learning_rate': 6.54639175257732e-06, 'epoch': 1.03}
+step 240 {'loss': 1.2851, 'grad_norm': 0.0269775390625, 'learning_rate': 6.202749140893471e-06, 'epoch': 1.13}
+step 260 {'loss': 1.3074, 'grad_norm': 0.02783203125, 'learning_rate': 5.859106529209623e-06, 'epoch': 1.22}
+step 280 {'loss': 1.3294, 'grad_norm': 2.65625, 'learning_rate': 5.515463917525774e-06, 'epoch': 1.31}
+step 300 {'loss': 1.3181, 'grad_norm': 0.0267333984375, 'learning_rate': 5.171821305841925e-06, 'epoch': 1.41}
+step 320 {'loss': 1.281, 'grad_norm': 0.765625, 'learning_rate': 4.8281786941580765e-06, 'epoch': 1.5}
+step 340 {'loss': 1.3113, 'grad_norm': 0.9453125, 'learning_rate': 4.484536082474228e-06, 'epoch': 1.6}
+step 360 {'loss': 1.304, 'grad_norm': 0.0191650390625, 'learning_rate': 4.140893470790379e-06, 'epoch': 1.69}
+step 380 {'loss': 1.3203, 'grad_norm': 0.03662109375, 'learning_rate': 3.7972508591065294e-06, 'epoch': 1.78}
+step 400 {'loss': 1.2824, 'grad_norm': 0.95703125, 'learning_rate': 3.4536082474226807e-06, 'epoch': 1.88}
+step 420 {'loss': 1.3275, 'grad_norm': 22.625, 'learning_rate': 3.109965635738832e-06, 'epoch': 1.97}
+step 440 {'loss': 1.3143, 'grad_norm': 0.03173828125, 'learning_rate': 2.766323024054983e-06, 'epoch': 2.07}
+step 460 {'loss': 1.2908, 'grad_norm': 0.027099609375, 'learning_rate': 2.422680412371134e-06, 'epoch': 2.16}
+step 480 {'loss': 1.3072, 'grad_norm': 0.03515625, 'learning_rate': 2.0790378006872853e-06, 'epoch': 2.25}
+step 500 {'loss': 1.2807, 'grad_norm': 0.05322265625, 'learning_rate': 1.7353951890034366e-06, 'epoch': 2.35}
+step 520 {'loss': 1.3025, 'grad_norm': 50.5, 'learning_rate': 1.3917525773195878e-06, 'epoch': 2.44}
+step 540 {'loss': 1.3, 'grad_norm': 0.0262451171875, 'learning_rate': 1.048109965635739e-06, 'epoch': 2.54}
+step 560 {'loss': 1.2981, 'grad_norm': 0.087890625, 'learning_rate': 7.044673539518901e-07, 'epoch': 2.63}
+step 580 {'loss': 1.2862, 'grad_norm': 26.5, 'learning_rate': 3.608247422680412e-07, 'epoch': 2.72}
+step 600 {'loss': 1.279, 'grad_norm': 0.06494140625, 'learning_rate': 1.718213058419244e-08, 'epoch': 2.82}
+final {'train_runtime': 2258.6192, 'train_samples_per_second': 4.25, 'train_steps_per_second': 0.266, 'train_loss': 1.319547532002131, 'epoch': 2.82}
+== qc_x45
+[3단계] 대조군: 가짜 양자화 없음, 학습하는 가중치 10.47B개
+[3단계] 끝: 600 step, 37.7분 → outputs/qc_x45
+step 1 {'loss': 1.4041, 'grad_norm': 8.25, 'learning_rate': 0.0, 'epoch': 0.0}
+step 20 {'loss': 1.329, 'grad_norm': 0.07421875, 'learning_rate': 9.982817869415808e-06, 'epoch': 0.09}
+step 40 {'loss': 1.3465, 'grad_norm': 1.53125, 'learning_rate': 9.63917525773196e-06, 'epoch': 0.19}
+step 60 {'loss': 1.3884, 'grad_norm': 20.0, 'learning_rate': 9.295532646048111e-06, 'epoch': 0.28}
+step 80 {'loss': 1.3568, 'grad_norm': 18.5, 'learning_rate': 8.951890034364263e-06, 'epoch': 0.38}
+step 100 {'loss': 1.3249, 'grad_norm': 2.28125, 'learning_rate': 8.608247422680413e-06, 'epoch': 0.47}
+step 120 {'loss': 1.3471, 'grad_norm': 11.8125, 'learning_rate': 8.264604810996564e-06, 'epoch': 0.56}
+step 140 {'loss': 1.374, 'grad_norm': 14.3125, 'learning_rate': 7.920962199312714e-06, 'epoch': 0.66}
+step 160 {'loss': 1.3503, 'grad_norm': 9.5, 'learning_rate': 7.577319587628866e-06, 'epoch': 0.75}
+step 180 {'loss': 1.3383, 'grad_norm': 1.2578125, 'learning_rate': 7.233676975945018e-06, 'epoch': 0.85}
+step 200 {'loss': 1.358, 'grad_norm': 49.5, 'learning_rate': 6.890034364261169e-06, 'epoch': 0.94}
+step 220 {'loss': 1.3683, 'grad_norm': 5.125, 'learning_rate': 6.54639175257732e-06, 'epoch': 1.03}
+step 240 {'loss': 1.3003, 'grad_norm': 0.134765625, 'learning_rate': 6.202749140893471e-06, 'epoch': 1.13}
+step 260 {'loss': 1.3112, 'grad_norm': 0.050537109375, 'learning_rate': 5.859106529209623e-06, 'epoch': 1.22}
+step 280 {'loss': 1.2984, 'grad_norm': 0.03173828125, 'learning_rate': 5.515463917525774e-06, 'epoch': 1.31}
+step 300 {'loss': 1.3199, 'grad_norm': 36.75, 'learning_rate': 5.171821305841925e-06, 'epoch': 1.41}
+step 320 {'loss': 1.3011, 'grad_norm': 0.0191650390625, 'learning_rate': 4.8281786941580765e-06, 'epoch': 1.5}
+step 340 {'loss': 1.3303, 'grad_norm': 51.25, 'learning_rate': 4.484536082474228e-06, 'epoch': 1.6}
+step 360 {'loss': 1.3003, 'grad_norm': 0.027587890625, 'learning_rate': 4.140893470790379e-06, 'epoch': 1.69}
+step 380 {'loss': 1.2939, 'grad_norm': 4.6875, 'learning_rate': 3.7972508591065294e-06, 'epoch': 1.78}
+step 400 {'loss': 1.287, 'grad_norm': 0.023681640625, 'learning_rate': 3.4536082474226807e-06, 'epoch': 1.88}
+step 420 {'loss': 1.2798, 'grad_norm': 0.06884765625, 'learning_rate': 3.109965635738832e-06, 'epoch': 1.97}
+step 440 {'loss': 1.3368, 'grad_norm': 0.91015625, 'learning_rate': 2.766323024054983e-06, 'epoch': 2.07}
+step 460 {'loss': 1.2764, 'grad_norm': 0.021484375, 'learning_rate': 2.422680412371134e-06, 'epoch': 2.16}
+step 480 {'loss': 1.288, 'grad_norm': 0.291015625, 'learning_rate': 2.0790378006872853e-06, 'epoch': 2.25}
+step 500 {'loss': 1.295, 'grad_norm': 0.02490234375, 'learning_rate': 1.7353951890034366e-06, 'epoch': 2.35}
+step 520 {'loss': 1.3024, 'grad_norm': 0.0284423828125, 'learning_rate': 1.3917525773195878e-06, 'epoch': 2.44}
+step 540 {'loss': 1.2778, 'grad_norm': 0.7578125, 'learning_rate': 1.048109965635739e-06, 'epoch': 2.54}
+step 560 {'loss': 1.2956, 'grad_norm': 0.0361328125, 'learning_rate': 7.044673539518901e-07, 'epoch': 2.63}
+step 580 {'loss': 1.2771, 'grad_norm': 0.4921875, 'learning_rate': 3.608247422680412e-07, 'epoch': 2.72}
+step 600 {'loss': 1.2831, 'grad_norm': 2.0, 'learning_rate': 1.718213058419244e-08, 'epoch': 2.82}
+final {'train_runtime': 2259.8181, 'train_samples_per_second': 4.248, 'train_steps_per_second': 0.266, 'train_loss': 1.3179928116003672, 'epoch': 2.82}

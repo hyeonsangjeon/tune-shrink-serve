@@ -629,6 +629,192 @@ claims:
     expected: "70.3"
     readme: docs/talk/05_recipe_sweep.md
 
+  # ---- steps/ re-run: trained from scratch with the steps/ code (H100 NVL, 2026-11-16~17) ----
+  # One re-run with seed 42 on the talk's GPU and venvs; r1_/r3_ are runs killed mid-training
+  # (SIGKILL) and finished with --resume. Raw records are exactly what steps/ wrote.
+  - id: steps_rerun_peft_acc
+    capability: "steps/ re-run, BF16 LoRA (transformers+PEFT), 2022-2024 accuracy"
+    status: recorded_hardware_run
+    command: "python steps/1_lora_train.py && python steps/4_evaluate.py"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/4_eval_1_lora_test.json
+    pointer: /accuracy
+    expected: "72.3"
+    readme: steps/README.md
+  - id: steps_rerun_unsloth_acc
+    capability: "steps/ re-run, BF16 LoRA (Unsloth), 2022-2024 accuracy"
+    status: recorded_hardware_run
+    command: "python steps/1_lora_train.py --engine unsloth && python steps/4_evaluate.py outputs/1_lora_unsloth"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/4_eval_1_lora_unsloth_test.json
+    pointer: /accuracy
+    expected: "72.5"
+    readme: steps/README.md
+  - id: steps_rerun_ptq_acc
+    capability: "steps/ re-run, INT4 PTQ from the re-trained LoRA, 2022-2024 accuracy"
+    status: recorded_hardware_run
+    command: "python steps/2_int4_ptq.py && python steps/4_evaluate.py outputs/2_int4_ptq"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/4_eval_2_int4_ptq_test.json
+    pointer: /accuracy
+    expected: "69.1"
+    readme: steps/README.md
+  - id: steps_rerun_qat_acc
+    capability: "steps/ re-run, INT4 QAT from the re-trained LoRA, 2022-2024 accuracy"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py && python steps/4_evaluate.py outputs/3_int4_qat"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/4_eval_3_int4_qat_test.json
+    pointer: /accuracy
+    expected: "70.1"
+    readme: steps/README.md
+  - id: steps_rerun_peft_train_min
+    capability: "steps/ re-run, LoRA training time, transformers+PEFT (minutes, 426 steps)"
+    status: recorded_hardware_run
+    command: "python steps/1_lora_train.py"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/1_lora_train.json
+    pointer: /train_minutes
+    expected: "24.7"
+    readme: steps/README.md
+  - id: steps_rerun_unsloth_train_min
+    capability: "steps/ re-run, LoRA training time, Unsloth (minutes, 426 steps)"
+    status: recorded_hardware_run
+    command: "python steps/1_lora_train.py --engine unsloth"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/1_lora_train_unsloth.json
+    pointer: /train_minutes
+    expected: "16.5"
+    readme: steps/README.md
+  - id: steps_rerun_qat_train_min
+    capability: "steps/ re-run, QAT training time (minutes, 600 steps)"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/3_int4_qat.json
+    pointer: /train_minutes
+    expected: "102.9"
+    readme: steps/README.md
+  - id: steps_rerun_ptq_vs_qat_diff
+    capability: "steps/ re-run, INT4 QAT minus INT4 PTQ, same questions (percentage points)"
+    status: recorded_hardware_run
+    command: "python -m quantization.kormedmcqa compare <2_int4_ptq eval> <3_int4_qat eval>"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/paired_compare.json
+    pointer: /pairs/rerun~1int4_ptq_vs_int4_qat/diff_pt
+    expected: "1.0"
+    readme: README.md
+  - id: steps_rerun_ptq_vs_qat_p
+    capability: "steps/ re-run, INT4 PTQ vs INT4 QAT, exact McNemar p (same questions)"
+    status: recorded_hardware_run
+    command: "python -m quantization.kormedmcqa compare <2_int4_ptq eval> <3_int4_qat eval>"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/paired_compare.json
+    pointer: /pairs/rerun~1int4_ptq_vs_int4_qat/mcnemar_p
+    expected: "0.02"
+    readme: README.md
+  - id: steps_rerun_ptq_vs_resumed_qat_p
+    capability: "steps/ re-run, INT4 PTQ vs the cut-and-resumed INT4 QAT, exact McNemar p"
+    status: recorded_hardware_run
+    command: "python -m quantization.kormedmcqa compare <2_int4_ptq eval> <r3_qat eval>"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/paired_compare.json
+    pointer: /pairs/rerun~1int4_ptq_vs_int4_qat_resumed/mcnemar_p
+    expected: "0.18"
+    readme: steps/README.md
+  - id: steps_resume_lora_acc
+    capability: "LoRA killed at step 110 and finished with --resume, 2022-2024 accuracy"
+    status: recorded_hardware_run
+    command: "python steps/1_lora_train.py --out outputs/r1_lora --resume"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/4_eval_r1_lora_test.json
+    pointer: /accuracy
+    expected: "72.6"
+    readme: steps/README.md
+  - id: steps_resume_qat_acc
+    capability: "QAT killed at step 160 and finished with --resume, 2022-2024 accuracy"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py --out outputs/r3_qat --resume"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/4_eval_r3_qat_test.json
+    pointer: /accuracy
+    expected: "69.7"
+    readme: steps/README.md
+  - id: steps_resume_lora_min
+    capability: "LoRA --resume, training time from checkpoint-100 to step 426 (minutes)"
+    status: recorded_hardware_run
+    command: "python steps/1_lora_train.py --out outputs/r1_lora --resume"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/r1_lora_train.json
+    pointer: /train_minutes
+    expected: "18.8"
+    readme: steps/README.md
+  - id: steps_resume_qat_min
+    capability: "QAT --resume, training time from checkpoint-150 to step 600 (minutes)"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py --out outputs/r3_qat --resume"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/r3_qat.json
+    pointer: /train_minutes
+    expected: "77.3"
+    readme: steps/README.md
+  - id: steps_resume_qat_first_loss
+    capability: "QAT --resume, first logged loss after resuming (step 160)"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py --out outputs/r3_qat --resume"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/compare.json
+    pointer: /loss/r3_after_resume_vs_3_int4_qat/first/1
+    expected: "1.3998"
+    readme: steps/README.md
+  - id: steps_qat_ckpt_dir_max_gib
+    capability: "Step 3 training folder, largest size seen while saving checkpoints (GiB, du every 30 s)"
+    status: recorded_hardware_run
+    command: "du -sh outputs/r3_qat_run every 30 s"
+    source: quantization/results/kormedmcqa_midm/steps_rerun/compare.json
+    pointer: /step3_checkpoint_disk/run_dir_max_gib
+    expected: "123"
+    readme: steps/README.md
+
+  # ---- QAT control, run after the talk (H100 NVL, 2026-11-17): fake quantization vs 600 more steps ----
+  # Per-question eval files were lost when an org automation deallocated the VM mid-run. summary.json is
+  # built from the run's printed records next to it by scripts/qat_control_summary.py (CI runs --check).
+  - id: qat_control_fake_quant_mean
+    capability: "QAT control, (1) fake quantization effect Q - X(INT4), mean of seeds 42-44 (percentage points)"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py [--no-fake-quant] --seed S --src outputs/0_start; python steps/4_evaluate.py <out>"
+    source: quantization/results/kormedmcqa_midm/qat_control/summary.json
+    pointer: "/verdicts/planned_seeds_42_43_44/1_fake_quant (Q - X int4)/mean_pt"
+    expected: "0.55"
+    readme: docs/qat_control.md
+  - id: qat_control_extra_train_int4_mean
+    capability: "QAT control, (2) extra training alone X(INT4) - P, mean of seeds 42-44 (pp; doc shows -0.13)"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py [--no-fake-quant] --seed S --src outputs/0_start; python steps/4_evaluate.py <out>"
+    source: quantization/results/kormedmcqa_midm/qat_control/summary.json
+    pointer: "/verdicts/planned_seeds_42_43_44/2_extra_training_int4 (X int4 - P)/mean_pt"
+    scale: -1
+    expected: "0.13"
+    readme: docs/qat_control.md
+  - id: qat_control_extra_train_bf16_mean
+    capability: "QAT control, (3) extra training alone X(BF16) - A, mean of seeds 42-44 (pp; doc shows -0.47)"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py [--no-fake-quant] --seed S --src outputs/0_start; python steps/4_evaluate.py <out>"
+    source: quantization/results/kormedmcqa_midm/qat_control/summary.json
+    pointer: "/verdicts/planned_seeds_42_43_44/3_extra_training_bf16 (X bf16 - A)/mean_pt"
+    scale: -1
+    expected: "0.47"
+    readme: docs/qat_control.md
+  - id: qat_control_qat_vs_ptq_mean
+    capability: "QAT control, Q - P (QAT minus PTQ) from one BF16 LoRA model, mean of seeds 42-44 (pp)"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py [--no-fake-quant] --seed S --src outputs/0_start; python steps/4_evaluate.py <out>"
+    source: quantization/results/kormedmcqa_midm/qat_control/summary.json
+    pointer: "/verdicts/planned_seeds_42_43_44/qat_vs_ptq (Q - P), not one of the three pre-registered/mean_pt"
+    expected: "0.42"
+    readme: docs/qat_control.md
+  - id: qat_control_x45_int4_acc
+    capability: "QAT control, seed 45 X(INT4) accuracy, count recovered from the per-profession lines"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py [--no-fake-quant] --seed S --src outputs/0_start; python steps/4_evaluate.py <out>"
+    source: quantization/results/kormedmcqa_midm/qat_control/summary.json
+    pointer: "/models/x45/accuracy"
+    expected: "69.325"
+    readme: docs/qat_control.md
+  - id: qat_control_vm_cost
+    capability: "QAT control, VM cost incl. the 3-minute restart to copy logs (USD, $6.98/h list price)"
+    status: recorded_hardware_run
+    command: "python steps/3_int4_qat.py [--no-fake-quant] --seed S --src outputs/0_start; python steps/4_evaluate.py <out>"
+    source: quantization/results/kormedmcqa_midm/qat_control/summary.json
+    pointer: "/vm/cost_usd"
+    expected: "72.3"
+    readme: docs/qat_control.md
+
   # ---- Planned (NOT yet executed — must never carry a measured number) -----
   - id: final_holdout_rerun
     capability: "Qwen3-8B/KorQuAD A/B/C re-evaluated on the disjoint final_holdout split"

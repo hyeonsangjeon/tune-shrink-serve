@@ -1,0 +1,7 @@
+{
+  "group_size": 128,
+  "seconds": 16.7,
+  "size_gib_before": 21.52,
+  "size_gib_after": 7.2,
+  "model_dir": "outputs/2_int4_ptq"
+}

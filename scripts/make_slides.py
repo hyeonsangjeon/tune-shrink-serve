@@ -405,7 +405,7 @@ def build_slides() -> List[Slide]:
     # 11 --------------------------------------------------------------------
     job = table_after("02_int4_quantization.md", "### 직군별 정답률")
     s.append(Slide(
-        kicker="② TorchAO INT4", title="이번 설정에서 QAT는 PTQ보다 나아지지 않음(+0.2%p, p=0.67)",
+        kicker="② TorchAO INT4", title="QAT는 PTQ보다 근소하게 높음(+0.2~1.0%p), 나은지는 정하지 못함",
         seconds=90, sources=["02_int4_quantization.md"],
         blocks=[Text((0.8, 1.95, 5.2, 0.5), ["직군별 정답률 (%), 2022~2024년"], size=15, color=MUTE,
                      bullets=False),
@@ -416,15 +416,15 @@ def build_slides() -> List[Slide]:
                     size=15, color=INK2, bullets=False),
                 Text((7.7, 1.95, 4.8, 0.5), ["이 결과로 말할 수 없는 것"], size=15, color=MUTE, bullets=False),
                 Text((7.7, 2.45, 4.8, 4.3), [
-                    "\"QAT는 효과가 없다\"로 일반화할 수 없음",
+                    "QAT가 PTQ보다 낫다고도, 같다고도\n할 수 없음",
                     "QAT 설정 하나: 학습률 1e-5, 600 step",
                     "INT4 방식 하나: weight-only, group 128,\ntile-packed",
-                    "seed 하나, GPU 한 종류",
+                    "출발한 BF16 LoRA 모델은 둘뿐\n(여섯 번 중 네 번이 같은 모델)",
                 ], size=17, space=12)],
-        notes=("QAT는 PTQ보다 0.2%p 높았지만 p=0.67이라 같다고 봐야 합니다. 정답률이 내려간 정도는 직군마다 "
-               "다릅니다. 의사, 간호사, 약사는 2.5~4.1%p, 치과의사는 0.7~1.2%p만 내려갔습니다. 다만 QAT 설정은 "
-               "학습률 1e-5, 600 step 하나뿐이고 INT4 방식도 하나만 쟀습니다. 그래서 QAT는 효과가 없다고 "
-               "일반화할 수는 없습니다."),
+        notes=("이 실행에서 QAT는 PTQ보다 0.2%p 높았습니다. 다시 학습하거나 seed를 바꿔 여섯 번 비교해도 QAT가 "
+               "매번 0.2~1.0%p 높았습니다. 다만 그 차이가 문항에서 오는 오차와 비슷해서, 나은지는 정할 수 없습니다. "
+               "정답률이 내려간 정도는 직군마다 다르고, 치과의사는 0.7~1.2%p만 내려갔습니다. "
+               "QAT 설정은 학습률 1e-5, 600 step 하나뿐입니다."),
         must_say=["QAT 설정은", "하나뿐"]))
 
     s.append(section_slide(
@@ -622,13 +622,13 @@ def build_slides() -> List[Slide]:
         seconds=90, sources=["README.md"],
         blocks=[Text((0.8, 1.95, 11.7, 4.9), [
             "**① Unsloth LoRA** 같은 LoRA 학습 24.3분 → 15.7분, 정답률 차이 없음(p=0.89)",
-            "**② TorchAO INT4** 크기 3분의 1, 정답률 −2.9%p(PTQ)·−2.6%p(QAT), QAT와 PTQ 차이 없음(p=0.67)",
+            "**② TorchAO INT4** 크기 3분의 1, 정답률 −2.9%p(PTQ)·−2.6%p(QAT), QAT는 PTQ보다 근소하게 높지만 나은지는 정하지 못함",
             "**③ vLLM 서빙** INT4·동시 요청 1에서 prefix caching으로 첫 토큰 542 → 110 ms. "
             "요청이 몰리면 BF16이 앞섬: 온라인 약 3배, 오프라인 초당 7,600 대 800토큰대",
             "**④ SLM 대 API** 정답률은 API 11개 중 10개가 위(최고 98.4%), 한꺼번에 풀 때 비용은 자체 GPU BF16 $0.0111이 가장 쌈(정가로 계산)",
         ], size=19, space=18)],
         notes=("네 줄로 정리합니다. Unsloth는 같은 LoRA 학습을 24.3분에서 15.7분으로 줄였고 정답률은 같았습니다. "
-               "TorchAO INT4는 크기를 3분의 1로 줄이고 정답률을 2.6~2.9%p 잃었고, QAT는 PTQ와 같았습니다. "
+               "TorchAO INT4는 크기를 3분의 1로 줄이고 정답률을 2.6~2.9%p 잃었습니다. QAT는 PTQ보다 조금 높았지만 나은지는 정하지 못했습니다. "
                "서빙 속도는 요청 수에 따라 뒤집히고, 요청이 몰리면 BF16이 앞섭니다. API 대부분이 더 정확했고, 한꺼번에 풀 때는 "
                "자체 GPU가 가장 쌌습니다.")))
 

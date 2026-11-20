@@ -1,0 +1,8 @@
+{
+  "engine": "peft",
+  "steps": 426,
+  "train_minutes": 24.7,
+  "last_loss": 1.4348,
+  "peak_torch_allocated_gib": 36.8,
+  "model_dir": "outputs/1_lora"
+}

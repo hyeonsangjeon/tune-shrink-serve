@@ -1,0 +1,8 @@
+{
+  "engine": "unsloth",
+  "steps": 426,
+  "train_minutes": 16.5,
+  "last_loss": 1.4374,
+  "peak_torch_allocated_gib": 24.5,
+  "model_dir": "outputs/1_lora_unsloth"
+}

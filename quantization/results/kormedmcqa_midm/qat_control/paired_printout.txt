@@ -1,0 +1,27 @@
+# Copied from the QAT control run on the H100 VM (2026-11-17). Paths shortened to ~/. See docs/qat_control.md.
+# qc_status.py output after seed 44 (per-question files were on the VM's local NVMe and are lost)
+A          72.316% (2176)
+p          69.458% (2090)
+q42        69.957% (2105)
+q43        69.957% (2105)
+q44        69.724% (2098)
+x42        69.425% (2089)
+x42_bf16   71.751% (2159)
+x43        69.392% (2088)
+x43_bf16   72.051% (2168)
+x44        69.159% (2081)
+x44_bf16   71.751% (2159)
+(1) fake quant s42           q42-x42: +0.53%p  only q42 114 vs only x42 98  p=0.303
+(2) extra train INT4 s42     x42-p: -0.03%p  only x42 125 vs only p 126  p=1.000
+(3) extra train BF16 s42     x42_bf16-A: -0.56%p  only x42_bf16 64 vs only A 81  p=0.184
+QAT vs PTQ s42               q42-p: +0.50%p  only q42 107 vs only p 92  p=0.321
+(1) fake quant s43           q43-x43: +0.56%p  only q43 120 vs only x43 103  p=0.284
+(2) extra train INT4 s43     x43-p: -0.07%p  only x43 117 vs only p 119  p=0.948
+(3) extra train BF16 s43     x43_bf16-A: -0.27%p  only x43_bf16 57 vs only A 65  p=0.526
+QAT vs PTQ s43               q43-p: +0.50%p  only q43 98 vs only p 83  p=0.298
+(1) fake quant s44           q44-x44: +0.56%p  only q44 120 vs only x44 103  p=0.284
+(2) extra train INT4 s44     x44-p: -0.30%p  only x44 103 vs only p 112  p=0.585
+(3) extra train BF16 s44     x44_bf16-A: -0.56%p  only x44_bf16 58 vs only A 75  p=0.165
+QAT vs PTQ s44               q44-p: +0.27%p  only q44 106 vs only p 98  p=0.624
+# P against the talk PTQ eval file, same 3,009 questions (printed on the VM after P was scored)
+P 69.458 2090 talk B 69.458 2090 same answer 3009

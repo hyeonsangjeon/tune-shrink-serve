@@ -5,6 +5,8 @@
     python steps/3_int4_qat.py --max-steps 5    # 먼저 5 step만 돌려 보기
     python steps/3_int4_qat.py --batch-size 2 --grad-accum 8   # 80GB GPU (한 step 16문항은 같음)
     python steps/3_int4_qat.py --resume         # 끊긴 학습을 마지막 체크포인트부터 이어 가기
+    python steps/3_int4_qat.py --no-fake-quant --out outputs/3_extra   # 대조군: 가짜 양자화만 빼고 똑같이 학습
+    python steps/3_int4_qat.py --seed 43 --out outputs/3_int4_qat_s43  # 학습 문항 순서만 바꿔 다시 학습
 
 만드는 것
     outputs/3_int4_qat_bf16/   INT4를 흉내 내며 학습한 BF16 모델
@@ -21,6 +23,12 @@ PTQ(2단계)와 무엇이 다른가
     (가짜 양자화, fake quantization). 그래서 모델이 반올림 오차를 겪으면서 가중치를 고칩니다.
     backward에서는 반올림이 없었던 것처럼 기울기를 그대로 흘립니다(STE, straight-through estimator).
     학습이 끝나면 가짜 양자화를 걷어내고, 2단계와 똑같이 INT4로 저장합니다.
+
+대조군 (--no-fake-quant)
+    QAT는 반올림을 겪으며 학습하는 것에 더해, 같은 학습 문항으로 600 step을 더 학습합니다.
+    QAT가 PTQ보다 나을 때 어느 쪽 덕분인지 가르려고, 가짜 양자화만 빼고 나머지(학습하는 층,
+    학습률, step 수, 8비트 Adam, seed)를 똑같이 둔 학습을 돌릴 수 있게 했습니다. 끝나면 BF16 모델을
+    2단계와 같은 방법으로 INT4로 바꿉니다. 즉 "더 학습한 BF16 모델의 PTQ"입니다.
 
 메모리
     LoRA가 아니라 출력층(lm_head)을 뺀 모든 선형층의 가중치(약 105억 개)를 직접 학습합니다.
@@ -89,6 +97,21 @@ def train_only_fake_quant_layers(model) -> int:
     return n
 
 
+def train_only_target_linears(model) -> int:
+    """대조군(--no-fake-quant)용: 가짜 양자화를 넣었을 때와 같은 층(lm_head를 뺀 nn.Linear)만 학습합니다.
+
+    QAT와 학습하는 가중치가 같아야 비교가 됩니다. 돌려주는 값을 QAT 쪽 값과 맞춰 봅니다.
+    """
+    for p in model.parameters():
+        p.requires_grad_(False)
+    n = 0
+    for name, m in model.named_modules():
+        if is_target_linear(m, name):
+            m.weight.requires_grad_(True)
+            n += m.weight.numel()
+    return n
+
+
 def remove_fake_quant(model) -> None:
     """학습이 끝나면 FakeQuantizedLinear를 보통 nn.Linear로 되돌립니다.
 
@@ -102,7 +125,7 @@ def remove_fake_quant(model) -> None:
 
 
 def train(model, tok, train_dataset, run_dir: str, batch_size: int, grad_accum: int,
-          max_steps: int, resume: bool = False):
+          max_steps: int, resume: bool = False, seed: int = C.SEED):
     """1단계와 같은 Trainer로 학습합니다. 다른 것은 학습률, step 수, 8비트 Adam입니다.
 
     resume=True면 run_dir의 마지막 체크포인트부터 이어 갑니다. 가짜 양자화를 넣은 뒤에
@@ -124,7 +147,7 @@ def train(model, tok, train_dataset, run_dir: str, batch_size: int, grad_accum: 
         optim=OPTIM,
         bf16=True,
         gradient_checkpointing=False,       # 위에서 모델에 직접 켰습니다
-        seed=C.SEED,
+        seed=seed,                          # 학습 문항을 섞는 순서
         logging_steps=20,
         logging_first_step=True,
         save_strategy="steps",
@@ -147,6 +170,9 @@ def main(argv=None) -> int:
     ap.add_argument("--grad-accum", type=int, default=GRAD_ACCUM, help="80GB GPU면 8")
     ap.add_argument("--resume", action="store_true",
                     help="끊긴 학습을 outputs/3_int4_qat_run/의 마지막 체크포인트부터 이어 갑니다")
+    ap.add_argument("--no-fake-quant", action="store_true",
+                    help="대조군: 가짜 양자화 없이 같은 층을 같은 설정으로 학습한 뒤 INT4로 바꿉니다")
+    ap.add_argument("--seed", type=int, default=C.SEED, help="학습 문항을 섞는 seed (기본: 42)")
     args = ap.parse_args(argv)
 
     if not os.path.isfile(os.path.join(args.src, "config.json")):
@@ -160,9 +186,14 @@ def main(argv=None) -> int:
     _, st = C.load_settings()
     tok = C.prepare_tokenizer(AutoTokenizer.from_pretrained(args.src), st)
     model = AutoModelForCausalLM.from_pretrained(args.src, dtype=torch.bfloat16, device_map="cuda")
-    n_layers = add_fake_quant(model, GROUP_SIZE)
-    n_weights = train_only_fake_quant_layers(model)
-    print(f"[3단계] 가짜 양자화를 넣은 선형층 {n_layers}개, 학습하는 가중치 {n_weights / 1e9:.2f}B개")
+    if args.no_fake_quant:
+        n_layers = 0
+        n_weights = train_only_target_linears(model)
+        print(f"[3단계] 대조군: 가짜 양자화 없음, 학습하는 가중치 {n_weights / 1e9:.2f}B개")
+    else:
+        n_layers = add_fake_quant(model, GROUP_SIZE)
+        n_weights = train_only_fake_quant_layers(model)
+        print(f"[3단계] 가짜 양자화를 넣은 선형층 {n_layers}개, 학습하는 가중치 {n_weights / 1e9:.2f}B개")
 
     # 2. 1단계와 같은 학습 문항으로 학습합니다.
     examples = C.load_questions("train")
@@ -170,13 +201,14 @@ def main(argv=None) -> int:
     run_dir = args.out + "_run"
     t0 = time.time()
     trainer = train(model, tok, train_dataset, run_dir,
-                    args.batch_size, args.grad_accum, args.max_steps, args.resume)
+                    args.batch_size, args.grad_accum, args.max_steps, args.resume, args.seed)
     seconds = time.time() - t0
 
-    # 3. 가짜 양자화를 걷어내고 BF16으로 저장합니다. 학습 결과는 이 BF16 모델에 다 들어 있으므로
+    # 3. 가짜 양자화를 걷어내고(대조군은 걷어낼 것이 없습니다) BF16으로 저장합니다. 학습 결과는 이 BF16 모델에 다 들어 있으므로
     #    이어 가기용 체크포인트(하나에 약 42GB)는 여기서 지웁니다.
     model = trainer.model
-    remove_fake_quant(model)
+    if not args.no_fake_quant:
+        remove_fake_quant(model)
     os.makedirs(bf16_dir, exist_ok=True)
     model.save_pretrained(bf16_dir)
     tok.save_pretrained(bf16_dir)
@@ -192,6 +224,9 @@ def main(argv=None) -> int:
 
     C.write_json(args.out + ".json", {
         "group_size": GROUP_SIZE,
+        "fake_quant": not args.no_fake_quant,
+        "seed": args.seed,
+        "src": os.path.relpath(args.src, C.ROOT),
         "steps": steps,
         "train_minutes": round(seconds / 60, 1),
         "last_loss": losses[-1] if losses else None,
@@ -200,7 +235,7 @@ def main(argv=None) -> int:
         "model_dir": os.path.relpath(args.out, C.ROOT),
     })
     print(f"[3단계] 끝: {steps} step, {seconds / 60:.1f}분 → {args.out}")
-    print("[다음] python steps/4_evaluate.py outputs/3_int4_qat")
+    print(f"[다음] python steps/4_evaluate.py {os.path.relpath(args.out, C.ROOT)}")
     return 0
 
 

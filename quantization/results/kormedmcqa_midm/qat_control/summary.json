@@ -1,0 +1,1395 @@
+{
+ "what": "QAT control: does INT4 QAT beat INT4 PTQ because of fake quantization or because of 600 more training steps?",
+ "plan": "docs/qat_control.md (written before the run, 2026-11-17 05:31 UTC)",
+ "test_questions": 3009,
+ "provenance": "Per-question eval files were on the VM's local NVMe and were lost when an org automation deallocated the VM at 2026-11-17T15:50:12Z. Every number here comes from text the run printed (files next to this one) or from the talk's committed eval JSONs. Paired counts exist only for seeds 42-44; seed 45 has accuracy only; seed 45 QAT stopped at step 346/600; seed 46 never ran.",
+ "p_same_answers_as_talk_ptq": 3009,
+ "models": {
+  "A": {
+   "accuracy": 72.316,
+   "correct": 2176,
+   "unparsed": 0,
+   "from": "eval_vllm_A_bf16_seed42_h100.json (talk)"
+  },
+  "p": {
+   "accuracy": 69.458,
+   "correct": 2090,
+   "unparsed": 0,
+   "from": "run_log.txt"
+  },
+  "q42": {
+   "accuracy": 69.957,
+   "correct": 2105,
+   "unparsed": 0,
+   "from": "run_log.txt"
+  },
+  "q43": {
+   "accuracy": 69.957,
+   "correct": 2105,
+   "unparsed": 0,
+   "from": "run_log.txt"
+  },
+  "q44": {
+   "accuracy": 69.724,
+   "correct": 2098,
+   "unparsed": 0,
+   "from": "run_log.txt"
+  },
+  "x42": {
+   "accuracy": 69.425,
+   "correct": 2089,
+   "unparsed": 0,
+   "from": "run_log.txt"
+  },
+  "x42_bf16": {
+   "accuracy": 71.751,
+   "correct": 2159,
+   "unparsed": 0,
+   "from": "run_log.txt"
+  },
+  "x43": {
+   "accuracy": 69.392,
+   "correct": 2088,
+   "unparsed": 2,
+   "from": "run_log.txt"
+  },
+  "x43_bf16": {
+   "accuracy": 72.051,
+   "correct": 2168,
+   "unparsed": 0,
+   "from": "run_log.txt"
+  },
+  "x44": {
+   "accuracy": 69.159,
+   "correct": 2081,
+   "unparsed": 0,
+   "from": "run_log.txt"
+  },
+  "x44_bf16": {
+   "accuracy": 71.751,
+   "correct": 2159,
+   "unparsed": 0,
+   "from": "run_log.txt"
+  },
+  "x45": {
+   "accuracy": 69.325,
+   "correct": 2086,
+   "unparsed": 0,
+   "from": "eval_printouts.txt (count recovered from the per-profession lines)"
+  },
+  "x45_bf16": {
+   "accuracy": 71.851,
+   "correct": 2162,
+   "unparsed": 0,
+   "from": "eval_printouts.txt (count recovered from the per-profession lines)"
+  }
+ },
+ "comparisons": {
+  "1_fake_quant (Q - X int4)": {
+   "42": {
+    "first": "q42",
+    "second": "x42",
+    "diff_pt": 0.532,
+    "only_first_right": 114,
+    "only_second_right": 98,
+    "mcnemar_p": 0.303
+   },
+   "43": {
+    "first": "q43",
+    "second": "x43",
+    "diff_pt": 0.565,
+    "only_first_right": 120,
+    "only_second_right": 103,
+    "mcnemar_p": 0.284
+   },
+   "44": {
+    "first": "q44",
+    "second": "x44",
+    "diff_pt": 0.565,
+    "only_first_right": 120,
+    "only_second_right": 103,
+    "mcnemar_p": 0.284
+   }
+  },
+  "2_extra_training_int4 (X int4 - P)": {
+   "42": {
+    "first": "x42",
+    "second": "p",
+    "diff_pt": -0.033,
+    "only_first_right": 125,
+    "only_second_right": 126,
+    "mcnemar_p": 1.0
+   },
+   "43": {
+    "first": "x43",
+    "second": "p",
+    "diff_pt": -0.066,
+    "only_first_right": 117,
+    "only_second_right": 119,
+    "mcnemar_p": 0.948
+   },
+   "44": {
+    "first": "x44",
+    "second": "p",
+    "diff_pt": -0.299,
+    "only_first_right": 103,
+    "only_second_right": 112,
+    "mcnemar_p": 0.585
+   },
+   "45": {
+    "first": "x45",
+    "second": "p",
+    "diff_pt": -0.133,
+    "only_first_right": null,
+    "only_second_right": null,
+    "mcnemar_p": null,
+    "note": "per-question files lost before this pair was compared"
+   }
+  },
+  "3_extra_training_bf16 (X bf16 - A)": {
+   "42": {
+    "first": "x42_bf16",
+    "second": "A",
+    "diff_pt": -0.565,
+    "only_first_right": 64,
+    "only_second_right": 81,
+    "mcnemar_p": 0.184
+   },
+   "43": {
+    "first": "x43_bf16",
+    "second": "A",
+    "diff_pt": -0.266,
+    "only_first_right": 57,
+    "only_second_right": 65,
+    "mcnemar_p": 0.526
+   },
+   "44": {
+    "first": "x44_bf16",
+    "second": "A",
+    "diff_pt": -0.565,
+    "only_first_right": 58,
+    "only_second_right": 75,
+    "mcnemar_p": 0.165
+   },
+   "45": {
+    "first": "x45_bf16",
+    "second": "A",
+    "diff_pt": -0.465,
+    "only_first_right": null,
+    "only_second_right": null,
+    "mcnemar_p": null,
+    "note": "per-question files lost before this pair was compared"
+   }
+  },
+  "qat_vs_ptq (Q - P), not one of the three pre-registered": {
+   "42": {
+    "first": "q42",
+    "second": "p",
+    "diff_pt": 0.499,
+    "only_first_right": 107,
+    "only_second_right": 92,
+    "mcnemar_p": 0.321
+   },
+   "43": {
+    "first": "q43",
+    "second": "p",
+    "diff_pt": 0.499,
+    "only_first_right": 98,
+    "only_second_right": 83,
+    "mcnemar_p": 0.298
+   },
+   "44": {
+    "first": "q44",
+    "second": "p",
+    "diff_pt": 0.266,
+    "only_first_right": 106,
+    "only_second_right": 98,
+    "mcnemar_p": 0.624
+   }
+  }
+ },
+ "verdicts": {
+  "rule": "effect: every seed same sign and |mean| >= 0.5%p; no effect: |mean| <= 0.2%p; else undecided",
+  "planned_seeds_42_43_44": {
+   "1_fake_quant (Q - X int4)": {
+    "seeds": [
+     42,
+     43,
+     44
+    ],
+    "diffs_pt": [
+     0.532,
+     0.565,
+     0.565
+    ],
+    "mean_pt": 0.554,
+    "verdict": "effect"
+   },
+   "2_extra_training_int4 (X int4 - P)": {
+    "seeds": [
+     42,
+     43,
+     44
+    ],
+    "diffs_pt": [
+     -0.033,
+     -0.066,
+     -0.299
+    ],
+    "mean_pt": -0.133,
+    "verdict": "no effect"
+   },
+   "3_extra_training_bf16 (X bf16 - A)": {
+    "seeds": [
+     42,
+     43,
+     44
+    ],
+    "diffs_pt": [
+     -0.565,
+     -0.266,
+     -0.565
+    ],
+    "mean_pt": -0.465,
+    "verdict": "undecided"
+   },
+   "qat_vs_ptq (Q - P), not one of the three pre-registered": {
+    "seeds": [
+     42,
+     43,
+     44
+    ],
+    "diffs_pt": [
+     0.499,
+     0.499,
+     0.266
+    ],
+    "mean_pt": 0.421,
+    "verdict": "undecided"
+   }
+  },
+  "all_finished_seeds (seeds 45-46 were added on 2026-11-17 09:15 UTC; only seed 45 X finished)": {
+   "1_fake_quant (Q - X int4)": {
+    "seeds": [
+     42,
+     43,
+     44
+    ],
+    "diffs_pt": [
+     0.532,
+     0.565,
+     0.565
+    ],
+    "mean_pt": 0.554,
+    "verdict": "effect"
+   },
+   "2_extra_training_int4 (X int4 - P)": {
+    "seeds": [
+     42,
+     43,
+     44,
+     45
+    ],
+    "diffs_pt": [
+     -0.033,
+     -0.066,
+     -0.299,
+     -0.133
+    ],
+    "mean_pt": -0.133,
+    "verdict": "no effect"
+   },
+   "3_extra_training_bf16 (X bf16 - A)": {
+    "seeds": [
+     42,
+     43,
+     44,
+     45
+    ],
+    "diffs_pt": [
+     -0.565,
+     -0.266,
+     -0.565,
+     -0.465
+    ],
+    "mean_pt": -0.465,
+    "verdict": "undecided"
+   },
+   "qat_vs_ptq (Q - P), not one of the three pre-registered": {
+    "seeds": [
+     42,
+     43,
+     44
+    ],
+    "diffs_pt": [
+     0.499,
+     0.499,
+     0.266
+    ],
+    "mean_pt": 0.421,
+    "verdict": "undecided"
+   }
+  }
+ },
+ "train": {
+  "q42": {
+   "fake_quant": true,
+   "steps": 600,
+   "train_runtime_s": 6064.2,
+   "mean_train_loss": 1.3364,
+   "last_logged": [
+    600,
+    1.2988
+   ],
+   "trained_weights": 10468982784,
+   "seed": 42
+  },
+  "q43": {
+   "fake_quant": true,
+   "steps": 600,
+   "train_runtime_s": 6062.6,
+   "mean_train_loss": 1.3436,
+   "last_logged": [
+    600,
+    1.3322
+   ],
+   "trained_weights": 10468982784,
+   "seed": 43
+  },
+  "q44": {
+   "fake_quant": true,
+   "steps": 600,
+   "train_runtime_s": 6063.1,
+   "mean_train_loss": 1.3376,
+   "last_logged": [
+    600,
+    1.2797
+   ],
+   "trained_weights": 10468982784,
+   "seed": 44
+  },
+  "q45": {
+   "fake_quant": true,
+   "steps": 346,
+   "stopped": "VM deallocated by an org automation",
+   "last_logged": [
+    340,
+    1.323
+   ]
+  },
+  "x42": {
+   "fake_quant": false,
+   "steps": 600,
+   "train_runtime_s": 2258.1,
+   "mean_train_loss": 1.3168,
+   "last_logged": [
+    600,
+    1.2904
+   ],
+   "trained_weights": 10468982784,
+   "seed": 42
+  },
+  "x43": {
+   "fake_quant": false,
+   "steps": 600,
+   "train_runtime_s": 2256.7,
+   "mean_train_loss": 1.3195,
+   "last_logged": [
+    600,
+    1.2946
+   ],
+   "trained_weights": 10468982784,
+   "seed": 43
+  },
+  "x44": {
+   "fake_quant": false,
+   "steps": 600,
+   "train_runtime_s": 2258.6,
+   "mean_train_loss": 1.3195,
+   "last_logged": [
+    600,
+    1.279
+   ],
+   "trained_weights": 10468982784,
+   "seed": 44
+  },
+  "x45": {
+   "fake_quant": false,
+   "steps": 600,
+   "train_runtime_s": 2259.8,
+   "mean_train_loss": 1.318,
+   "last_logged": [
+    600,
+    1.2831
+   ]
+  }
+ },
+ "loss_every_20_steps": {
+  "q42": [
+   [
+    1,
+    1.3766
+   ],
+   [
+    20,
+    1.4866
+   ],
+   [
+    40,
+    1.4091
+   ],
+   [
+    60,
+    1.3659
+   ],
+   [
+    80,
+    1.3753
+   ],
+   [
+    100,
+    1.3701
+   ],
+   [
+    120,
+    1.3093
+   ],
+   [
+    140,
+    1.3766
+   ],
+   [
+    160,
+    1.3888
+   ],
+   [
+    180,
+    1.4121
+   ],
+   [
+    200,
+    1.4211
+   ],
+   [
+    220,
+    1.3635
+   ],
+   [
+    240,
+    1.2825
+   ],
+   [
+    260,
+    1.3048
+   ],
+   [
+    280,
+    1.284
+   ],
+   [
+    300,
+    1.3132
+   ],
+   [
+    320,
+    1.2984
+   ],
+   [
+    340,
+    1.3071
+   ],
+   [
+    360,
+    1.3184
+   ],
+   [
+    380,
+    1.3205
+   ],
+   [
+    400,
+    1.336
+   ],
+   [
+    420,
+    1.3487
+   ],
+   [
+    440,
+    1.3371
+   ],
+   [
+    460,
+    1.2891
+   ],
+   [
+    480,
+    1.3127
+   ],
+   [
+    500,
+    1.3153
+   ],
+   [
+    520,
+    1.2863
+   ],
+   [
+    540,
+    1.2804
+   ],
+   [
+    560,
+    1.2827
+   ],
+   [
+    580,
+    1.3031
+   ],
+   [
+    600,
+    1.2988
+   ]
+  ],
+  "q43": [
+   [
+    1,
+    1.3772
+   ],
+   [
+    20,
+    1.3607
+   ],
+   [
+    40,
+    1.4077
+   ],
+   [
+    60,
+    1.3557
+   ],
+   [
+    80,
+    1.336
+   ],
+   [
+    100,
+    1.3975
+   ],
+   [
+    120,
+    1.3532
+   ],
+   [
+    140,
+    1.4
+   ],
+   [
+    160,
+    1.4123
+   ],
+   [
+    180,
+    1.4348
+   ],
+   [
+    200,
+    1.4653
+   ],
+   [
+    220,
+    1.4165
+   ],
+   [
+    240,
+    1.305
+   ],
+   [
+    260,
+    1.3269
+   ],
+   [
+    280,
+    1.347
+   ],
+   [
+    300,
+    1.3385
+   ],
+   [
+    320,
+    1.2802
+   ],
+   [
+    340,
+    1.3097
+   ],
+   [
+    360,
+    1.3038
+   ],
+   [
+    380,
+    1.3669
+   ],
+   [
+    400,
+    1.3269
+   ],
+   [
+    420,
+    1.3217
+   ],
+   [
+    440,
+    1.3035
+   ],
+   [
+    460,
+    1.2864
+   ],
+   [
+    480,
+    1.2966
+   ],
+   [
+    500,
+    1.303
+   ],
+   [
+    520,
+    1.2998
+   ],
+   [
+    540,
+    1.3115
+   ],
+   [
+    560,
+    1.3091
+   ],
+   [
+    580,
+    1.2973
+   ],
+   [
+    600,
+    1.3322
+   ]
+  ],
+  "q44": [
+   [
+    1,
+    1.4002
+   ],
+   [
+    20,
+    1.3937
+   ],
+   [
+    40,
+    1.3793
+   ],
+   [
+    60,
+    1.4186
+   ],
+   [
+    80,
+    1.3599
+   ],
+   [
+    100,
+    1.3898
+   ],
+   [
+    120,
+    1.3821
+   ],
+   [
+    140,
+    1.3878
+   ],
+   [
+    160,
+    1.439
+   ],
+   [
+    180,
+    1.3912
+   ],
+   [
+    200,
+    1.3689
+   ],
+   [
+    220,
+    1.3658
+   ],
+   [
+    240,
+    1.3039
+   ],
+   [
+    260,
+    1.3155
+   ],
+   [
+    280,
+    1.3203
+   ],
+   [
+    300,
+    1.3017
+   ],
+   [
+    320,
+    1.2836
+   ],
+   [
+    340,
+    1.3333
+   ],
+   [
+    360,
+    1.3264
+   ],
+   [
+    380,
+    1.3448
+   ],
+   [
+    400,
+    1.3168
+   ],
+   [
+    420,
+    1.3397
+   ],
+   [
+    440,
+    1.2818
+   ],
+   [
+    460,
+    1.3017
+   ],
+   [
+    480,
+    1.3092
+   ],
+   [
+    500,
+    1.2894
+   ],
+   [
+    520,
+    1.3006
+   ],
+   [
+    540,
+    1.2939
+   ],
+   [
+    560,
+    1.3025
+   ],
+   [
+    580,
+    1.3061
+   ],
+   [
+    600,
+    1.2797
+   ]
+  ],
+  "q45": [
+   [
+    1,
+    1.5316
+   ],
+   [
+    20,
+    1.3861
+   ],
+   [
+    40,
+    1.3812
+   ],
+   [
+    60,
+    1.4166
+   ],
+   [
+    80,
+    1.3831
+   ],
+   [
+    100,
+    1.3654
+   ],
+   [
+    120,
+    1.3832
+   ],
+   [
+    140,
+    1.4041
+   ],
+   [
+    160,
+    1.3948
+   ],
+   [
+    180,
+    1.3559
+   ],
+   [
+    200,
+    1.3763
+   ],
+   [
+    220,
+    1.3823
+   ],
+   [
+    240,
+    1.3046
+   ],
+   [
+    260,
+    1.3147
+   ],
+   [
+    280,
+    1.3056
+   ],
+   [
+    300,
+    1.3092
+   ],
+   [
+    320,
+    1.3291
+   ],
+   [
+    340,
+    1.323
+   ]
+  ],
+  "x42": [
+   [
+    1,
+    1.3435
+   ],
+   [
+    20,
+    1.4075
+   ],
+   [
+    40,
+    1.3747
+   ],
+   [
+    60,
+    1.3436
+   ],
+   [
+    80,
+    1.3398
+   ],
+   [
+    100,
+    1.3237
+   ],
+   [
+    120,
+    1.2949
+   ],
+   [
+    140,
+    1.3531
+   ],
+   [
+    160,
+    1.3297
+   ],
+   [
+    180,
+    1.3771
+   ],
+   [
+    200,
+    1.3498
+   ],
+   [
+    220,
+    1.3517
+   ],
+   [
+    240,
+    1.2777
+   ],
+   [
+    260,
+    1.2974
+   ],
+   [
+    280,
+    1.2813
+   ],
+   [
+    300,
+    1.2952
+   ],
+   [
+    320,
+    1.2957
+   ],
+   [
+    340,
+    1.289
+   ],
+   [
+    360,
+    1.312
+   ],
+   [
+    380,
+    1.3111
+   ],
+   [
+    400,
+    1.3317
+   ],
+   [
+    420,
+    1.3303
+   ],
+   [
+    440,
+    1.3101
+   ],
+   [
+    460,
+    1.2886
+   ],
+   [
+    480,
+    1.2936
+   ],
+   [
+    500,
+    1.3086
+   ],
+   [
+    520,
+    1.2788
+   ],
+   [
+    540,
+    1.2776
+   ],
+   [
+    560,
+    1.2865
+   ],
+   [
+    580,
+    1.3056
+   ],
+   [
+    600,
+    1.2904
+   ]
+  ],
+  "x43": [
+   [
+    1,
+    1.3391
+   ],
+   [
+    20,
+    1.3199
+   ],
+   [
+    40,
+    1.3482
+   ],
+   [
+    60,
+    1.3117
+   ],
+   [
+    80,
+    1.302
+   ],
+   [
+    100,
+    1.346
+   ],
+   [
+    120,
+    1.3158
+   ],
+   [
+    140,
+    1.3447
+   ],
+   [
+    160,
+    1.3756
+   ],
+   [
+    180,
+    1.3927
+   ],
+   [
+    200,
+    1.4123
+   ],
+   [
+    220,
+    1.433
+   ],
+   [
+    240,
+    1.3047
+   ],
+   [
+    260,
+    1.3034
+   ],
+   [
+    280,
+    1.3153
+   ],
+   [
+    300,
+    1.2971
+   ],
+   [
+    320,
+    1.2775
+   ],
+   [
+    340,
+    1.2977
+   ],
+   [
+    360,
+    1.3056
+   ],
+   [
+    380,
+    1.3435
+   ],
+   [
+    400,
+    1.3082
+   ],
+   [
+    420,
+    1.2992
+   ],
+   [
+    440,
+    1.2801
+   ],
+   [
+    460,
+    1.2825
+   ],
+   [
+    480,
+    1.2888
+   ],
+   [
+    500,
+    1.3029
+   ],
+   [
+    520,
+    1.3076
+   ],
+   [
+    540,
+    1.2958
+   ],
+   [
+    560,
+    1.2785
+   ],
+   [
+    580,
+    1.2991
+   ],
+   [
+    600,
+    1.2946
+   ]
+  ],
+  "x44": [
+   [
+    1,
+    1.3197
+   ],
+   [
+    20,
+    1.3369
+   ],
+   [
+    40,
+    1.3305
+   ],
+   [
+    60,
+    1.3737
+   ],
+   [
+    80,
+    1.3403
+   ],
+   [
+    100,
+    1.3329
+   ],
+   [
+    120,
+    1.3377
+   ],
+   [
+    140,
+    1.3798
+   ],
+   [
+    160,
+    1.3916
+   ],
+   [
+    180,
+    1.3505
+   ],
+   [
+    200,
+    1.3419
+   ],
+   [
+    220,
+    1.346
+   ],
+   [
+    240,
+    1.2851
+   ],
+   [
+    260,
+    1.3074
+   ],
+   [
+    280,
+    1.3294
+   ],
+   [
+    300,
+    1.3181
+   ],
+   [
+    320,
+    1.281
+   ],
+   [
+    340,
+    1.3113
+   ],
+   [
+    360,
+    1.304
+   ],
+   [
+    380,
+    1.3203
+   ],
+   [
+    400,
+    1.2824
+   ],
+   [
+    420,
+    1.3275
+   ],
+   [
+    440,
+    1.3143
+   ],
+   [
+    460,
+    1.2908
+   ],
+   [
+    480,
+    1.3072
+   ],
+   [
+    500,
+    1.2807
+   ],
+   [
+    520,
+    1.3025
+   ],
+   [
+    540,
+    1.3
+   ],
+   [
+    560,
+    1.2981
+   ],
+   [
+    580,
+    1.2862
+   ],
+   [
+    600,
+    1.279
+   ]
+  ],
+  "x45": [
+   [
+    1,
+    1.4041
+   ],
+   [
+    20,
+    1.329
+   ],
+   [
+    40,
+    1.3465
+   ],
+   [
+    60,
+    1.3884
+   ],
+   [
+    80,
+    1.3568
+   ],
+   [
+    100,
+    1.3249
+   ],
+   [
+    120,
+    1.3471
+   ],
+   [
+    140,
+    1.374
+   ],
+   [
+    160,
+    1.3503
+   ],
+   [
+    180,
+    1.3383
+   ],
+   [
+    200,
+    1.358
+   ],
+   [
+    220,
+    1.3683
+   ],
+   [
+    240,
+    1.3003
+   ],
+   [
+    260,
+    1.3112
+   ],
+   [
+    280,
+    1.2984
+   ],
+   [
+    300,
+    1.3199
+   ],
+   [
+    320,
+    1.3011
+   ],
+   [
+    340,
+    1.3303
+   ],
+   [
+    360,
+    1.3003
+   ],
+   [
+    380,
+    1.2939
+   ],
+   [
+    400,
+    1.287
+   ],
+   [
+    420,
+    1.2798
+   ],
+   [
+    440,
+    1.3368
+   ],
+   [
+    460,
+    1.2764
+   ],
+   [
+    480,
+    1.288
+   ],
+   [
+    500,
+    1.295
+   ],
+   [
+    520,
+    1.3024
+   ],
+   [
+    540,
+    1.2778
+   ],
+   [
+    560,
+    1.2956
+   ],
+   [
+    580,
+    1.2771
+   ],
+   [
+    600,
+    1.2831
+   ]
+  ]
+ },
+ "vm": {
+  "start": "2026-11-17T05:31:57Z",
+  "deallocated_by_org_automation": "2026-11-17T15:50:12Z",
+  "deallocate_done": "2026-11-17T15:51:14Z",
+  "restart_to_copy_logs": "2026-11-18T06:06:10Z",
+  "deallocated_after_copy": "2026-11-18T06:08:44Z",
+  "billed_hours": 10.36,
+  "price_per_hour_usd": 6.98,
+  "cost_usd": 72.3
+ }
+}

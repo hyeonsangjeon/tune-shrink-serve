@@ -1,0 +1,73 @@
+# Copied from the QAT control run on the H100 VM (2026-11-17). Paths shortened to ~/. See docs/qat_control.md.
+# run queue 1 (smoke, P, seeds 42-44): SUMMARY_QC
+start 2026-11-17T05:58:02Z src=~/work/repo/quantization/artifacts/kormedmcqa_midm/A_bf16_seed42 gpu=NVIDIA H100 NVL
+=== 2026-11-17T05:58:02Z start qc0_smoke_x
+=== ok   qc0_smoke_x 765s
+=== 2026-11-17T06:10:47Z start qc0_smoke_eval
+=== ok   qc0_smoke_eval 169s
+smoke trained_weights=10468982784
+=== 2026-11-17T06:13:40Z start qc1_ptq
+=== ok   qc1_ptq 18s
+=== 2026-11-17T06:13:58Z start qc1_eval_p
+=== ok   qc1_eval_p 393s
+=== 2026-11-17T06:20:31Z start qc_x42
+=== ok   qc_x42 2313s
+=== 2026-11-17T06:59:04Z start qc_x42_eval_bf16
+=== ok   qc_x42_eval_bf16 77s
+=== 2026-11-17T07:00:21Z start qc_x42_eval
+=== ok   qc_x42_eval 387s
+=== 2026-11-17T07:06:48Z start qc_q42
+=== ok   qc_q42 6119s
+=== 2026-11-17T08:48:47Z start qc_q42_eval
+=== ok   qc_q42_eval 390s
+pair 42 weights: x=10468982784 q=10468982784; disk free 3.2T
+=== 2026-11-17T08:55:17Z start qc_x43
+=== ok   qc_x43 2311s
+=== 2026-11-17T09:33:48Z start qc_x43_eval_bf16
+=== ok   qc_x43_eval_bf16 77s
+=== 2026-11-17T09:35:05Z start qc_x43_eval
+=== ok   qc_x43_eval 391s
+=== 2026-11-17T09:41:36Z start qc_q43
+=== ok   qc_q43 6117s
+=== 2026-11-17T11:23:33Z start qc_q43_eval
+=== ok   qc_q43_eval 389s
+pair 43 weights: x=10468982784 q=10468982784; disk free 3.2T
+=== 2026-11-17T11:30:02Z start qc_x44
+=== ok   qc_x44 2314s
+=== 2026-11-17T12:08:36Z start qc_x44_eval_bf16
+=== ok   qc_x44_eval_bf16 77s
+=== 2026-11-17T12:09:53Z start qc_x44_eval
+=== ok   qc_x44_eval 390s
+=== 2026-11-17T12:16:23Z start qc_q44
+=== ok   qc_q44 6118s
+=== 2026-11-17T13:58:21Z start qc_q44_eval
+=== ok   qc_q44_eval 390s
+pair 44 weights: x=10468982784 q=10468982784; disk free 3.1T
+4_eval_qc_p_test.json 69.458 2090 unparsed 0
+4_eval_qc_q42_test.json 69.957 2105 unparsed 0
+4_eval_qc_q43_test.json 69.957 2105 unparsed 0
+4_eval_qc_q44_test.json 69.724 2098 unparsed 0
+4_eval_qc_x42_bf16_test.json 71.751 2159 unparsed 0
+4_eval_qc_x42_test.json 69.425 2089 unparsed 0
+4_eval_qc_x43_bf16_test.json 72.051 2168 unparsed 0
+4_eval_qc_x43_test.json 69.392 2088 unparsed 2
+4_eval_qc_x44_bf16_test.json 71.751 2159 unparsed 0
+4_eval_qc_x44_test.json 69.159 2081 unparsed 0
+qc_p.json {"group_size": 128, "seconds": 16.8, "size_gib_before": 21.52, "size_gib_after": 7.2, "model_dir": "outputs/qc_p"}
+qc_q42.json {"group_size": 128, "fake_quant": true, "seed": 42, "src": "outputs/0_start", "steps": 600, "train_minutes": 101.1, "last_loss": 1.2988, "trained_weights": 10468982784, "size_gib": 7.2, "model_dir": "outputs/qc_q42"}
+qc_q43.json {"group_size": 128, "fake_quant": true, "seed": 43, "src": "outputs/0_start", "steps": 600, "train_minutes": 101.1, "last_loss": 1.3322, "trained_weights": 10468982784, "size_gib": 7.2, "model_dir": "outputs/qc_q43"}
+qc_q44.json {"group_size": 128, "fake_quant": true, "seed": 44, "src": "outputs/0_start", "steps": 600, "train_minutes": 101.1, "last_loss": 1.2797, "trained_weights": 10468982784, "size_gib": 7.2, "model_dir": "outputs/qc_q44"}
+qc_smoke_x.json {"group_size": 128, "fake_quant": false, "seed": 42, "src": "outputs/0_start", "steps": 5, "train_minutes": 1.1, "last_loss": 1.3435, "trained_weights": 10468982784, "size_gib": 7.2, "model_dir": "outputs/qc_smoke_x"}
+qc_x42.json {"group_size": 128, "fake_quant": false, "seed": 42, "src": "outputs/0_start", "steps": 600, "train_minutes": 37.7, "last_loss": 1.2904, "trained_weights": 10468982784, "size_gib": 7.2, "model_dir": "outputs/qc_x42"}
+qc_x43.json {"group_size": 128, "fake_quant": false, "seed": 43, "src": "outputs/0_start", "steps": 600, "train_minutes": 37.6, "last_loss": 1.2946, "trained_weights": 10468982784, "size_gib": 7.2, "model_dir": "outputs/qc_x43"}
+qc_x44.json {"group_size": 128, "fake_quant": false, "seed": 44, "src": "outputs/0_start", "steps": 600, "train_minutes": 37.7, "last_loss": 1.279, "trained_weights": 10468982784, "size_gib": 7.2, "model_dir": "outputs/qc_x44"}
+# run queue 2 (seeds 45, 46): SUMMARY_QC2. The VM was deallocated during qc_q45; nothing after it ran.
+queued 2026-11-17T09:19:01Z, waiting for DONE_QC
+start2 2026-11-17T14:05:02Z src=~/work/repo/quantization/artifacts/kormedmcqa_midm/A_bf16_seed42
+=== 2026-11-17T14:05:02Z start qc_x45
+=== ok   qc_x45 2314s
+=== 2026-11-17T14:43:36Z start qc_x45_eval_bf16
+=== ok   qc_x45_eval_bf16 80s
+=== 2026-11-17T14:44:56Z start qc_x45_eval
+=== ok   qc_x45_eval 388s
+=== 2026-11-17T14:51:24Z start qc_q45

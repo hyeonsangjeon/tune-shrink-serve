@@ -1,0 +1,9 @@
+{
+  "group_size": 128,
+  "steps": 600,
+  "train_minutes": 77.3,
+  "last_loss": 1.3145,
+  "trained_weights": 10468982784,
+  "size_gib": 7.2,
+  "model_dir": "outputs/r3_qat"
+}
