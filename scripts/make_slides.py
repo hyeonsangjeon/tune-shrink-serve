@@ -41,7 +41,7 @@ TITLE = "작은 모델을 더 작고 빠르게"
 SUBTITLE = "Unsloth LoRA·TorchAO INT4 QAT부터 vLLM 서빙까지"
 EVENT = "PyTorch Day Korea 2026 · Serve Track"
 SPEAKER = "전현상 (Hyeonsang Jeon)"
-AFFILIATION = ["Sr. Solution Engineer · Global Black Belt", "Microsoft · Cloud & AI Apps"]
+AFFILIATION = ["Sr. Solution Engineer", "Microsoft · Global Black Belt, Cloud & AI Apps"]
 REPO_URL = "github.com/hyeonsangjeon/tune-shrink-serve"  # shown on the last slide
 
 # Light-theme values of the chart palette (docs/talk/figures), reused for the slides.
@@ -318,7 +318,7 @@ def build_slides() -> List[Slide]:
         kicker="① Unsloth LoRA", title="학습 엔진만 교체, LoRA 설정은 그대로",
         seconds=90, sources=["01_finetune_unsloth.md"],
         blocks=[Text((0.8, 1.95, 11.7, 0.9), [
-            "**transformers Trainer + PEFT LoRA**   대   **Unsloth FastLanguageModel + get_peft_model**"],
+            "**transformers Trainer + PEFT LoRA**   VS   **Unsloth FastLanguageModel + get_peft_model**"],
             size=19, bullets=False),
                 Table((0.8, 2.75, 11.7, 4.0), cfg_rows, [2.6, 9.1], size=14)],
         notes=("바꾼 것은 학습 엔진 하나입니다. 한쪽은 transformers Trainer와 PEFT, 다른 쪽은 "
