@@ -36,7 +36,7 @@ Data, prompt, LoRA settings, training schedule, seed and GPU were kept the same.
 
 ## Results
 
-![Training time and GPU memory of transformers+PEFT and Unsloth](figures/finetune_engines.svg)
+![Training time and GPU memory of transformers+PEFT and Unsloth](figures/finetune_engines_en.svg)
 
 | | transformers+PEFT | Unsloth |
 |---|---|---|

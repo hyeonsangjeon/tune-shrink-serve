@@ -33,7 +33,7 @@ KT의 공개 모델 **Mi:dm 2.0 Base(11.5B)** 에 의사·간호사·약사·치
 | 하고 싶은 일 | 가는 곳 |
 |---|---|
 | 결과와 근거를 자세히 본다 | [`docs/talk/`](docs/talk/) 00~05 |
-| 발표 슬라이드를 본다 | [PDF, 한국어](docs/talk/slides/pytorchday2026_slides_ko.pdf) (2026-11-21 발표 그대로) |
+| 발표 슬라이드를 본다 | [PDF, 한국어](docs/talk/slides/pytorchday2026_slides_ko.pdf) (2026-11-21 발표 그대로) · [PDF, 영어](docs/talk/slides/pytorchday2026_slides_en.pdf) (번역본) |
 | GPU 없이 이 레포가 제대로 도는지 본다 | 바로 아래 「1분 확인」 |
 | 학습·INT4·서빙 코드를 읽고 한 단계씩 돌린다 | [`steps/`](steps/) 1~5 (단계마다 파일 하나, 함수마다 설명) |
 | GPU에서 처음부터 다시 돌린다 | [따라하기](docs/guide/) 1~8번 (단계마다 명령, 걸린 시간, 확인 기준, 안 될 때) |

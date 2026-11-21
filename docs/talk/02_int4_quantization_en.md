@@ -31,7 +31,7 @@ The same BF16 LoRA model was shrunk to INT4 in two ways. Both use the same stora
 
 ## Results
 
-![Accuracy on 3,009 questions from 2022-2024: untuned, BF16 LoRA from both engines, INT4 PTQ, INT4 QAT](figures/accuracy_test.svg)
+![Accuracy on 3,009 questions from 2022-2024: untuned, BF16 LoRA from both engines, INT4 PTQ, INT4 QAT](figures/accuracy_test_en.svg)
 
 | Model | Accuracy (95% confidence interval) | Size |
 |---|---|---|

@@ -24,7 +24,7 @@ Both are public list prices. Contract discounts are not included. Using only the
 
 This is the time from when `eval_vllm.py` puts all 3,009 questions into vLLM at once until all the answers are out. Model loading time is excluded.
 
-![GPU cost per 1,000 questions when all 3,009 exam questions are submitted at once](figures/cost_per_1k.svg)
+![GPU cost per 1,000 questions when all 3,009 exam questions are submitted at once](figures/cost_per_1k_en.svg)
 
 | Model | Time for 3,009 questions | Per 1,000 questions, on-demand | Per 1,000 questions, Spot |
 |---|---|---|---|
@@ -68,7 +68,7 @@ We also had 11 managed API models on Azure AI Foundry answer the same 3,009 ques
 > - Prices: public list prices read from the Azure Retail Prices API (Foundry Models, eastus2, Global Standard) on 2026-11-12. For models whose price depends on context length, we used the short-context price. Contract discounts are not included
 > - Order: first we checked token counts and errors on 30 questions from 2021 (pilot, not in the repo). Then we measured the 2022-2024 questions once per model
 
-![SLM vs. API: accuracy on the 3,009 questions from 2022-2024 and cost per 1,000 questions](figures/slm_vs_api.svg)
+![SLM vs. API: accuracy on the 3,009 questions from 2022-2024 and cost per 1,000 questions](figures/slm_vs_api_en.svg)
 
 The last column of the table below is a paired comparison with the BF16 LoRA model on the same questions. "Mi:dm only vs. API only" is the number of questions only the BF16 LoRA model got right vs. the number of questions only that API model got right.
 

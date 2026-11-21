@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="r" width="840" height="400" viewBox="0 0 840 400" role="img" aria-labelledby="t d">
+<title id="t">Offline throughput: generated tokens per second by batch size (H100, 128 tokens per request)</title><desc id="d">Output token throughput of the BF16 and INT4 models with vLLM LLM.generate at batch 1–256</desc>
+<style>
+.r{--bg:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--mute:#898781;--grid:#e1e0d9;--base:#c3c2b7;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--n:#a9a79f}
+@media (prefers-color-scheme:dark){.r{--bg:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--mute:#898781;
+--grid:#2c2c2a;--base:#383835;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--n:#6d6b66}}
+.bg{fill:var(--bg)}.t{fill:var(--ink);font:600 15px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.l{fill:var(--ink2);font:13px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.v{fill:var(--ink);font:600 13px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.m{fill:var(--mute);font:12px system-ui,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.g{stroke:var(--grid);stroke-width:1}.b{stroke:var(--base);stroke-width:1}
+.s1{fill:var(--s1)}.s2{fill:var(--s2)}.s3{fill:var(--s3)}.n{fill:var(--n)}
+.k1{stroke:var(--s1)}.k2{stroke:var(--s2)}.ki{stroke:var(--ink2)}
+</style>
+<rect class="bg" width="840" height="400" rx="8"/>
+<text class="t" x="20" y="30">Offline throughput: generated tokens per second by batch size (H100, 128 tokens per request)</text>
+<text class="m" x="20.0" y="52.0" text-anchor="start">INT4 PTQ and INT4 QAT use the same format, so their throughput is the same (checked by measuring twice). Drawn as one line.</text>
+<line class="g" x1="80.0" y1="330.0" x2="700.0" y2="330.0" />
+<text class="m" x="72.0" y="334.0" text-anchor="end">0</text>
+<line class="g" x1="80.0" y1="280.0" x2="700.0" y2="280.0" />
+<text class="m" x="72.0" y="284.0" text-anchor="end">2,000</text>
+<line class="g" x1="80.0" y1="230.0" x2="700.0" y2="230.0" />
+<text class="m" x="72.0" y="234.0" text-anchor="end">4,000</text>
+<line class="g" x1="80.0" y1="180.0" x2="700.0" y2="180.0" />
+<text class="m" x="72.0" y="184.0" text-anchor="end">6,000</text>
+<line class="g" x1="80.0" y1="130.0" x2="700.0" y2="130.0" />
+<text class="m" x="72.0" y="134.0" text-anchor="end">8,000</text>
+<line class="g" x1="80.0" y1="80.0" x2="700.0" y2="80.0" />
+<text class="m" x="72.0" y="84.0" text-anchor="end">10,000</text>
+<line class="b" x1="80.0" y1="330.0" x2="700.0" y2="330.0" />
+<text class="m" x="80.0" y="350.0" text-anchor="middle">1</text>
+<text class="m" x="183.3" y="350.0" text-anchor="middle">4</text>
+<text class="m" x="286.7" y="350.0" text-anchor="middle">16</text>
+<text class="m" x="390.0" y="350.0" text-anchor="middle">32</text>
+<text class="m" x="493.3" y="350.0" text-anchor="middle">64</text>
+<text class="m" x="596.7" y="350.0" text-anchor="middle">128</text>
+<text class="m" x="700.0" y="350.0" text-anchor="middle">256</text>
+<text class="m" x="390.0" y="376.0" text-anchor="middle">Requests processed at once (batch)</text>
+<text class="m" transform="translate(20,205) rotate(-90)" text-anchor="middle">Generated tokens per second</text>
+<polyline class="k1" fill="none" stroke-width="2" stroke-linejoin="round" points="80.0,327.1 183.3,318.7 286.7,288.7 390.0,257.7 493.3,212.4 596.7,181.1 700.0,138.8"/>
+<circle class="s1 k1" cx="80.0" cy="327.1" r="4" stroke-width="2"/>
+<circle class="s1 k1" cx="183.3" cy="318.7" r="4" stroke-width="2"/>
+<circle class="s1 k1" cx="286.7" cy="288.7" r="4" stroke-width="2"/>
+<circle class="s1 k1" cx="390.0" cy="257.7" r="4" stroke-width="2"/>
+<circle class="s1 k1" cx="493.3" cy="212.4" r="4" stroke-width="2"/>
+<circle class="s1 k1" cx="596.7" cy="181.1" r="4" stroke-width="2"/>
+<circle class="s1 k1" cx="700.0" cy="138.8" r="4" stroke-width="2"/>
+<text class="l" x="710.0" y="142.8" text-anchor="start">BF16 7,647</text>
+<polyline class="k2" fill="none" stroke-width="2" stroke-linejoin="round" points="80.0,326.5 183.3,316.2 286.7,313.3 390.0,311.0 493.3,309.1 596.7,311.8 700.0,308.9"/>
+<circle class="s2 k2" cx="80.0" cy="326.5" r="4" stroke-width="2"/>
+<circle class="s2 k2" cx="183.3" cy="316.2" r="4" stroke-width="2"/>
+<circle class="s2 k2" cx="286.7" cy="313.3" r="4" stroke-width="2"/>
+<circle class="s2 k2" cx="390.0" cy="311.0" r="4" stroke-width="2"/>
+<circle class="s2 k2" cx="493.3" cy="309.1" r="4" stroke-width="2"/>
+<circle class="s2 k2" cx="596.7" cy="311.8" r="4" stroke-width="2"/>
+<circle class="s2 k2" cx="700.0" cy="308.9" r="4" stroke-width="2"/>
+<text class="l" x="710.0" y="312.9" text-anchor="start">INT4 844</text>
+</svg>

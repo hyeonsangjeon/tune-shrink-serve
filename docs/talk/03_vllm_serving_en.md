@@ -25,7 +25,7 @@ Shared conditions are in [0. Experiment setup](00_setup_en.md). The models compa
 
 ## Offline throughput
 
-![Generated tokens per second by number of requests submitted at once, BF16 and INT4](figures/offline_throughput.svg)
+![Generated tokens per second by number of requests submitted at once, BF16 and INT4](figures/offline_throughput_en.svg)
 
 | Requests submitted at once | 1 | 4 | 16 | 32 | 64 | 128 | 256 |
 |---|---|---|---|---|---|---|---|
@@ -52,7 +52,7 @@ With a single request (median of 24 repeats):
 
 This is what the actual service looks like. The prompt is about 650 tokens and the answer is a single number, so almost all of the time goes to prompt processing (prefill).
 
-![Requests processed per second by concurrency, BF16 and INT4, prefix caching on and off](figures/online_mcqa_requests.svg)
+![Requests processed per second by concurrency, BF16 and INT4, prefix caching on and off](figures/online_mcqa_requests_en.svg)
 
 **Read this first.** For each concurrency level we sent 256 questions that had not been sent before. So the only thing the server with prefix caching on reused from its cache was the prefix that is the same in every request. This prefix is the KT system text, the date and the task instruction: 530 tokens, a little over 80% of the 653-token average prompt. On and off received the same questions in the same order, so the two can be compared under the same conditions at every concurrency level.
 

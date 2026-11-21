@@ -19,7 +19,7 @@
 | Script | What it does | CI |
 |---|---|---|
 | [`build_evidence_index.py`](build_evidence_index.py) | Checks that the numbers in the docs equal the values in the result JSON (`--check`); rebuilds the evidence index `docs/EVIDENCE.md` (`--emit`) | ✓ |
-| [`make_figures.py`](make_figures.py) | Draws the charts (`docs/talk/figures/*.svg`) from the result JSON. `--check` checks that redrawing gives the same output | ✓ |
+| [`make_figures.py`](make_figures.py) | Draws the charts (`docs/talk/figures/*.svg`, and `*_en.svg` for the English docs) from the result JSON. `--check` checks that redrawing gives the same output | ✓ |
 | [`scan_secrets.py`](scan_secrets.py) | Checks that no keys, tokens, endpoint addresses or personal paths got into a commit | ✓ |
 | [`check_asset_ledger.py`](check_asset_ledger.py) | Checks that every committed file related to data or models is in the license record (`docs/asset_ledger.yaml`) | ✓ |
-| [`make_slides.py`](make_slides.py) | Builds the talk slides and speaker script from the `docs/talk/` docs (`build/slides/`; needs `requirements/slides.txt`). Also checks that every number on the slides appears in the docs | |
+| [`make_slides.py`](make_slides.py) | Builds the talk slides and speaker script from the `docs/talk/` docs (`build/slides/`; needs `requirements/slides.txt`). Also checks that every number on the slides appears in the docs. `--lang en` builds the English deck (translations in [`slides_en.json`](slides_en.json); numbers checked against the English docs), `--high-contrast` turns gray text black (the deck used on the talk-room projector) | |

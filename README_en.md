@@ -13,7 +13,7 @@ KT's open model **Mi:dm 2.0 Base (11.5B)** was trained on **past national licens
 - **SLM vs API:** on the same 3,009 questions, 10 of the 11 managed API models scored higher than the tuned Mi:dm (72.3%) (highest 98.4%). When all 3,009 questions are run at once, Mi:dm on a self-hosted H100 has the lowest cost per 1,000 questions, $0.0111 (computed at list price). On a server that takes one request at a time (concurrency 1, prefix caching off), it becomes $0.137, more than gpt-6-luna ($0.0836), which has 95.9% accuracy.
 - **Extra, raising the score:** without any other model's outputs, we changed the training method (epochs, answer-option order, learning rate, profession mix, explanations written by Mi:dm itself) and compared the results on the 2021 questions. No method went beyond the difference seen when only the seed changed (0.9-1.5 pt), so the 2022-2024 questions were not measured again.
 
-![Accuracy on the 3,009 questions from 2022-2024: untuned model, BF16 LoRA (transformers+PEFT, Unsloth), INT4 PTQ, INT4 QAT](docs/talk/figures/accuracy_test.svg)
+![Accuracy on the 3,009 questions from 2022-2024: untuned model, BF16 LoRA (transformers+PEFT, Unsloth), INT4 PTQ, INT4 QAT](docs/talk/figures/accuracy_test_en.svg)
 
 ## Conclusions in talk order
 
@@ -32,7 +32,7 @@ The shared conditions (model, data, prompt, scoring, hardware) are in [00_setup.
 | What you want to do | Where to go |
 |---|---|
 | See the results and evidence in detail | [`docs/talk/`](docs/talk/) 00-05 |
-| See the talk slides | [PDF, Korean](docs/talk/slides/pytorchday2026_slides_ko.pdf) (as presented on 2026-11-21) |
+| See the talk slides | [PDF, Korean](docs/talk/slides/pytorchday2026_slides_ko.pdf) (as presented on 2026-11-21) · [PDF, English](docs/talk/slides/pytorchday2026_slides_en.pdf) (translation) |
 | Check that this repo works, without a GPU | “1-minute check” just below |
 | Read the training, INT4 and serving code and run it one step at a time | [`steps/`](steps/) 1-5 (one file per step, an explanation for each function) |
 | Rerun from scratch on a GPU | [step-by-step guide](docs/guide/README_en.md) 1-8 (for each step: commands, time taken, what to check, what to do when it fails) |

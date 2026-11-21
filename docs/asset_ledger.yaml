@@ -84,7 +84,10 @@ assets:
     path: "docs/talk/slides/*.pdf"
     kind: slides_pdf
     license: MIT (slide text and charts); slide 4 quotes one KorMedMCQA item (CC BY-NC 2.0) with attribution
-    source: exported with PowerPoint from the deck presented on 2026-11-21 (built by scripts/make_slides.py, then edited by hand before the talk)
+    source: >-
+      exported with PowerPoint. _ko.pdf: the deck presented on 2026-11-21 (scripts/make_slides.py
+      --high-contrast, then edited by hand before the talk). _en.pdf: scripts/make_slides.py --lang en
+      --high-contrast (translation through scripts/slides_en.json).
     redistribution: ok
     committed: true
     note: >-

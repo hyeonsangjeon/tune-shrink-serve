@@ -16,7 +16,7 @@ Provenance and license notes for every third‑party asset this repository uses.
 > images are the generated talk charts in `docs/talk/figures/` (MIT, regenerated
 > from the result JSON by `scripts/make_figures.py`). The only committed PDFs are
 > the talk slides in `docs/talk/slides/` (MIT; slide 4 quotes the same KorMedMCQA item
-> as `docs/talk/00_setup.md`, with attribution).
+> as `docs/talk/00_setup.md`, with attribution; the English PDF shows it translated).
 
 ## 1. Datasets (downloaded at runtime — never committed)
 

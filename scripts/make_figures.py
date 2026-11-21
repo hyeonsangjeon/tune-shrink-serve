@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Draw the talk's charts (SVG) from the committed result JSONs. Standard library only.
 
-    python scripts/make_figures.py            # write docs/talk/figures/*.svg
+    python scripts/make_figures.py            # write docs/talk/figures/*.svg and the English *_en.svg
     python scripts/make_figures.py --check    # CI: fail if a committed figure differs from the JSONs
 
 Every number in a figure is read from quantization/results/kormedmcqa_midm/. All figure text
-(titles, axis names, labels) lives in TEXT below, so wording changes happen in one place.
+(titles, axis names, labels) lives in TEXT below, so wording changes happen in one place;
+TEXT_EN holds the same keys in English for the *_en.svg figures used by the English docs.
 Colors follow a CVD-validated categorical palette (light and dark steps); the SVGs switch with
 prefers-color-scheme. Values are printed on the marks and every figure has a table in the docs.
 """
@@ -35,7 +36,8 @@ TEXT = {
         "title": "같은 LoRA 학습, 엔진만 바꿨을 때 (H100 NVL, 426 step)",
         "desc": "transformers+PEFT와 Unsloth의 학습 시간과 학습 중 GPU 메모리",
         "panel_time": "학습 시간 (분)", "panel_mem": "학습 중 GPU 메모리 (GiB, nvidia-smi)",
-        "rows": ["transformers+PEFT", "Unsloth"],
+        "rows": ["transformers+PEFT", "Unsloth"], "unit_min": "분",
+        "note": "메모리는 학습 중 nvidia-smi로 읽은 값(최댓값 아님). Unsloth의 torch 최대 할당은 24.5 GiB.",
     },
     "offline": {
         "title": "오프라인 처리량: 한 번에 넣은 요청 수별 초당 생성 토큰 (H100, 요청당 128토큰)",
@@ -76,6 +78,68 @@ TEXT = {
         "axis": "1,000문항당 달러",
     },
 }
+
+TEXT_KO = TEXT
+TEXT_EN = {
+    "accuracy": {
+        "title": "Accuracy on 3,009 national exam questions, 2022–2024 (H100, vLLM, greedy)",
+        "desc": "Accuracy bars with 95% confidence intervals for the untuned Mi:dm 2.0 Base, BF16 LoRA from two "
+                "engines, INT4 PTQ and INT4 QAT",
+        "rows": ["Untuned Mi:dm 2.0 Base", "BF16 LoRA (transformers+PEFT)", "BF16 LoRA (Unsloth)",
+                 "INT4 PTQ (TorchAO)", "INT4 QAT (TorchAO)"],
+        "axis": "Accuracy (%)", "ref60": "Pass reference 60%", "ref20": "Random guess 20%",
+        "legend": ["Untuned", "BF16", "INT4"],
+    },
+    "engines": {
+        "title": "Same LoRA training, only the engine changed (H100 NVL, 426 steps)",
+        "desc": "Training time and GPU memory during training for transformers+PEFT and Unsloth",
+        "panel_time": "Training time (min)", "panel_mem": "GPU memory in training (GiB, nvidia-smi)",
+        "rows": ["transformers+PEFT", "Unsloth"], "unit_min": "min",
+        "note": "Memory is an nvidia-smi reading during training (not the peak). Unsloth's torch peak allocation is 24.5 GiB.",
+    },
+    "offline": {
+        "title": "Offline throughput: generated tokens per second by batch size (H100, 128 tokens per request)",
+        "desc": "Output token throughput of the BF16 and INT4 models with vLLM LLM.generate at batch 1–256",
+        "x": "Requests processed at once (batch)", "y": "Generated tokens per second",
+        "series": ["BF16", "INT4"],
+        "note": "INT4 PTQ and INT4 QAT use the same format, so their throughput is the same (checked by measuring twice). "
+                "Drawn as one line.",
+    },
+    "online": {
+        "title": "Online serving: requests per second by concurrency (H100, 2021 exam questions, 1–2-token answers)",
+        "desc": "Requests per second for BF16 and INT4 against the vLLM OpenAI-compatible server at concurrency "
+                "1, 8, 32 and 64, with prefix caching on and off",
+        "x": "Concurrent requests", "y": "Requests per second",
+        "series": ["BF16 on", "BF16 off", "INT4 on", "INT4 off"],
+        "note": "Solid: prefix caching on; dashed: off. Each concurrency level got 256 new questions; on and off got "
+                "the same questions.",
+    },
+    "slm_api": {
+        "title": "SLM vs API: accuracy and cost per 1,000 questions on the 3,009 questions, 2022–2024",
+        "desc": "Accuracy (vertical) and computed cost per 1,000 questions (horizontal, log scale) for Mi:dm 2.0 Base "
+                "LoRA on a self-hosted H100 (BF16, INT4 PTQ) and 11 managed API models on Azure AI Foundry. For "
+                "self-hosted BF16 a line joins running all at once and a server at concurrency 1 with prefix "
+                "caching off",
+        "x": "Cost per 1,000 questions (USD, log scale) · computed, not a bill", "y": "Accuracy (%)",
+        "legend": ["Self-hosted H100 · BF16 LoRA", "Self-hosted H100 · INT4 PTQ", "Managed API"],
+        "bf16_label": "Mi:dm BF16 LoRA", "bf16_range": "at once ↔ server, conc. 1, caching off",
+        "int4_label": "Mi:dm INT4 PTQ",
+        "place": TEXT["slm_api"]["place"], "place_slide": TEXT["slm_api"]["place_slide"],
+    },
+    "cost": {
+        "title": "GPU cost per 1,000 questions, all 3,009 exam questions at once (H100 NVL list price)",
+        "desc": "Cost per 1,000 questions for the BF16 and INT4 models at on-demand and Spot hourly list prices",
+        "rows": ["BF16 · on-demand $6.98/h", "BF16 · Spot $3.54/h", "INT4 · on-demand $6.98/h", "INT4 · Spot $3.54/h"],
+        "axis": "USD per 1,000 questions",
+    },
+}
+
+
+def set_lang(lang: str) -> None:
+    """Switch the figure text: "ko" (TEXT, the default) or "en" (TEXT_EN)."""
+    global TEXT
+    TEXT = TEXT_EN if lang == "en" else TEXT_KO
+
 
 # Categorical slots 1-3 (blue, orange, aqua) + neutral, light/dark steps (validated set).
 STYLE = """<style>
@@ -191,7 +255,7 @@ def fig_engines() -> str:
             for r in load("train_gpu_memory_observed_h100.json")["runs"]}
     mem = [runs["kormedmcqa_midm/A_train_seed42.json"], runs["unsloth_A/A_train_seed42.json"]]
     mem_gib = [max(r["memory_used_mib"] for r in run["readings"]) / 1024 for run in mem]
-    panels = [(T["panel_time"], [hf["train_seconds"] / 60, us["train_seconds"] / 60], "분"),
+    panels = [(T["panel_time"], [hf["train_seconds"] / 60, us["train_seconds"] / 60], T["unit_min"]),
               (T["panel_mem"], mem_gib, "GiB")]
     W, H, top = 760, 230, 80
     s = Svg(W, H, T["title"], T["desc"])
@@ -208,7 +272,7 @@ def fig_engines() -> str:
             s.hbar(left, y, X(v) - left, 24, c)
             s.text(X(v) + 8, y + 17, f"{v:.1f} {unit}", "v")
         s.line(left, top - 6, left, top + 2 * 46 - 14, "b")
-    s.text(20, H - 16, "메모리는 학습 중 nvidia-smi로 읽은 값(최댓값 아님). Unsloth의 torch 최대 할당은 24.5 GiB.", "m")
+    s.text(20, H - 16, T["note"], "m")
     return s.done()
 
 
@@ -342,7 +406,8 @@ def fig_slm_api(slide: bool = False) -> str:
     for lab, cls in zip(T["legend"], ["s1", "s2", "n"]):
         s.add(f'<circle class="{cls}" cx="{lx + 5}" cy="{ly - 4}" r="5"/>')
         s.text(lx + 14, ly, lab, "l")
-        lx += 170 if not slide else 150
+        # longer labels (the English ones) get more room; ~6.2 px per character at this size
+        lx += max(170 if not slide else 150, round(len(lab) * 6.2 + 24))
     return s.done()
 
 
@@ -359,9 +424,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--check", action="store_true", help="compare with committed figures, write nothing")
     args = ap.parse_args(argv)
     bad = []
-    for name, fn in FIGURES.items():
+    jobs = [(lang, name, fn) for lang in ("ko", "en") for name, fn in FIGURES.items()]
+    for lang, name, fn in jobs:
+        set_lang(lang)
         svg = fn()
-        path = os.path.join(OUT, name)
+        path = os.path.join(OUT, name if lang == "ko" else name.replace(".svg", "_en.svg"))
         if args.check:
             old = open(path, encoding="utf-8").read() if os.path.exists(path) else None
             if old != svg:
@@ -371,11 +438,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             with open(path, "w", encoding="utf-8") as fh:
                 fh.write(svg)
             print("[figures] wrote", os.path.relpath(path, ROOT))
+    set_lang("ko")
     if args.check:
         if bad:
             print("[figures] out of date (run python scripts/make_figures.py):", ", ".join(bad))
             return 1
-        print(f"[figures] OK — {len(FIGURES)} figures match the result JSONs")
+        print(f"[figures] OK — {len(jobs)} figures ({len(FIGURES)} Korean + {len(FIGURES)} English) match the result JSONs")
     return 0
 
 

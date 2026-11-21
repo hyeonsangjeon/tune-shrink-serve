@@ -19,7 +19,7 @@
 | 스크립트 | 하는 일 | CI |
 |---|---|---|
 | [`build_evidence_index.py`](build_evidence_index.py) | 문서의 숫자가 결과 JSON의 값과 같은지 확인(`--check`), 근거 색인 `docs/EVIDENCE.md` 다시 만들기(`--emit`) | ✓ |
-| [`make_figures.py`](make_figures.py) | 결과 JSON으로 차트(`docs/talk/figures/*.svg`) 그리기. `--check`는 다시 그려도 같은지 확인 | ✓ |
+| [`make_figures.py`](make_figures.py) | 결과 JSON으로 차트(`docs/talk/figures/*.svg`, 영문 문서용 `*_en.svg`) 그리기. `--check`는 다시 그려도 같은지 확인 | ✓ |
 | [`scan_secrets.py`](scan_secrets.py) | 키, 토큰, 엔드포인트 주소, 개인 경로가 커밋에 들어가지 않았는지 검사 | ✓ |
 | [`check_asset_ledger.py`](check_asset_ledger.py) | 커밋한 데이터·모델 관련 파일이 모두 라이선스 기록(`docs/asset_ledger.yaml`)에 있는지 | ✓ |
-| [`make_slides.py`](make_slides.py) | `docs/talk/` 문서로 발표 슬라이드와 대본 만들기(`build/slides/`, `requirements/slides.txt` 필요). 슬라이드의 숫자가 모두 문서에 있는지도 확인 | |
+| [`make_slides.py`](make_slides.py) | `docs/talk/` 문서로 발표 슬라이드와 대본 만들기(`build/slides/`, `requirements/slides.txt` 필요). 슬라이드의 숫자가 모두 문서에 있는지도 확인. `--lang en`은 영문 덱(번역은 [`slides_en.json`](slides_en.json), 숫자는 영문 문서와 대조), `--high-contrast`는 회색 글자를 검정으로(발표장 프로젝터에서 쓴 덱) | |

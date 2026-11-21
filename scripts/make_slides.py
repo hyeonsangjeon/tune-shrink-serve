@@ -10,6 +10,13 @@ Writes to build/slides/:
     numbers_check.txt                    every number on the slides and in the notes vs the docs
     figures/*.png                        charts (light theme, 3x); slide versions from make_figures.py
 
+    python scripts/make_slides.py --lang en         English deck (*_en.pptx, talk_script_en.md, numbers_check_en.txt)
+    python scripts/make_slides.py --high-contrast   gray text in black, darker grid lines (the deck shown at the talk)
+
+--lang en builds the same slides and translates every Korean string through scripts/slides_en.json
+(slides, notes); chart text comes from make_figures.TEXT_EN. A Korean string with no entry fails the build and is written to
+<out>/slides_en.missing.json; numbers are checked against README_en.md and docs/talk/*_en.md.
+
 Sources are README.md and docs/talk/*.md only. Tables on the slides are read from the docs' markdown
 tables; slide titles, short lines and notes are written here. Exits non-zero (after writing the files)
 when a number in the slides or notes does not appear verbatim in the sources, when a chart does not
@@ -22,6 +29,7 @@ import argparse
 import datetime as dt
 import glob
 import io
+import json
 import os
 import re
 import shutil
@@ -41,13 +49,23 @@ TITLE = "작은 모델을 더 작고 빠르게"
 SUBTITLE = "Unsloth LoRA·TorchAO INT4 QAT부터 vLLM 서빙까지"
 EVENT = "PyTorch Day Korea 2026 · Serve Track"
 SPEAKER = "전현상 (Hyeonsang Jeon)"
-AFFILIATION = ["Sr. Solution Engineer", "Microsoft · Global Black Belt, Cloud & AI Apps"]
+AFFILIATION = ["AI Apps, Sr. Solution Engineer", "Microsoft · Global Black Belt"]
 REPO_URL = "github.com/hyeonsangjeon/tune-shrink-serve"  # shown on the last slide
 
 # Light-theme values of the chart palette (docs/talk/figures), reused for the slides.
 INK, INK2, MUTE, GRID, PANEL = "0B0B0B", "52514E", "898781", "E1E0D9", "F3F2EE"
 CODE_SCALE = 0.85  # inline `code` size relative to the surrounding text
 BF16_BLUE, INT4_ORANGE, UNSLOTH_AQUA = "2A78D6", "EB6834", "1BAF7A"
+EN_TABLE = os.path.join(ROOT, "scripts", "slides_en.json")  # Korean string -> English, for --lang en
+LANG = "ko"  # set by main(); "en" translates the same slides through EN_TABLE
+EN: Optional["English"] = None
+# --high-contrast: the talk room's projector washed out gray text (2026-11-21), so the deck shown there had
+# gray text in black and darker grid lines. Series colors (blue, orange, green) stay.
+HIGH_CONTRAST = False
+HC_SLIDE = {"0B0B0B": "000000", "52514E": "000000", "898781": "000000", "E1E0D9": "B5B3AA"}
+HC_CHART = {"--ink": "#000000", "--ink2": "#000000", "--mute": "#000000", "--grid": "#b5b3aa",
+            "--base": "#8a887f", "--n": "#6d6b66"}
+HANGUL = re.compile(r"[가-힣]")
 
 SLIDE_W_IN, SLIDE_H_IN = 13.333, 7.5
 NOTES_MIN, NOTES_MAX = 120, 300
@@ -59,13 +77,20 @@ ALIAS_PATTERNS = [
     (re.compile(r"게이트"), "게이트"),
 ]
 STYLE_PATTERNS = [(re.compile(w), w) for w in ("혁신적", "강력한", "획기적", "손쉽게", "에 대한", "통해")]
+EN_STYLE_PATTERNS = [(re.compile(r"\b%s\b" % w, re.I), w) for w in (
+    "seamless", "seamlessly", "robust", "powerful", "leverage", "crucial", "cutting-edge", "delve",
+    "unlock", "revolutionary", "game-changing", "effortless", "effortlessly")]
 
 
 # --------------------------------------------------------------------------- #
 # Sources: README.md + docs/talk/*.md
 # --------------------------------------------------------------------------- #
 def source_files() -> List[str]:
-    return [os.path.join(ROOT, "README.md")] + sorted(glob.glob(os.path.join(TALK, "*.md")))
+    """README and docs/talk/*.md in the deck's language (the *_en.md files are the English twins)."""
+    talk = sorted(glob.glob(os.path.join(TALK, "*.md")))
+    if LANG == "en":
+        return [os.path.join(ROOT, "README_en.md")] + [p for p in talk if p.endswith("_en.md")]
+    return [os.path.join(ROOT, "README.md")] + [p for p in talk if not p.endswith("_en.md")]
 
 
 def read(path: str) -> str:
@@ -226,7 +251,7 @@ def build_slides() -> List[Slide]:
                 Text((0.8, 5.3, 11.7, 0.6), [SPEAKER], size=22, color=INK, bullets=False),
                 Text((0.8, 5.85, 11.7, 0.8), AFFILIATION, size=15, color=INK2, bullets=False, space=2)],
         notes=("안녕하세요, 전현상입니다. 오늘은 작은 모델 하나를 튜닝하고 INT4로 줄여서 vLLM으로 서빙하기까지 "
-               "직접 잰 숫자를 보여 드립니다. 모든 숫자는 같은 모델, 같은 문항, 같은 GPU에서 나왔어요. 잘된 "
+               "직접 실험한 결과를 공유합니다. 모든 숫자는 같은 모델, 같은 문항, 같은 GPU에서 나왔어요. 잘된 "
                "결과와 잘 안 된 결과, 그리고 이 실험으로 말할 수 없는 것도 같이 말씀드리겠습니다.")))
 
     # 2 ---------------------------------------------------------------------
@@ -646,7 +671,7 @@ def build_slides() -> List[Slide]:
 
     # 19 --------------------------------------------------------------------
     s.append(Slide(
-        kicker="한계와 다음 측정", title="이 숫자는 seed 하나, GPU 한 종류, 설정 하나에서 나온 값",
+        kicker="한계와 다음 측정", title="한계 - 이 실험은 seed 하나, GPU 한 종류(H100), 설정 하나에서 나온 값",
         seconds=60, sources=["00_setup.md", "01_finetune_unsloth.md", "02_int4_quantization.md",
                              "03_vllm_serving.md", "04_cost.md", "05_recipe_sweep.md"],
         blocks=[Text((0.8, 1.95, 7.0, 0.5), ["이 실험이 말할 수 없는 것"], size=16, color=MUTE, bullets=False),
@@ -672,7 +697,7 @@ def build_slides() -> List[Slide]:
 
     # 20 --------------------------------------------------------------------
     s.append(Slide(
-        kicker="직접 해 보기", title="GPU 없이 1분이면 이 레포가 제대로 도는지 확인",
+        kicker="직접 해 보기", title="직접 돌려보기 - GPU 없이 1분이면 이 레포가 제대로 도는지 확인하고, GPU 서빙도 테스트해 보세요",
         seconds=30, sources=["README.md"],
         blocks=[Text((0.8, 1.8, 11.9, 0.7), [f"**{REPO_URL}**"], size=26, bullets=False),
                 Code((0.8, 2.7, 7.4, 2.1), [
@@ -746,14 +771,21 @@ CHART_ZOOM = 3
 
 
 def chart_svg(name: str) -> str:
-    """The slide version from make_figures.SLIDE_FIGURES (larger text), else docs/talk/figures/<name>.svg."""
+    """The slide version from make_figures.SLIDE_FIGURES (larger text), else docs/talk/figures/<name>.svg.
+    With --lang en the chart text comes from make_figures.TEXT_EN (the same text as the *_en.svg doc figures)."""
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     try:
         import make_figures
     finally:
         sys.path.pop(0)
     fn = make_figures.SLIDE_FIGURES.get(name)
-    return fn(slide=True) if fn else read(os.path.join(FIG_SRC, name + ".svg"))
+    if not fn:
+        return read(os.path.join(FIG_SRC, name + ("_en" if LANG == "en" else "") + ".svg"))
+    make_figures.set_lang(LANG)
+    try:
+        return fn(slide=True)
+    finally:
+        make_figures.set_lang("ko")
 
 
 def render_chart(name: str) -> Tuple[bytes, Tuple[int, int], List[str]]:
@@ -764,9 +796,17 @@ def render_chart(name: str) -> Tuple[bytes, Tuple[int, int], List[str]]:
     svg = chart_svg(name)
     w, h = (int(float(x)) for x in re.search(r'width="([\d.]+)" height="([\d.]+)"', svg).groups())
     lsvg, light, dark = light_svg(svg)
+    if HIGH_CONTRAST:
+        hc = {k: v for k, v in HC_CHART.items() if k in light}
+        for var, new in hc.items():
+            lsvg = re.sub(re.escape(light[var]), new, lsvg, flags=re.I)
+        light = {**light, **hc}
     png = bytes(resvg_py.svg_to_bytes(svg_string=lsvg, zoom=CHART_ZOOM))
 
     problems: List[str] = []
+    if LANG == "en":
+        problems += [f"{name}: Korean text left in the chart: {m}" for m in
+                     re.findall(r">([^<]*[가-힣][^<]*)</(?:text|tspan)>", svg)]
     im = PILImage.open(io.BytesIO(png)).convert("RGBA")
     if im.size != (CHART_ZOOM * w, CHART_ZOOM * h):
         problems.append(f"{name}: PNG {im.size} is not {CHART_ZOOM}x of the SVG {w}x{h}")
@@ -787,7 +827,9 @@ def render_chart(name: str) -> Tuple[bytes, Tuple[int, int], List[str]]:
         if not used.intersection(classes):
             continue
         lc = count.get(_hex(light[var]), 0)
-        dc = count.get(_hex(dark[var]), 0) if var in dark else 0
+        # (with --high-contrast a light color can equal the dark theme's; then that color cannot tell them apart)
+        same = var in dark and dark[var].lower() == light[var].lower()
+        dc = count.get(_hex(dark[var]), 0) if var in dark and not same else 0
         if lc < 50 or lc <= 10 * dc:
             problems.append(f"{name}: {var} light {light[var]} x{lc} vs dark x{dc}")
     return png, (w, h), problems
@@ -1038,11 +1080,12 @@ class Deck:
                 self.code(slide, b)
         self.notes(slide, sl.notes)
 
-    def save(self, path: str):
+    def save(self, path: str, title: str = f"{TITLE}: {SUBTITLE}", subject: str = EVENT,
+             author: str = SPEAKER):
         cp = self.prs.core_properties
-        cp.title = f"{TITLE}: {SUBTITLE}"
-        cp.subject = EVENT
-        cp.author = cp.last_modified_by = SPEAKER
+        cp.title = title
+        cp.subject = subject
+        cp.author = cp.last_modified_by = author
         cp.revision = 1
         cp.created = cp.modified = cp.last_printed = dt.datetime(2026, 1, 1)
         buf = io.BytesIO()
@@ -1054,11 +1097,64 @@ class Deck:
                 zi = zipfile.ZipInfo(info.filename, date_time=(1980, 1, 1, 0, 0, 0))
                 zi.compress_type = zipfile.ZIP_DEFLATED
                 zi.external_attr = 0o644 << 16
-                dst.writestr(zi, src.read(info.filename))
+                data = src.read(info.filename)
+                if HIGH_CONTRAST and re.match(r"ppt/slides/slide\d+\.xml$", info.filename):
+                    xml = data.decode("utf-8")
+                    for old, new in HC_SLIDE.items():
+                        xml = xml.replace(f'val="{old}"', f'val="{new}"')
+                    data = xml.encode("utf-8")
+                dst.writestr(zi, data)
 
 
 def footer(sl: Slide) -> str:
-    return "근거: " + ", ".join(n if n == "README.md" else "docs/talk/" + n for n in sl.sources)
+    head = "Source: " if LANG == "en" else "근거: "
+    return head + ", ".join(n if n.startswith("README") else "docs/talk/" + n for n in sl.sources)
+
+
+class English:
+    """Korean -> English lookups from EN_TABLE ({"slides": {}, "notes": {}}). Chart text is not here:
+    it comes from make_figures.TEXT_EN.
+
+    Strings without Hangul pass through unchanged. A Korean string with no entry is kept as is and
+    recorded in .missing; main() then writes the missing ones out and fails the build."""
+
+    SECTIONS = ("slides", "notes")
+
+    def __init__(self, path: str):
+        table: Dict[str, Dict[str, str]] = {}
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as fh:
+                table = json.load(fh)
+        self.table = {sec: table.get(sec, {}) for sec in self.SECTIONS}
+        self.missing: Dict[str, Dict[str, str]] = {sec: {} for sec in self.SECTIONS}
+
+    def __call__(self, s: str, sec: str = "slides") -> str:
+        if not HANGUL.search(s):
+            # cells read from the Korean docs with no Korean words still use Korean notation
+            s = re.sub(r"(?<=\d)%p", " pt", s)
+            return re.sub(r"(?<=\d)~(?=[\d$])", "-", s)
+        hit = self.table[sec].get(s)
+        if hit is None:
+            self.missing[sec][s] = ""
+            return s
+        return hit
+
+    def slides(self, slides: List[Slide]) -> None:
+        for sl in slides:
+            sl.kicker, sl.title = self(sl.kicker), self(sl.title)
+            sl.notes = self(sl.notes, "notes")
+            sl.must_say = []  # Korean phrases; the English notes are translations of notes that passed them
+            sl.sources = [n[:-3] + "_en.md" for n in sl.sources]
+            for b in sl.blocks:
+                if isinstance(b, (Text, Code)):
+                    b.lines = [self(x) for x in b.lines]
+                elif isinstance(b, Table):
+                    b.rows = [[self(c) for c in r] for r in b.rows]
+                elif isinstance(b, Stat):
+                    b.value, b.label = self(b.value), self(b.label)
+
+    def missing_count(self) -> int:
+        return sum(len(v) for v in self.missing.values())
 
 
 # --------------------------------------------------------------------------- #
@@ -1169,7 +1265,24 @@ def check_numbers(slides: List[Slide]) -> Tuple[str, int, int, int]:
     return "\n".join(head + lines) + "\n", total, len(distinct), len(missing)
 
 
+def check_wording_en(slides: List[Slide]) -> List[str]:
+    """English deck: no Hangul left, no repo config names, no marketing words. (The Korean notes rules,
+    length, sentence endings and must-say phrases, were checked on the Korean deck the notes come from.
+    The model-alias rule for a standalone A/B/C is skipped: in English "A" is an article.)"""
+    problems = []
+    for no, sl in enumerate(slides, 1):
+        for where, text, quote in slide_texts(sl):
+            if HANGUL.search(text) and not quote:
+                problems.append(f"#{no:02d} [{where}] Hangul left: {text[:80]}")
+            for pat, label in ALIAS_PATTERNS[1:] + EN_STYLE_PATTERNS:
+                if pat.search(text):
+                    problems.append(f"#{no:02d} [{where}] '{label}': {text[:80]}")
+    return problems
+
+
 def check_wording(slides: List[Slide]) -> List[str]:
+    if LANG == "en":
+        return check_wording_en(slides)
     problems = []
     for no, sl in enumerate(slides, 1):
         for where, text, quote in slide_texts(sl):
@@ -1200,6 +1313,19 @@ def mmss(sec: int) -> str:
 
 def talk_script(slides: List[Slide]) -> str:
     total = sum(s.seconds for s in slides)
+    if LANG == "en":
+        cover = slides[0]
+        out = [f"# Talk script — {cover.title}", "", f"{cover.kicker} · {cover.blocks[0].lines[0]}", "",
+               "This file is written by `scripts/make_slides.py --lang en`. The script below is the same text "
+               "as the speaker notes of the English deck, translated from the Korean talk.", "",
+               "| # | Slide title | Time | Script characters |", "|---|---|---|---|"]
+        for i, s in enumerate(slides, 1):
+            out.append(f"| {i} | {s.title} | {mmss(s.seconds)} | {len(s.notes)} |")
+        out += [f"| | **Total** | **{mmss(total)}** | |", "",
+                f"Talk {mmss(total)} + questions {mmss(30 * 60 - total)} = 30:00", ""]
+        for i, s in enumerate(slides, 1):
+            out += [f"## {i}. {s.title}", "", f"Time {mmss(s.seconds)} · {s.kicker}", "", s.notes, ""]
+        return "\n".join(out)
     out = [f"# 발표 대본 — {TITLE}", "",
            f"{EVENT} · {SUBTITLE}", "",
            "이 파일은 `scripts/make_slides.py`가 만듭니다. 대본을 고치려면 스크립트를 고친 뒤 다시 돌립니다. "
@@ -1219,10 +1345,22 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", default=OUT, help="output folder (default: build/slides)")
     ap.add_argument("--font", default=None, help="Korean font name (default: Apple SD Gothic Neo, else Noto Sans KR)")
+    ap.add_argument("--lang", choices=("ko", "en"), default="ko",
+                    help="en: English deck, translated through scripts/slides_en.json")
+    ap.add_argument("--high-contrast", action="store_true",
+                    help="gray text in black and darker grid lines (for a washed-out projector)")
     args = ap.parse_args(argv)
 
+    global LANG, EN, HIGH_CONTRAST
+    LANG, HIGH_CONTRAST = args.lang, args.high_contrast
+    EN = English(EN_TABLE) if LANG == "en" else None
+    sfx = ("_en" if EN else "") + ("_high-contrast" if HIGH_CONTRAST else "")
+    fig_dir = os.path.join(args.out, "figures" + ("_en" if EN else ""))
+
     slides = build_slides()
-    os.makedirs(os.path.join(args.out, "figures"), exist_ok=True)
+    if EN is not None:
+        EN.slides(slides)
+    os.makedirs(fig_dir, exist_ok=True)
 
     charts: Dict[str, bytes] = {}
     chart_problems: List[str] = []
@@ -1230,20 +1368,34 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         png, _, probs = render_chart(name)
         charts[name] = png
         chart_problems += probs
-        with open(os.path.join(args.out, "figures", name + ".png"), "wb") as fh:
+        with open(os.path.join(fig_dir, name + ".png"), "wb") as fh:
             fh.write(png)
+
+    if EN is not None and EN.missing_count():
+        miss_path = os.path.join(args.out, "slides_en.missing.json")
+        with open(miss_path, "w", encoding="utf-8") as fh:
+            json.dump(EN.missing, fh, ensure_ascii=False, indent=1)
+        print(f"[slides] FAIL — {EN.missing_count()} Korean strings have no English entry in "
+              f"{os.path.relpath(EN_TABLE, ROOT)}; written to {os.path.relpath(miss_path, ROOT)}")
+        return 1
 
     font, mono = pick_fonts(args.font)
     deck = Deck(font, mono)
     for sl in slides:
         deck.add(sl, charts)
-    pptx_path = os.path.join(args.out, PPTX_NAME)
-    deck.save(pptx_path)
+    pptx_path = os.path.join(args.out, PPTX_NAME.replace(".pptx", sfx + ".pptx"))
+    if EN is not None:
+        cover = slides[0]
+        deck.save(pptx_path, title=f"{cover.title}: {cover.blocks[0].lines[0]}", subject=cover.kicker,
+                  author=EN(SPEAKER))
+    else:
+        deck.save(pptx_path)
 
     report, total, distinct, missing = check_numbers(slides)
-    with open(os.path.join(args.out, "numbers_check.txt"), "w", encoding="utf-8") as fh:
+    tail = "_en" if EN else ""
+    with open(os.path.join(args.out, f"numbers_check{tail}.txt"), "w", encoding="utf-8") as fh:
         fh.write(report)
-    with open(os.path.join(args.out, "talk_script.md"), "w", encoding="utf-8") as fh:
+    with open(os.path.join(args.out, f"talk_script{tail}.md"), "w", encoding="utf-8") as fh:
         fh.write(talk_script(slides))
 
     wording = check_wording(slides)
