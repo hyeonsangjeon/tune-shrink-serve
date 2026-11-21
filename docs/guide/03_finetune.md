@@ -1,5 +1,7 @@
 # 3. LoRA 학습
 
+**한국어** | [English](03_finetune_en.md)
+
 튜닝 전 모델의 점수를 재고, Mi:dm 2.0 Base에 LoRA를 학습해 BF16 모델 하나로 합칩니다. 같은 학습을 두 엔진(transformers+PEFT, Unsloth)으로 한 번씩 합니다. 뒤 단계(INT4, 서빙)는 transformers+PEFT로 학습한 모델을 씁니다.
 
 | 필요한 것 | 걸린 시간 (H100 NVL) | 결과 문서 |

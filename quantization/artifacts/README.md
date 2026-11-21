@@ -1,5 +1,7 @@
 # artifacts/ — 학습한 가중치 (커밋하지 않음)
 
+**한국어** | [English](README_en.md)
+
 GPU 단계가 만든 모델이 여기에 생깁니다. 크고 다시 만들 수 있어서 git이 무시합니다. 이번 실험(설정 `kormedmcqa_midm.yaml`)은 `kormedmcqa_midm/` 아래에 생깁니다.
 
 | 폴더 | 무엇 | 만드는 단계 |

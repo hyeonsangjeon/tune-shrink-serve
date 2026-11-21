@@ -1,5 +1,7 @@
 # 1. 파인튜닝 — 같은 LoRA를 transformers+PEFT와 Unsloth로
 
+**한국어** | [English](01_finetune_unsloth_en.md)
+
 공통 조건(모델, 데이터, 프롬프트, 채점, 장비)은 [0. 실험 설정](00_setup.md)에 있습니다.
 
 ## 무엇을 바꿨나

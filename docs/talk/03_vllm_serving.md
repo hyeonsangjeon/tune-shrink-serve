@@ -1,5 +1,7 @@
 # 3. vLLM 서빙 — 배치, 동시 요청, prefix caching
 
+**한국어** | [English](03_vllm_serving_en.md)
+
 공통 조건은 [0. 실험 설정](00_setup.md)에 있습니다. 비교한 모델은 BF16 LoRA 모델과 INT4 모델입니다([2. INT4 양자화](02_int4_quantization.md)). INT4 PTQ와 INT4 QAT는 저장 형식이 같아 속도도 같습니다. 오프라인 측정에서 둘 다 쟀더니 배치별 처리량 차이가 1% 안쪽이었습니다. 그래서 온라인 측정은 INT4 PTQ로만 했습니다.
 
 ## 두 가지를 쟀습니다

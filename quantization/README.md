@@ -1,5 +1,7 @@
 # quantization/ — 코드
 
+**한국어** | [English](README_en.md)
+
 학습, INT4 변환, 채점, 서빙 측정, API 비교 코드가 모두 이 패키지에 있습니다. 명령은 레포 루트에서 `python -m quantization.<모듈>`로 돌립니다. 순서대로 돌리는 방법은 [따라하기](../docs/guide/)에 있습니다.
 
 ## 폴더

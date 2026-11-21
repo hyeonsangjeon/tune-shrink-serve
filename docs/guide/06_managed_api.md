@@ -1,5 +1,7 @@
 # 6. API 모델과 비교 (GPU 필요 없음)
 
+**한국어** | [English](06_managed_api_en.md)
+
 같은 2022~2024년 3,009문항을 매니지드 API 모델에 풀게 하고, 자체 GPU의 Mi:dm과 정답률·비용을 나란히 놓습니다. OpenAI 호환 Chat Completions 엔드포인트면 되고, 이번에는 Azure AI Foundry의 `/openai/v1`을 썼습니다.
 
 | 필요한 것 | 걸린 시간 (이번 실행) | 비용 | 결과 문서 |

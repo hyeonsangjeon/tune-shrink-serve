@@ -1,5 +1,7 @@
 # 2. INT4 양자화 — TorchAO PTQ와 QAT
 
+**한국어** | [English](02_int4_quantization_en.md)
+
 공통 조건은 [0. 실험 설정](00_setup.md)에 있습니다. 출발점은 [1. 파인튜닝](01_finetune_unsloth.md)에서 transformers+PEFT로 학습한 BF16 LoRA 모델입니다.
 
 ## 무엇을 바꿨나

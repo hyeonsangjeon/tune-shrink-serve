@@ -1,5 +1,7 @@
 # scripts/
 
+**한국어** | [English](README_en.md)
+
 ## GPU VM에서 쓰는 것 (`gpu/`)
 
 | 스크립트 | 하는 일 | 따라하기 |
