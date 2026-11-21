@@ -208,9 +208,9 @@ AGENDA = ["① Unsloth LoRA", "② TorchAO INT4", "③ vLLM 서빙", "④ SLM �
 SECTION_NOTES_MIN = 40  # section slides are a short spoken transition
 
 
-def section_slide(no: int, line: str, notes: str, source: str) -> Slide:
+def section_slide(no: int, line: str, notes: str, source: str, seconds: int = 10) -> Slide:
     row = "      ".join(f"**{a}**" if i == no else a for i, a in enumerate(AGENDA))
-    return Slide(kicker="아젠다", title=AGENDA[no], section=True, seconds=10, sources=[source],
+    return Slide(kicker="아젠다", title=AGENDA[no], section=True, seconds=seconds, sources=[source],
                  blocks=[Text((0.8, 3.6, 11.7, 1.2), [line], size=24, color=INK2, bullets=False),
                          Text((0.8, 6.2, 11.7, 0.5), [row], size=16, color=MUTE, bullets=False)],
                  notes=notes)
@@ -362,8 +362,10 @@ def build_slides() -> List[Slide]:
 
     s.append(section_slide(
         1, "BF16 LoRA 모델을 INT4로 줄였을 때 크기와 정답률, PTQ 대 QAT",
-        "두 번째는 모델을 줄이는 일입니다. BF16 LoRA 모델을 TorchAO로 INT4로 줄이는데요. 학습 "
-        "없이 바꾸는 PTQ와 더 학습하는 QAT가 정답률을 얼마나 잃는지 잽니다.", "02_int4_quantization.md"))
+        "두 번째는 모델을 줄이는 일입니다. 도구는 TorchAO, 토치 에이오예요. PyTorch 팀이 만든 양자화 "
+        "라이브러리이고 AO는 Architecture Optimization의 줄임말입니다. 가중치를 INT4 같은 낮은 비트로 "
+        "줄이는 도구와, 줄일 것을 대비해 학습하는 QAT 도구가 같이 들어 있어요. 이걸로 BF16 LoRA 모델을 "
+        "INT4로 줄이고 PTQ와 QAT가 정답률을 얼마나 잃는지 잽니다.", "02_int4_quantization.md", seconds=40))
 
     # 9 ---------------------------------------------------------------------
     q = table_after("02_int4_quantization.md", "## 무엇을 바꿨나")
@@ -377,10 +379,11 @@ def build_slides() -> List[Slide]:
                     "가중치만 INT4, 계산은 BF16 (weight-only) · 128개 가중치마다 배율 하나",
                     "`TILE_PACKED_TO_4D`: PyTorch에 들어 있는 tinygemm INT4 커널 사용",
                 ], size=16, color=INK2, space=6)],
-        notes=("같은 BF16 LoRA 모델을 TorchAO로 두 가지 방법으로 INT4로 줄였어요. PTQ는 학습 없이 "
-               "가중치만 바꿔 17초 걸렸습니다. QAT는 가짜 양자화를 끼운 채 600 step을 더 학습해 1시간 "
-               "42분 걸렸습니다. 같은 데이터로 더 학습한 차이도 비교에 함께 들어갑니다. 둘 다 가중치만 INT4이고 "
-               "계산은 BF16이에요."),
+        notes=("INT4는 가중치 하나를 16개 값 중 하나로 반올림해 저장합니다. PTQ는 학습이 끝난 모델을 "
+               "그대로 반올림해요. 학습이 없어 17초면 끝나지만 반올림 오차는 그대로 남습니다. QAT는 학습하는 "
+               "동안 미리 반올림한 값으로 계산하게 합니다. 모델이 그 오차를 겪으면서 가중치를 고치는 거죠. "
+               "실전 장비를 끼고 연습하는 셈이고 600 step에 1시간 42분 걸렸습니다. 같은 데이터로 더 학습한 "
+               "차이도 비교에 함께 들어갑니다. 둘 다 가중치만 INT4이고 계산은 BF16이에요."),
         must_say=["더 학습한 차이"]))
 
     # 10 --------------------------------------------------------------------
