@@ -33,6 +33,7 @@ KT의 공개 모델 **Mi:dm 2.0 Base(11.5B)** 에 의사·간호사·약사·치
 | 하고 싶은 일 | 가는 곳 |
 |---|---|
 | 결과와 근거를 자세히 본다 | [`docs/talk/`](docs/talk/) 00~05 |
+| 발표 슬라이드를 본다 | [PDF, 한국어](docs/talk/slides/pytorchday2026_slides_ko.pdf) (2026-11-21 발표 그대로) |
 | GPU 없이 이 레포가 제대로 도는지 본다 | 바로 아래 「1분 확인」 |
 | 학습·INT4·서빙 코드를 읽고 한 단계씩 돌린다 | [`steps/`](steps/) 1~5 (단계마다 파일 하나, 함수마다 설명) |
 | GPU에서 처음부터 다시 돌린다 | [따라하기](docs/guide/) 1~8번 (단계마다 명령, 걸린 시간, 확인 기준, 안 될 때) |
@@ -99,7 +100,7 @@ FRESH=1 bash scripts/gpu/stage.sh online_A    # 온라인 서빙, prefix caching
 README.md                  여기. 결과 요약과 시작점
 steps/                     단계별 코드: LoRA 학습 → INT4 PTQ → INT4 QAT → 정답률 → vLLM 서빙. 파일 하나에 단계 하나
 docs/
-  talk/                    결과 문서 00~05 (발표 순서)와 차트(figures/)
+  talk/                    결과 문서 00~05 (발표 순서), 차트(figures/), 발표 슬라이드 PDF(slides/)
   guide/                   따라하기 1~8: GPU 없이 확인 → GPU VM → 학습 → INT4 → 서빙 → API 비교 → 점수 올리기 → 안 될 때
   EVIDENCE.md              근거 색인: 문서의 숫자마다 어느 결과 JSON의 어느 값인지 (evidence_ledger.yaml에서 생성)
   DATA_AND_LICENSES.md     모델·데이터·결과의 라이선스와 무엇을 레포에 넣지 않았는지

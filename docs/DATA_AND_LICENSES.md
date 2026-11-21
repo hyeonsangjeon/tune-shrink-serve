@@ -14,14 +14,16 @@ Provenance and license notes for every third‑party asset this repository uses.
 > `python scripts/check_asset_ledger.py --check` (a CI gate) fails if any
 > committed bundled asset (PDF/font/image) lacks an entry. The only committed
 > images are the generated talk charts in `docs/talk/figures/` (MIT, regenerated
-> from the result JSON by `scripts/make_figures.py`).
+> from the result JSON by `scripts/make_figures.py`). The only committed PDFs are
+> the talk slides in `docs/talk/slides/` (MIT; slide 4 quotes the same KorMedMCQA item
+> as `docs/talk/00_setup.md`, with attribution).
 
 ## 1. Datasets (downloaded at runtime — never committed)
 
 | Asset | Where | License | Redistribution note |
 |---|---|---|---|
 | **KorQuAD 1.0** (`KorQuAD/squad_kor_v1`) | Hugging Face Hub, fetched at run time by `quantization/data_korquad.py` | **CC BY‑ND 2.0 KR** (Attribution‑**NoDerivatives**) | The dataset is **not** copied into this repo. The **ND** clause governs redistributing *modified copies of the dataset*; it is a **known‑unknown** for redistributing models fine‑tuned on it — see §4. |
-| **KorMedMCQA** (`sean0042/KorMedMCQA`) | Hugging Face Hub, fetched at run time by `quantization/kormedmcqa.py` | **CC BY‑NC 2.0** per the HF dataset card (the paper's datasheet says MIT; the stricter card is followed) | Not copied into this repo, except one training item (nurse, 2019, session 1, Q1) quoted with attribution in `docs/talk/00_setup.md` to show the format. Committed eval JSON holds only item ids, gold/pred option numbers and the first 40 chars of model output — no question text. Weights fine‑tuned on it are published **for non‑commercial use**, with attribution (arXiv 2403.01469) — see §3. |
+| **KorMedMCQA** (`sean0042/KorMedMCQA`) | Hugging Face Hub, fetched at run time by `quantization/kormedmcqa.py` | **CC BY‑NC 2.0** per the HF dataset card (the paper's datasheet says MIT; the stricter card is followed) | Not copied into this repo, except one training item (nurse, 2019, session 1, Q1) quoted with attribution in `docs/talk/00_setup.md` (and on slide 4 of the talk slides in `docs/talk/slides/`) to show the format. Committed eval JSON holds only item ids, gold/pred option numbers and the first 40 chars of model output — no question text. Weights fine‑tuned on it are published **for non‑commercial use**, with attribution (arXiv 2403.01469) — see §3. |
 
 ## 2. Base models (downloaded at runtime — never committed)
 

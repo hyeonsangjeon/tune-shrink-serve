@@ -9,7 +9,7 @@
 #   id             short unique key
 #   path           repo-relative path or glob (matched against `git ls-files`)
 #   kind           sample_pdf | demo_fixture_pdf | doc_image | figure_image
-#                  | dataset | model
+#                  | slides_pdf | dataset | model
 #   license        SPDX id, a named license, or UNKNOWN
 #   source         where it came from (generator, hub id, or "unrecorded")
 #   redistribution ok | demo_only | unresolved
@@ -17,7 +17,8 @@
 #                  false = documentation-only (runtime download, not in git)
 #   note           free text
 #
-# The only committed images are the generated talk charts (docs/talk/figures/*.svg).
+# The only committed images are the generated talk charts (docs/talk/figures/*.svg);
+# the only committed PDFs are the talk slides (docs/talk/slides/*.pdf).
 # Any other bundled PDF, font or image needs an entry with a known license.
 version: 1
 
@@ -77,3 +78,15 @@ assets:
     note: >-
       Charts for the talk docs. Regenerated, never hand-edited;
       `python scripts/make_figures.py --check` (CI) fails if one drifts from the JSONs.
+
+  # --- committed talk slides ----------------------------------------------------
+  - id: talk_slides_pdf
+    path: "docs/talk/slides/*.pdf"
+    kind: slides_pdf
+    license: MIT (slide text and charts); slide 4 quotes one KorMedMCQA item (CC BY-NC 2.0) with attribution
+    source: exported with PowerPoint from the deck presented on 2026-11-21 (built by scripts/make_slides.py, then edited by hand before the talk)
+    redistribution: ok
+    committed: true
+    note: >-
+      A snapshot of what was presented. The numbers inside are not checked by CI;
+      the docs under docs/talk/ and docs/EVIDENCE.md are the checked source.

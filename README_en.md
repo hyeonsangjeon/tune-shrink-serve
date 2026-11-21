@@ -32,6 +32,7 @@ The shared conditions (model, data, prompt, scoring, hardware) are in [00_setup.
 | What you want to do | Where to go |
 |---|---|
 | See the results and evidence in detail | [`docs/talk/`](docs/talk/) 00-05 |
+| See the talk slides | [PDF, Korean](docs/talk/slides/pytorchday2026_slides_ko.pdf) (as presented on 2026-11-21) |
 | Check that this repo works, without a GPU | “1-minute check” just below |
 | Read the training, INT4 and serving code and run it one step at a time | [`steps/`](steps/) 1-5 (one file per step, an explanation for each function) |
 | Rerun from scratch on a GPU | [step-by-step guide](docs/guide/README_en.md) 1-8 (for each step: commands, time taken, what to check, what to do when it fails) |
@@ -98,7 +99,7 @@ Any stage runs in the background if you add `--detach`. Check progress with `bas
 README.md                  this file. Summary of the results and the starting point
 steps/                     code by step: LoRA training → INT4 PTQ → INT4 QAT → accuracy → vLLM serving. One step per file
 docs/
-  talk/                    result docs 00-05 (in talk order) and charts (figures/)
+  talk/                    result docs 00-05 (in talk order), charts (figures/), talk slides as PDF (slides/)
   guide/                   step-by-step guide 1-8: check without a GPU → GPU VM → training → INT4 → serving → API comparison → raising the score → when it fails
   EVIDENCE.md              evidence index: for each number in the docs, which value in which result JSON (generated from evidence_ledger.yaml)
   DATA_AND_LICENSES.md     licenses for the model, data and results, and what was not put in the repo
